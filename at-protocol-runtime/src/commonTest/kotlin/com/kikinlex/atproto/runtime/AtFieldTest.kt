@@ -111,6 +111,51 @@ class AtFieldTest {
         assertEquals(original, decoded)
     }
 
+    // Deliberately does NOT carry `@Serializable(with = AtFieldSerializer::class)`
+    // on the AtField field — reproduces the bug surfaced by the Android sample
+    // where the compiler-synthesized serializer falls back to polymorphic
+    // dispatch on the sealed `AtField` type and fails at runtime on `Defined<T>`
+    // ("Serializer for subclass 'Defined' is not found in the polymorphic scope
+    // of 'AtField'"). The generator MUST emit the per-field annotation for
+    // every AtField field or the emitted code is broken.
+    @Serializable
+    private data class BrokenWithoutAnnotation(
+        @EncodeDefault(EncodeDefault.Mode.NEVER)
+        val limit: AtField<Long> = AtField.Missing,
+    )
+
+    @Test
+    fun present_wrapsValueAsDefined() {
+        val wrapped: AtField.Defined<String> = present("hello")
+        assertEquals(AtField.Defined("hello"), wrapped)
+    }
+
+    @Test
+    fun presentOrNull_mapsNonNullToDefined() {
+        val wrapped: AtField<String> = presentOrNull("hello")
+        assertEquals(AtField.Defined("hello"), wrapped)
+    }
+
+    @Test
+    fun presentOrNull_mapsNullToExplicitClear() {
+        val wrapped: AtField<String> = presentOrNull(null)
+        assertEquals(AtField.Null, wrapped)
+    }
+
+    @Test
+    fun encode_definedWithoutSerializableWithAnnotation_failsLoud() {
+        val err = assertFailsWith<SerializationException> {
+            json.encodeToString(
+                BrokenWithoutAnnotation.serializer(),
+                BrokenWithoutAnnotation(limit = AtField.Defined(50L)),
+            )
+        }
+        assertTrue(
+            err.message?.contains("AtField") == true,
+            "expected polymorphic-scope error mentioning AtField, got: ${err.message}",
+        )
+    }
+
     @Test
     fun encode_missingWithoutEncodeDefaultAnnotation_failsLoud() {
         // Under a Json config with encodeDefaults=true AND no @EncodeDefault(NEVER)

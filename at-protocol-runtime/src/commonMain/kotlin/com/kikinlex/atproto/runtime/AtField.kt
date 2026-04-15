@@ -76,6 +76,30 @@ public sealed interface AtField<out T> {
  * raw element. V1 is JSON/XRPC-only; a CBOR path can be added later without
  * breaking the public surface.
  */
+/**
+ * Wraps [value] as [AtField.Defined]. Reads like natural English at call sites:
+ *
+ * ```
+ * val post = Post(
+ *     text = "hello world",
+ *     reply = present(replyRef),
+ * )
+ * ```
+ *
+ * Paired with [presentOrNull] for the null-coalescing path where the caller has
+ * a `T?` in hand and wants "non-null → set" / "null → explicit clear" semantics.
+ */
+public inline fun <T : Any> present(value: T): AtField.Defined<T> = AtField.Defined(value)
+
+/**
+ * Converts a nullable value into an [AtField]: non-null → [AtField.Defined],
+ * null → [AtField.Null] (an *explicit clear*, not "leave unchanged").
+ *
+ * If you want null → "leave unchanged" semantics, don't pass the field at all
+ * and let the default `= AtField.Missing` take effect.
+ */
+public inline fun <T : Any> presentOrNull(value: T?): AtField<T> = if (value != null) AtField.Defined(value) else AtField.Null
+
 public class AtFieldSerializer<T : Any>(
     private val inner: KSerializer<T>,
 ) : KSerializer<AtField<T>> {

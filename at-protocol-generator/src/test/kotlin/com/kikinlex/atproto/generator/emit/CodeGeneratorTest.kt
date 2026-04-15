@@ -271,9 +271,10 @@ class CodeGeneratorTest {
 
         val reqStr = req.toString()
         assertTrue("algorithm: String" in reqStr, reqStr)
-        // limit is optional and request is mutation-shape -> AtField<Long>
-        assertTrue("AtField" in reqStr, "expected AtField wrapping:\n$reqStr")
-        assertTrue("limit" in reqStr)
+        // Query params land in the URL query string and thus use read-shape
+        // (T? = null), not AtField — URL params can't express "null vs absent".
+        assertTrue("limit: Long? = null" in reqStr, "expected nullable Long for query param:\n$reqStr")
+        assertTrue("AtField" !in reqStr, "query request must not wrap params in AtField:\n$reqStr")
 
         val respStr = resp.toString()
         assertTrue("cursor: String" in respStr, respStr)

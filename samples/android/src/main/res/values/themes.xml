@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base theme used by AndroidManifest before Compose takes over.
+         We use the platform Material theme (no-action-bar) because
+         Compose + Material3 supplies the real styling via MaterialTheme. -->
+    <style name="Theme.BlueskySample" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

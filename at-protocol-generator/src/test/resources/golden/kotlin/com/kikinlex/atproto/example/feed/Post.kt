@@ -1,6 +1,7 @@
 package com.kikinlex.atproto.example.feed
 
 import com.kikinlex.atproto.runtime.AtField
+import com.kikinlex.atproto.runtime.AtFieldSerializer
 import com.kikinlex.atproto.runtime.Datetime
 import com.kikinlex.atproto.runtime.Language
 import kotlin.OptIn
@@ -15,10 +16,13 @@ import kotlinx.serialization.Serializable
 public data class Post(
   public val createdAt: Datetime,
   @EncodeDefault(EncodeDefault.Mode.NEVER)
+  @Serializable(with = AtFieldSerializer::class)
   public val embed: AtField<PostEmbedUnion> = AtField.Missing,
   @EncodeDefault(EncodeDefault.Mode.NEVER)
+  @Serializable(with = AtFieldSerializer::class)
   public val langs: AtField<List<Language>> = AtField.Missing,
   @EncodeDefault(EncodeDefault.Mode.NEVER)
+  @Serializable(with = AtFieldSerializer::class)
   public val reply: AtField<PostReplyRef> = AtField.Missing,
   public val text: String,
 )

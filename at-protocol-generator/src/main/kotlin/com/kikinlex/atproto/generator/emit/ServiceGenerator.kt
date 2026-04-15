@@ -1,0 +1,328 @@
+package com.kikinlex.atproto.generator.emit
+
+import com.kikinlex.atproto.generator.ir.ObjectType
+import com.kikinlex.atproto.generator.ir.ParamsType
+import com.kikinlex.atproto.generator.ir.ProcedureDef
+import com.kikinlex.atproto.generator.ir.QueryDef
+import com.kikinlex.atproto.generator.ir.SubscriptionDef
+import com.kikinlex.atproto.generator.naming.NameRole
+import com.kikinlex.atproto.generator.resolved.DefKey
+import com.kikinlex.atproto.generator.resolved.SymbolTable
+import com.kikinlex.atproto.generator.verify.FqName
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeSpec
+
+/**
+ * Emits one XRPC service class per package that contains at least one
+ * [QueryDef] or [ProcedureDef]. Each class takes an [XrpcClient] at
+ * construction and exposes a `suspend fun` per method that delegates to
+ * [XrpcClient.query] / [XrpcClient.procedure] with the generated serializers.
+ *
+ * Naming: `<TerminalPascal>Service` where *terminal* is the last segment of
+ * the emitted package (e.g. `com.kikinlex.atproto.app.bsky.feed` → `FeedService`).
+ * The package has already had the trailing NSID segment dropped by
+ * [com.kikinlex.atproto.generator.naming.NamingMatrix.packageFor], so for
+ * `app.bsky.feed.getTimeline` the resulting service lands in
+ * `com.kikinlex.atproto.app.bsky.feed.FeedService`.
+ *
+ * Method names are the NSID terminal segment (already camelCase in the
+ * upstream lexicon): `getTimeline`, `createSession`, `putPreferences`, etc.
+ *
+ * Bodies dispatch based on the def shape:
+ * - QueryDef with params → `client.query(nsid, request, Request.serializer(), Response.serializer())`
+ * - QueryDef without params → `client.query(nsid, NoXrpcParams, NoXrpcParams.serializer(), Response.serializer())`
+ * - ProcedureDef with input body → `client.procedure(nsid, NoXrpcParams, ..., input, InputSerializer, ResponseSerializer)`
+ * - ProcedureDef with only params → `client.procedure(nsid, request, Request.serializer(), Response.serializer())`
+ *
+ * When every constructor parameter of the Request class is optional (i.e.
+ * `required` is empty or missing), the emitted method gets a default
+ * `request: FooRequest = FooRequest()` so consumers can call
+ * `service.getTimeline()` with no arguments.
+ */
+public class ServiceGenerator(
+    private val plan: EmissionPlan,
+    private val symbols: SymbolTable,
+) {
+
+    /** A service class to emit: FqName + the list of query/procedure defs it should contain. */
+    public data class ServiceEmission(
+        public val fqName: FqName,
+        public val typeSpec: TypeSpec,
+    )
+
+    /**
+     * Walks the symbol table, groups every query / procedure by the package
+     * its emitted Request/Response lands in, and emits one service class per
+     * group. Groups with zero methods are skipped.
+     */
+    public fun emitAll(): List<ServiceEmission> {
+        // Group by emission package (i.e., NamingMatrix.packageFor(key.nsid)).
+        // Deterministic: sort symbols.keys lex, sort methods alphabetically.
+        val grouped = LinkedHashMap<String, MutableList<DefKey>>()
+        for (key in symbols.keys) {
+            val def = symbols.get(key) ?: continue
+            if (def !is QueryDef && def !is ProcedureDef) continue
+            // Skip subscriptions (SubscriptionDef is handled elsewhere as a v1
+            // warn-and-drop). Guard explicitly even though the `is` above
+            // already excludes it — defensive against future changes.
+            if (def is SubscriptionDef) continue
+            // Find the emission package by consulting whichever EmittedClass
+            // was produced for this def. Request preferred, else Response,
+            // else Primary.
+            val anyClass = plan.classes[key]?.firstOrNull()
+                ?: continue
+            val pkg = anyClass.fqName.pkg
+            grouped.getOrPut(pkg) { mutableListOf() }.add(key)
+        }
+
+        val emissions = mutableListOf<ServiceEmission>()
+        for ((pkg, defs) in grouped.toSortedMap()) {
+            val simpleName = "${pascalTerminal(pkg)}Service"
+            val fqName = FqName(pkg, simpleName)
+            val typeSpec = buildServiceClass(fqName, defs.sortedWith(defKeyComparator))
+            emissions += ServiceEmission(fqName, typeSpec)
+        }
+        return emissions
+    }
+
+    private fun buildServiceClass(fqName: FqName, defKeys: List<DefKey>): TypeSpec {
+        val clientType = ClassName(RUNTIME_PKG, "XrpcClient")
+        val ctor = FunSpec.constructorBuilder()
+            .addParameter(
+                ParameterSpec.builder("client", clientType)
+                    .build(),
+            )
+            .build()
+
+        val builder = TypeSpec.classBuilder(fqName.simpleName)
+            .addModifiers(KModifier.PUBLIC)
+            .primaryConstructor(ctor)
+            .addProperty(
+                PropertySpec.builder("client", clientType)
+                    .addModifiers(KModifier.PRIVATE)
+                    .initializer("client")
+                    .build(),
+            )
+
+        for (defKey in defKeys) {
+            val def = symbols.get(defKey)
+            val methodName = defKey.nsid.raw.substringAfterLast('.')
+            val fn = when (def) {
+                is QueryDef -> buildQueryMethod(defKey, def, methodName)
+                is ProcedureDef -> buildProcedureMethod(defKey, def, methodName)
+                else -> null
+            }
+            fn?.let { builder.addFunction(it) }
+        }
+        return builder.build()
+    }
+
+    private fun buildQueryMethod(
+        defKey: DefKey,
+        def: QueryDef,
+        methodName: String,
+    ): FunSpec {
+        val request = plan.classes[defKey]?.firstOrNull { it.role == NameRole.Request }
+        val response = plan.classes[defKey]?.firstOrNull { it.role == NameRole.Response }
+        val returnType: TypeName = response?.let { ClassName(it.fqName.pkg, it.fqName.simpleName) }
+            ?: UNIT_CLASS_NAME
+
+        val fn = FunSpec.builder(methodName)
+            .addModifiers(KModifier.PUBLIC, KModifier.SUSPEND)
+            .returns(returnType)
+
+        if (request != null) {
+            val requestCn = ClassName(request.fqName.pkg, request.fqName.simpleName)
+            val param = ParameterSpec.builder("request", requestCn)
+            if (requestConstructorHasNoRequiredArgs(def.parameters)) {
+                param.defaultValue("%T()", requestCn)
+            }
+            fn.addParameter(param.build())
+            fn.addCode(
+                buildCall(
+                    kind = "query",
+                    nsid = defKey.nsid.raw,
+                    paramsExpr = CodeBlock.of("request"),
+                    paramsSerializerExpr = CodeBlock.of("%T.serializer()", requestCn),
+                    inputExpr = null,
+                    inputSerializerExpr = null,
+                    responseSerializerExpr = response?.let { responseSerializerExpr(it.fqName) },
+                ),
+            )
+        } else {
+            // No params: use NoXrpcParams as a sentinel to satisfy XrpcClient.query's signature.
+            fn.addCode(
+                buildCall(
+                    kind = "query",
+                    nsid = defKey.nsid.raw,
+                    paramsExpr = CodeBlock.of("%T", NO_XRPC_PARAMS),
+                    paramsSerializerExpr = CodeBlock.of("%T.serializer()", NO_XRPC_PARAMS),
+                    inputExpr = null,
+                    inputSerializerExpr = null,
+                    responseSerializerExpr = response?.let { responseSerializerExpr(it.fqName) },
+                ),
+            )
+        }
+        return fn.build()
+    }
+
+    private fun buildProcedureMethod(
+        defKey: DefKey,
+        def: ProcedureDef,
+        methodName: String,
+    ): FunSpec {
+        val request = plan.classes[defKey]?.firstOrNull { it.role == NameRole.Request }
+        val response = plan.classes[defKey]?.firstOrNull { it.role == NameRole.Response }
+        val returnType: TypeName = response?.let { ClassName(it.fqName.pkg, it.fqName.simpleName) }
+            ?: UNIT_CLASS_NAME
+
+        val fn = FunSpec.builder(methodName)
+            .addModifiers(KModifier.PUBLIC, KModifier.SUSPEND)
+            .returns(returnType)
+
+        val inputSchema = def.input?.schema
+        val hasInputBody = inputSchema is ObjectType
+
+        if (hasInputBody && request != null) {
+            // Procedure with JSON input body. The `request` parameter represents
+            // the input body; no URL params are emitted.
+            val requestCn = ClassName(request.fqName.pkg, request.fqName.simpleName)
+            val param = ParameterSpec.builder("request", requestCn)
+            val obj = inputSchema as ObjectType
+            if (obj.required.isNullOrEmpty()) {
+                param.defaultValue("%T()", requestCn)
+            }
+            fn.addParameter(param.build())
+            fn.addCode(
+                buildCall(
+                    kind = "procedure",
+                    nsid = defKey.nsid.raw,
+                    paramsExpr = CodeBlock.of("%T", NO_XRPC_PARAMS),
+                    paramsSerializerExpr = CodeBlock.of("%T.serializer()", NO_XRPC_PARAMS),
+                    inputExpr = CodeBlock.of("request"),
+                    inputSerializerExpr = CodeBlock.of("%T.serializer()", requestCn),
+                    responseSerializerExpr = response?.let { responseSerializerExpr(it.fqName) },
+                ),
+            )
+        } else if (request != null && def.parameters != null) {
+            // Procedure with URL params only (no JSON body).
+            val requestCn = ClassName(request.fqName.pkg, request.fqName.simpleName)
+            val param = ParameterSpec.builder("request", requestCn)
+            if (paramsHasNoRequiredArgs(def.parameters)) {
+                param.defaultValue("%T()", requestCn)
+            }
+            fn.addParameter(param.build())
+            fn.addCode(
+                buildCall(
+                    kind = "procedure",
+                    nsid = defKey.nsid.raw,
+                    paramsExpr = CodeBlock.of("request"),
+                    paramsSerializerExpr = CodeBlock.of("%T.serializer()", requestCn),
+                    inputExpr = null,
+                    inputSerializerExpr = null,
+                    responseSerializerExpr = response?.let { responseSerializerExpr(it.fqName) },
+                ),
+            )
+        } else {
+            // Procedure with neither params nor input body — rare (e.g. deleteSession).
+            fn.addCode(
+                buildCall(
+                    kind = "procedure",
+                    nsid = defKey.nsid.raw,
+                    paramsExpr = CodeBlock.of("%T", NO_XRPC_PARAMS),
+                    paramsSerializerExpr = CodeBlock.of("%T.serializer()", NO_XRPC_PARAMS),
+                    inputExpr = null,
+                    inputSerializerExpr = null,
+                    responseSerializerExpr = response?.let { responseSerializerExpr(it.fqName) },
+                ),
+            )
+        }
+        return fn.build()
+    }
+
+    private fun responseSerializerExpr(fqName: FqName): CodeBlock {
+        val cn = ClassName(fqName.pkg, fqName.simpleName)
+        return CodeBlock.of("%T.serializer()", cn)
+    }
+
+    /**
+     * Build the `return client.query(...)` / `return client.procedure(...)`
+     * call expression. If [responseSerializerExpr] is `null` (no output.schema),
+     * we fall back to `Unit.serializer()` from kotlinx's builtins — rare but
+     * required to typecheck.
+     */
+    private fun buildCall(
+        kind: String,
+        nsid: String,
+        paramsExpr: CodeBlock,
+        paramsSerializerExpr: CodeBlock,
+        inputExpr: CodeBlock?,
+        inputSerializerExpr: CodeBlock?,
+        responseSerializerExpr: CodeBlock?,
+    ): CodeBlock {
+        // For rare "no output" procedures/queries, delegate to the runtime's
+        // stable `UnitResponseSerializer` so the generated method can still
+        // satisfy [XrpcClient]'s signature without leaking
+        // kotlinx-serialization internals into the emission.
+        val rsExpr = responseSerializerExpr ?: CodeBlock.of("%T", UNIT_RESPONSE_SERIALIZER)
+        return buildString {
+            append("return client.").append(kind).append("(\n")
+            append("    nsid = %S,\n")
+            append("    params = %L,\n")
+            append("    paramsSerializer = %L,\n")
+            if (inputExpr != null) {
+                append("    input = %L,\n")
+                append("    inputSerializer = %L,\n")
+            }
+            append("    responseSerializer = %L,\n)\n")
+        }.let { template ->
+            if (inputExpr != null) {
+                CodeBlock.of(
+                    template,
+                    nsid,
+                    paramsExpr,
+                    paramsSerializerExpr,
+                    inputExpr,
+                    inputSerializerExpr,
+                    rsExpr,
+                )
+            } else {
+                CodeBlock.of(
+                    template,
+                    nsid,
+                    paramsExpr,
+                    paramsSerializerExpr,
+                    rsExpr,
+                )
+            }
+        }
+    }
+
+    /**
+     * Returns true if every property in [params] is optional — i.e. the
+     * `required` list is empty or missing. Used to decide whether to emit
+     * a default `request = FooRequest()` argument.
+     */
+    private fun requestConstructorHasNoRequiredArgs(params: ParamsType?): Boolean = params == null || params.required.isNullOrEmpty()
+
+    private fun paramsHasNoRequiredArgs(params: ParamsType): Boolean = params.required.isNullOrEmpty()
+
+    private fun pascalTerminal(pkg: String): String {
+        val last = pkg.substringAfterLast('.')
+        return if (last.isEmpty()) "" else last[0].uppercaseChar() + last.substring(1)
+    }
+
+    private companion object {
+        val UNIT_CLASS_NAME = ClassName("kotlin", "Unit")
+        val NO_XRPC_PARAMS = ClassName(RUNTIME_PKG, "NoXrpcParams")
+        val UNIT_RESPONSE_SERIALIZER = ClassName(RUNTIME_PKG, "UnitResponseSerializer")
+
+        val defKeyComparator: Comparator<DefKey> = compareBy({ it.nsid.raw }, { it.name })
+    }
+}

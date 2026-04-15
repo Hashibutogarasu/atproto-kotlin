@@ -176,13 +176,24 @@ public class ModelGenerator(
             )
             Shape.MutationShape -> {
                 val wrapped = ClassName(RUNTIME_PKG, "AtField").parameterizedBy(baseType)
-                val ann = AnnotationSpec.builder(ENCODE_DEFAULT)
+                val encodeDefaultAnn = AnnotationSpec.builder(ENCODE_DEFAULT)
                     .addMember("%T.Mode.NEVER", ENCODE_DEFAULT)
+                    .build()
+                // Per-field `@Serializable(with = AtFieldSerializer::class)` is
+                // load-bearing: without it, the compiler-synthesized serializer
+                // for the owning `@Serializable` data class falls back to
+                // polymorphic dispatch on the sealed `AtField<T>` type, which
+                // fails at runtime on `Defined<T>` (generic subtype can't be
+                // auto-registered in the polymorphic scope). The runtime
+                // `AtField` itself is NOT annotated at the class level, so
+                // every use site must carry this annotation.
+                val withSerializerAnn = AnnotationSpec.builder(SERIALIZABLE)
+                    .addMember("with = %T::class", AT_FIELD_SERIALIZER)
                     .build()
                 Triple(
                     wrapped,
                     CodeBlock.of("%T.Missing", AT_FIELD),
-                    listOf(ann),
+                    listOf(encodeDefaultAnn, withSerializerAnn),
                 )
             }
         }

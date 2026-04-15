@@ -42,11 +42,16 @@ public class XrpcGenerator(
         if (request != null && def.parameters != null) {
             out += XrpcEmitted.Class(
                 request.fqName,
+                // Query params land in the URL query string, which cannot
+                // represent the three-state `null-vs-absent` distinction that
+                // `AtField` exists to model. Use the read-shape (`T? = null`)
+                // so call sites stay Kotlin-idiomatic — `GetTimelineRequest(limit = 50L)`
+                // instead of `GetTimelineRequest(limit = AtField.Defined(50L))`.
                 models.buildFromParamsType(
                     fqName = request.fqName,
                     origin = key.nsid,
                     params = def.parameters,
-                    shape = Shape.MutationShape,
+                    shape = Shape.ReadShape,
                 ),
             )
         }
@@ -64,6 +69,8 @@ public class XrpcGenerator(
         if (request != null) {
             val inputSchema = def.input?.schema
             when {
+                // Procedure JSON body: the wire format IS an object, so the
+                // three-state `AtField` distinction matters here.
                 inputSchema is ObjectType -> out += XrpcEmitted.Class(
                     request.fqName,
                     models.buildFromObjectType(
@@ -73,13 +80,16 @@ public class XrpcGenerator(
                         shape = Shape.MutationShape,
                     ),
                 )
+                // Procedure with no input body but URL params: same constraint
+                // as queries — URL query strings can't express null-vs-absent,
+                // so use read-shape here too.
                 def.parameters != null -> out += XrpcEmitted.Class(
                     request.fqName,
                     models.buildFromParamsType(
                         fqName = request.fqName,
                         origin = key.nsid,
                         params = def.parameters,
-                        shape = Shape.MutationShape,
+                        shape = Shape.ReadShape,
                     ),
                 )
                 else -> System.err.println(

@@ -40,6 +40,7 @@ internal val DATETIME = ClassName(RUNTIME_PKG, "Datetime")
 internal val LANGUAGE = ClassName(RUNTIME_PKG, "Language")
 internal val URI_CLASS = ClassName(RUNTIME_PKG, "Uri")
 internal val AT_FIELD = ClassName(RUNTIME_PKG, "AtField")
+internal val AT_FIELD_SERIALIZER = ClassName(RUNTIME_PKG, "AtFieldSerializer")
 internal val BLOB = ClassName(RUNTIME_PKG, "Blob")
 internal val CID_LINK = ClassName(RUNTIME_PKG, "CidLink")
 

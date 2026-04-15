@@ -2,6 +2,7 @@ package com.kikinlex.atproto.example.embed
 
 import com.kikinlex.atproto.example.actor.ProfileViewBasic
 import com.kikinlex.atproto.runtime.AtField
+import com.kikinlex.atproto.runtime.AtFieldSerializer
 import com.kikinlex.atproto.runtime.AtUri
 import com.kikinlex.atproto.runtime.Cid
 import com.kikinlex.atproto.runtime.Datetime
@@ -18,6 +19,7 @@ public data class RecordViewRecord(
   public val author: ProfileViewBasic,
   public val cid: Cid,
   @EncodeDefault(EncodeDefault.Mode.NEVER)
+  @Serializable(with = AtFieldSerializer::class)
   public val embeds: AtField<List<RecordViewRecordEmbedsUnion>> = AtField.Missing,
   public val indexedAt: Datetime,
   public val uri: AtUri,

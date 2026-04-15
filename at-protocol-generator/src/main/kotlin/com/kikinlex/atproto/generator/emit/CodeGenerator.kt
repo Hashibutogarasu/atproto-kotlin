@@ -13,6 +13,8 @@ import com.kikinlex.atproto.generator.naming.EmittedClass
 import com.kikinlex.atproto.generator.naming.NameRole
 import com.kikinlex.atproto.generator.naming.NamingMatrix
 import com.kikinlex.atproto.generator.resolved.ContextTagger
+import com.kikinlex.atproto.generator.resolved.DefKey
+import com.kikinlex.atproto.generator.resolved.Nsid
 import com.kikinlex.atproto.generator.resolved.RefResolver
 import com.kikinlex.atproto.generator.resolved.SymbolTable
 import com.kikinlex.atproto.generator.verify.CollisionOverrides
@@ -44,13 +46,20 @@ public class CodeGenerator(
         val contexts = ContextTagger(symbols).tag()
         val plan = EmissionPlan.build(symbols, naming, contexts)
 
+        // Precompute service class emissions so their FqNames participate in
+        // the verification pass below — catches any collision between a
+        // service class name (`<PackageTerminal>Service`) and a record of
+        // the same name in the same package.
+        val services = ServiceGenerator(plan, symbols).emitAll()
+
         // Run §8 verification pass across the computed name map + union sites
-        // before any KotlinPoet emission. Catches (DefKey, role) → FqName
-        // assignment inconsistencies, FqName collisions across different
-        // DefKeys, and per-union arm-name / $type-discriminator collisions.
-        // Overrides default to empty; consumers can pass a CollisionOverrides
-        // to repair known collisions with a per-pair rename map.
-        VerificationPass().verify(buildVerificationInput(plan), overrides)
+        // + service class FqNames before any KotlinPoet emission. Catches
+        // (DefKey, role) → FqName assignment inconsistencies, FqName
+        // collisions across different DefKeys, and per-union arm-name /
+        // $type-discriminator collisions. Overrides default to empty;
+        // consumers can pass a CollisionOverrides to repair known
+        // collisions with a per-pair rename map.
+        VerificationPass().verify(buildVerificationInput(plan, services), overrides)
         val typeResolver = TypeResolver(plan)
         val models = ModelGenerator(plan, typeResolver, contexts)
         val unions = UnionGenerator(plan)
@@ -145,6 +154,16 @@ public class CodeGenerator(
             addType(site.fqName, emission.unionSerializer)
         }
 
+        // Emit the precomputed XRPC service classes (one per package that
+        // contains at least one query/procedure). Each takes `XrpcClient`
+        // at construction and exposes a `suspend fun` per method that
+        // delegates to the right runtime call with the generated serializers.
+        // This replaces the v1 pattern where consumers had to hand-write
+        // `XrpcClient.query/procedure` extension functions.
+        for (emission in services) {
+            addType(emission.fqName, emission.typeSpec)
+        }
+
         // Build FileSpecs deterministically. Merge type-only and alias-only
         // files sharing the same FileKey into a single file.
         val allKeys = (perFile.keys + perFileAliases.keys).toSortedSet(
@@ -174,10 +193,27 @@ public class CodeGenerator(
      * which is used for the contextual-split `Input` variant and carries the
      * same semantics in both enums.
      */
-    private fun buildVerificationInput(plan: EmissionPlan): VerificationInput {
+    private fun buildVerificationInput(
+        plan: EmissionPlan,
+        services: List<ServiceGenerator.ServiceEmission>,
+    ): VerificationInput {
         val entries = plan.classes.entries
             .sortedWith(compareBy({ it.key.nsid.raw }, { it.key.name }))
             .flatMap { (_, emissions) -> emissions.map { it.toNameEntry() } }
+            .toMutableList()
+
+        // Add service class FqNames so any collision with a record/object of
+        // the same name in the same package fails the pass loudly. Each
+        // service is keyed on a synthetic `DefKey(<pkg-as-nsid>, "service")`
+        // with role Service so it participates in INV-2 but never collides
+        // with real def slots.
+        for (emission in services) {
+            entries += NameEntry(
+                defKey = DefKey(Nsid(emission.fqName.pkg), "service"),
+                role = NameEntry.Role.Service,
+                fqName = emission.fqName,
+            )
+        }
 
         val unionArms = plan.unionSites.map { site ->
             val members = site.refs.mapNotNull { target ->

@@ -1,6 +1,7 @@
 package com.kikinlex.atproto.example
 
 import com.kikinlex.atproto.runtime.AtField
+import com.kikinlex.atproto.runtime.AtFieldSerializer
 import com.kikinlex.atproto.runtime.Did
 import kotlin.Long
 import kotlin.OptIn
@@ -14,7 +15,9 @@ import kotlinx.serialization.Serializable
 public data class SplitSharedInput(
   public val id: Did,
   @EncodeDefault(EncodeDefault.Mode.NEVER)
+  @Serializable(with = AtFieldSerializer::class)
   public val note: AtField<String> = AtField.Missing,
   @EncodeDefault(EncodeDefault.Mode.NEVER)
+  @Serializable(with = AtFieldSerializer::class)
   public val score: AtField<Long> = AtField.Missing,
 )

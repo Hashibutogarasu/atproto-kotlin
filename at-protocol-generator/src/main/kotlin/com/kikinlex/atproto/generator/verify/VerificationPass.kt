@@ -13,7 +13,7 @@ public data class NameEntry(
     public val role: Role,
     public val fqName: FqName,
 ) {
-    public enum class Role { Primary, Request, Response, Message, Input }
+    public enum class Role { Primary, Request, Response, Message, Input, Service }
 }
 
 /**

@@ -2,7 +2,9 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.spotless)
+    alias(libs.plugins.android.application) apply false
 }
 
 allprojects {
@@ -30,6 +32,11 @@ subprojects {
                     "ktlint_standard_filename" to "disabled",
                     // Generator output uses long import paths; keep humans unconstrained.
                     "max_line_length" to "off",
+                    // Compose convention is PascalCase for @Composable functions,
+                    // which conflicts with ktlint's camelCase rule. Disabled
+                    // repo-wide — non-Compose modules have no PascalCase funs
+                    // so this is a no-op for them.
+                    "ktlint_standard_function-naming" to "disabled",
                 ),
             )
         }
