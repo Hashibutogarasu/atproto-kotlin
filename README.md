@@ -128,5 +128,5 @@ Run `openspec list` to see active + archived changes, or
 
 ## License
 
-[MIT](LICENSE) — see the `LICENSE` file at the repo root. (TODO: add the
-LICENSE file itself before the first Sonatype publish.)
+[MIT](LICENSE) © 2026 Francisco Velazquez. See [`LICENSE`](LICENSE) for the
+full text.
