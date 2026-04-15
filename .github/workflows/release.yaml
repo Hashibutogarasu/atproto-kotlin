@@ -38,6 +38,19 @@ jobs:
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # The vanniktech plugin's `prepareMavenCentralPublishing` task
+          # runs as part of the standard `publish` lifecycle (before any
+          # network call) to validate that Central credentials exist
+          # up-front. Even though the actual Central bundle upload
+          # happens in the downstream `publish-to-central` job, these
+          # env vars must be set here so the release job's embedded
+          # `./gradlew publish -q` call passes validation. Without them,
+          # the whole release step fails at `prepareMavenCentralPublishing`
+          # and no GitHub Packages upload happens either.
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
         with:
           github-token: ${{ secrets.RELEASE_PAT }}
           checkout-repo: true
