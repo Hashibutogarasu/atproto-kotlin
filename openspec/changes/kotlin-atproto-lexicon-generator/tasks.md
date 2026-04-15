@@ -66,7 +66,7 @@
 
 ## 9. Generator: naming matrix
 
-- [x] 9.1 Implement package derivation: NSID segments dropped-`.defs`, prefixed with `com.kikinlex.atproto` _(drops the trailing NSID segment regardless of whether it's `.defs` or a sibling like `.profile`, matching design.md Decision 4)_
+- [x] 9.1 Implement package derivation: NSID segments dropped-`.defs`, prefixed with `io.github.kikin81.atproto` _(drops the trailing NSID segment regardless of whether it's `.defs` or a sibling like `.profile`, matching design.md Decision 4)_
 - [x] 9.2 Implement primary-def naming: query/procedure → `<Terminal>Request` + `<Terminal>Response`, record → `<Terminal>`
 - [x] 9.3 Implement secondary-def naming in `.defs` files: bare fragment name in PascalCase
 - [x] 9.4 Implement secondary-def naming in non-`.defs` files: `<PrimaryName><FragmentName>` (flat, not nested)
@@ -86,7 +86,7 @@
 
 ## 11. Generator: Gradle task wiring
 
-- [x] 11.1 Add a `generateModels` task in `:at-protocol-generator` with `lexicons/` as input and `:at-protocol-models/build/generated/` as output _(implemented as a `JavaExec` task invoking `com.kikinlex.atproto.generator.MainKt`; marked `notCompatibleWithConfigurationCache` since codegen tasks rarely benefit from cc anyway)_
+- [x] 11.1 Add a `generateModels` task in `:at-protocol-generator` with `lexicons/` as input and `:at-protocol-models/build/generated/` as output _(implemented as a `JavaExec` task invoking `io.github.kikin81.atproto.generator.MainKt`; marked `notCompatibleWithConfigurationCache` since codegen tasks rarely benefit from cc anyway)_
 - [x] 11.2 Configure Gradle up-to-date checks (skip regeneration when lexicon inputs unchanged) _(verified: second invocation reports `generateModels UP-TO-DATE`)_
 - [x] 11.3 Wire `:at-protocol-models` source set to include the generated directory _(via `kotlin.srcDir(...)` on `commonMain`; KMP compile tasks depend on `:at-protocol-generator:generateModels`)_
 - [x] 11.4 Verify that running `generateModels` twice in a row produces byte-identical output (determinism check) _(confirmed via `diff -rq` on two successive `--rerun-tasks` invocations)_
@@ -111,3 +111,10 @@
 - [ ] 14.2 Publish `at-protocol-models:<lexicon-version>` to Maven Central
 - [ ] 14.3 Verify a scratch KMP project can consume both artifacts and call `app.bsky.feed.getTimeline` against the public Bluesky AppView
 - [ ] 14.4 Document consumer usage in a short README (dependency coordinates, minimal example, versioning model)
+
+## 15. Backlog (deferred until consumer signal)
+
+Items below are intentionally not-in-scope for v1 but are worth tracking
+so they're not forgotten when the signal to act on them arrives.
+
+- [ ] 15.1 Split `:at-protocol-models` into `:at-protocol-models-core` (`com.atproto.*`) and `:at-protocol-models-bsky` (`app.bsky.*`, `chat.bsky.*`, `tools.ozone.*`) once a real third-party atproto-but-not-Bluesky consumer shows up, OR a Bluesky consumer complains about the `tools.ozone.*` / `chat.bsky.moderation.*` surface. _Preconditions are zero — current packages (`io.github.kikin81.atproto.app.bsky.*`, `io.github.kikin81.atproto.com.atproto.*`, etc.) are already clean namespace boundaries. The generator change required is a ~50-line `EmissionPlan.moduleFor(pkg)` mapping plus splitting the Gradle module configuration. No call-site impact on consumers._

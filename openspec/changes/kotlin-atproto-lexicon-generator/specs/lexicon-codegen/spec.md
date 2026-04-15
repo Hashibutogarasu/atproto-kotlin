@@ -7,7 +7,7 @@ The system SHALL emit a Kotlin `@Serializable` data class for every `ObjectDef` 
 #### Scenario: Emitting a record with all required fields
 
 - **WHEN** the generator processes `com.atproto.repo.strongRef` (required: `uri`, `cid`)
-- **THEN** it emits `data class StrongRef(val uri: AtUri, val cid: Cid)` in package `com.kikinlex.atproto.com.atproto.repo`
+- **THEN** it emits `data class StrongRef(val uri: AtUri, val cid: Cid)` in package `io.github.kikin81.atproto.com.atproto.repo`
 - **AND** the class is annotated `@Serializable`
 
 ### Requirement: Codegen SHALL apply context-sensitive optionality
@@ -61,13 +61,13 @@ The system SHALL derive Kotlin class names from `DefKey` according to a fixed ma
 #### Scenario: Secondary definition inside a record file
 
 - **WHEN** the generator processes `app.bsky.feed.post#replyRef` (a non-main definition in the `post.json` record file)
-- **THEN** it emits a top-level `PostReplyRef` class in package `com.kikinlex.atproto.app.bsky.feed`
+- **THEN** it emits a top-level `PostReplyRef` class in package `io.github.kikin81.atproto.app.bsky.feed`
 - **AND** it does NOT emit it as a nested class inside `Post`
 
 #### Scenario: Secondary definition inside a .defs file
 
 - **WHEN** the generator processes `app.bsky.actor.defs#profileView`
-- **THEN** it emits a top-level `ProfileView` class in package `com.kikinlex.atproto.app.bsky.actor` (the `.defs` suffix is dropped from the package)
+- **THEN** it emits a top-level `ProfileView` class in package `io.github.kikin81.atproto.app.bsky.actor` (the `.defs` suffix is dropped from the package)
 
 ### Requirement: Verification pass SHALL halt codegen on invariant violation
 

@@ -46,7 +46,7 @@ tasks.register<JavaExec>("generateModels") {
     notCompatibleWithConfigurationCache("codegen task captures script-level path values")
 
     classpath = sourceSets.main.get().runtimeClasspath
-    mainClass.set("com.kikinlex.atproto.generator.MainKt")
+    mainClass.set("io.github.kikin81.atproto.generator.MainKt")
     args = listOf(lexiconsDirFile.absolutePath, generatedModelsDirFile.absolutePath)
 
     inputs.dir(lexiconsDir)

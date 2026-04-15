@@ -7,13 +7,13 @@ plugins {
 }
 
 android {
-    namespace = "com.kikinlex.atproto.samples.bluesky"
+    namespace = "io.github.kikin81.atproto.samples.bluesky"
     // compileSdk 35+ is required by androidx.core:core-ktx:1.15.0.
     // We bump to 36 to pick up the current Android runtime behavior set.
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.kikinlex.atproto.samples.bluesky"
+        applicationId = "io.github.kikin81.atproto.samples.bluesky"
         minSdk = 28
         targetSdk = 36
         versionCode = 1

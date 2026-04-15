@@ -8,7 +8,7 @@ plugins {
 }
 
 allprojects {
-    group = "com.kikinlex.atproto"
+    group = "io.github.kikin81.atproto"
 }
 
 // Spotless + ktlint across every subproject. Skips build/ (including generated

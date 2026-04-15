@@ -135,7 +135,18 @@ Rollback is trivial per stage — each module lands independently, nothing is wi
 
 ## Open Questions
 
-- **Exact Maven coordinates and group ID.** Probably `com.kikinlex.atproto:runtime` and `com.kikinlex.atproto:models` but not yet finalized.
+- ~~**Exact Maven coordinates and group ID.**~~ **Resolved**: we use
+  `io.github.kikin81.atproto` as both the Kotlin root package and the Maven
+  Central group ID. Rationale: Sonatype's Central Publisher Portal requires
+  you to prove ownership of the TLD for `com.*` / `net.*` / `org.*` group
+  IDs (e.g. `com.kikinlex.*` would require owning `kikinlex.com`). The
+  explicit fast-track for individual OSS developers is `io.github.<username>`
+  — Sonatype verifies ownership via a one-off GitHub repo handshake and
+  publishing Just Works. Picking this up front avoids a painful rename
+  later. Artifacts are `io.github.kikin81.atproto:at-protocol-runtime`
+  and `io.github.kikin81.atproto:at-protocol-models` (module names
+  preserved from the current Gradle layout so the `project(...)`
+  coordinates in `:samples:android` remain unchanged).
 - **Kotlin value class serializer strategy** — per-format `KSerializer<Did>` vs a shared `StringFormatSerializer<T>` base. Probably the former for clarity; pending prototyping.
 - **How far to go with `@atproto/lex` automation in CI.** Auto-bump on upstream releases (with human review of the PR)? Manual bumps? Bounded auto-bump (patch versions only)? Defer until we've shipped the first few model releases by hand and know what the cadence feels like.
 - **Whether to model subscription definitions at all in V1 IR.** Current decision: parse them but skip emission with a warning. Alternative: silently drop them at parse time. Leaning toward the former because the IR should be complete even if the emitter isn't.
