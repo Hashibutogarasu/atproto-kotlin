@@ -4,13 +4,19 @@ plugins {
     `maven-publish`
 }
 
+// iOS targets are declared only on macOS hosts — see
+// `:at-protocol-runtime/build.gradle.kts` for the rationale.
+val isMacHost = System.getProperty("os.name").lowercase().contains("mac")
+
 kotlin {
     jvmToolchain(17)
 
     jvm()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    if (isMacHost) {
+        iosX64()
+        iosArm64()
+        iosSimulatorArm64()
+    }
 
     sourceSets {
         commonMain {
@@ -86,10 +92,4 @@ publishing {
             }
         }
     }
-}
-
-val isMacOs = System.getProperty("os.name").lowercase().contains("mac")
-tasks.withType<PublishToMavenRepository>().configureEach {
-    val isIosPublication = publication.name.startsWith("ios")
-    onlyIf { !isIosPublication || isMacOs }
 }

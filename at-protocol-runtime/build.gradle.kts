@@ -4,13 +4,24 @@ plugins {
     `maven-publish`
 }
 
+// iOS targets are declared only on macOS hosts. On Linux CI (and any
+// other non-Mac host) the iOS klibs can't be built, and the
+// `kotlin-multiplatform` plugin fails at publish-task creation time
+// with an NPE when it tries to register iosX64/iosArm64/iosSimulatorArm64
+// publications for klibs that don't exist. Gating the target declaration
+// at the source of truth keeps both the compile and publish paths
+// healthy on Linux.
+val isMacHost = System.getProperty("os.name").lowercase().contains("mac")
+
 kotlin {
     jvmToolchain(17)
 
     jvm()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    if (isMacHost) {
+        iosX64()
+        iosArm64()
+        iosSimulatorArm64()
+    }
 
     sourceSets {
         commonMain.dependencies {
@@ -79,13 +90,4 @@ publishing {
             }
         }
     }
-}
-
-// Gate iOS publish tasks behind macOS — Linux runners can publish
-// JVM + metadata only. The iOS klib publications fail at task
-// execution time on Linux because the underlying klibs aren't built.
-val isMacOs = System.getProperty("os.name").lowercase().contains("mac")
-tasks.withType<PublishToMavenRepository>().configureEach {
-    val isIosPublication = publication.name.startsWith("ios")
-    onlyIf { !isIosPublication || isMacOs }
 }
