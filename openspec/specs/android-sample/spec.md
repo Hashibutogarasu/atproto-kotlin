@@ -1,0 +1,172 @@
+# android-sample
+
+Minimal Android reference application that consumes `:at-protocol-runtime` and
+`:at-protocol-models` to demonstrate how a downstream consumer wires the
+generated AT Protocol API surface into a real UI. Covers the
+login → session persistence → authenticated XRPC call → feed render loop.
+
+## Requirements
+
+### Requirement: Sample module SHALL depend on the library via project coordinates only
+
+The `samples/android/` module SHALL consume `:at-protocol-runtime` and
+`:at-protocol-models` through `project(...)` Gradle dependencies, never
+through Maven coordinates. The sample SHALL NOT require any
+`publishToMavenLocal` step or Maven Central artifact to build and run.
+
+#### Scenario: Fresh clone can build and run the sample without publishing
+
+- **WHEN** a developer clones the repository, runs
+  `cd at-protocol-generator && npx lex install --ci && cd - && ./gradlew :samples:android:installDebug`
+- **THEN** the sample APK builds and installs on a connected device without
+  any `publishToMavenLocal` or Maven Central network access, and the
+  installed app launches to the login screen.
+
+#### Scenario: Generator change is immediately visible in the sample
+
+- **WHEN** a developer modifies `:at-protocol-generator` emission logic and
+  runs `./gradlew :samples:android:assembleDebug`
+- **THEN** the Gradle task graph rebuilds `:at-protocol-models` from the
+  regenerated sources and the sample picks up the new models on the next
+  app launch — no intermediate publish step is required.
+
+### Requirement: Sample SHALL authenticate via the generated createSession procedure
+
+The sample SHALL authenticate users by calling the generated
+`com.atproto.server.createSession` procedure through `XrpcClient`, using
+the handle and app-password supplied on the login screen. The sample
+SHALL NOT implement OAuth 2.0, DPoP, PAR, or PKCE in v1. The sample's
+README and login screen SHALL label app-password as a deprecated stopgap
+and direct readers to the follow-up `atproto-oauth-runtime` change.
+
+#### Scenario: Successful login with handle and app-password
+
+- **WHEN** the user enters a valid handle and app-password on the login
+  screen and taps "Sign in"
+- **THEN** the sample calls `createSession` via `XrpcClient`, receives a
+  `CreateSessionResponse` containing `accessJwt`, `refreshJwt`, `did`, and
+  `handle`, persists them to `EncryptedSharedPreferences`, and transitions
+  to the feed screen.
+
+#### Scenario: Invalid credentials surface a typed error
+
+- **WHEN** the user enters an invalid handle or app-password and taps
+  "Sign in"
+- **THEN** the sample catches the typed `XrpcError` returned by
+  `createSession`, surfaces the error message on the login screen, and
+  leaves the login form populated so the user can retry.
+
+#### Scenario: README warns about app-password deprecation
+
+- **WHEN** a developer opens `samples/android/README.md`
+- **THEN** the README contains a "NOT FOR PRODUCTION" banner in the first
+  paragraph, explains that app-password is deprecated in favor of OAuth,
+  and links to the `atproto-oauth-runtime` follow-up change.
+
+### Requirement: Sample SHALL persist session state in EncryptedSharedPreferences
+
+The sample SHALL persist the authenticated session (access JWT, refresh
+JWT, DID, handle, PDS URL) in `EncryptedSharedPreferences` backed by the
+Android Keystore master key. Plain `SharedPreferences`, files on external
+storage, and in-memory-only storage are NOT acceptable. On subsequent
+launches, the sample SHALL read the persisted session and skip the login
+screen if it is present.
+
+#### Scenario: Session survives app restart
+
+- **WHEN** a user logs in successfully and then force-stops and relaunches
+  the app
+- **THEN** the sample reads the persisted session from
+  `EncryptedSharedPreferences` during `MainActivity.onCreate`, constructs
+  the authenticated `XrpcClient`, and renders the feed screen directly
+  without prompting for credentials.
+
+#### Scenario: Logout clears persisted session
+
+- **WHEN** the user taps the logout action on the feed screen
+- **THEN** the sample removes the session entry from
+  `EncryptedSharedPreferences` and returns to the login screen. A
+  subsequent app restart starts fresh at the login screen.
+
+### Requirement: Sample SHALL render the getTimeline response via generated models
+
+On successful login (or relaunch with persisted session), the sample SHALL
+call the generated `app.bsky.feed.getTimeline` query through `XrpcClient`
+and render the returned `GetTimelineResponse.feed` list as a Compose
+`LazyColumn`. Each row SHALL display at minimum: the post author's
+`handle`, the post `text`, and the `createdAt` timestamp rendered as a
+human-readable string. If a post's `embed` field resolves to an
+`app.bsky.embed.images#view` union variant, the row SHALL additionally
+render the first image's thumbnail via the typed `Blob` reference.
+
+#### Scenario: Feed renders text posts with author and timestamp
+
+- **WHEN** `getTimeline` returns a list of posts with no embeds
+- **THEN** the sample renders a `LazyColumn` where each row shows the
+  author handle, the post text, and a human-readable `createdAt`
+  timestamp, in that order, with no image thumbnails.
+
+#### Scenario: Feed renders image embed when the post's embed is an images view
+
+- **WHEN** `getTimeline` returns a post whose `embed` field deserializes
+  to the `app.bsky.embed.images#view` arm of the post-embed open union
+- **THEN** the sample pattern-matches the union, extracts the first image
+  from the view's `images` list, and renders the `thumb` URL in the post
+  row. Posts with other embed variants (record, external, recordWithMedia)
+  SHALL render without an image but SHALL NOT crash.
+
+#### Scenario: Unknown embed variant falls back gracefully
+
+- **WHEN** `getTimeline` returns a post whose `embed` field deserializes
+  to the `Unknown` arm of the post-embed open union (because the lexicon
+  corpus the sample was built against is older than the server)
+- **THEN** the sample detects the `Unknown` variant and renders the post
+  row without an image. The sample SHALL NOT throw or drop the post from
+  the feed.
+
+### Requirement: Sample SHALL ship a unit smoke test using MockEngine
+
+The sample module SHALL include at least one unit test that constructs
+`XrpcClient` backed by Ktor's `MockEngine`, exercises the login
+(`createSession`) → feed (`getTimeline`) flow against canned JSON
+responses, and asserts the session store and UI state holder transition
+correctly. The test SHALL NOT depend on network access or a live AT
+Protocol server.
+
+#### Scenario: Login + feed flow works against MockEngine
+
+- **WHEN** a unit test runs the sample's `AuthState` reducer with a
+  `MockEngine` that returns a canned `CreateSessionResponse` followed by a
+  canned `GetTimelineResponse` with at least one post carrying an images
+  embed
+- **THEN** the final state is `AuthState.LoggedIn(session)` with the
+  session fields populated from the mock response, the timeline list
+  contains the mock post, and the post's embed has been correctly
+  pattern-matched to the images-view union arm.
+
+### Requirement: Sample SHALL NOT modify the library modules
+
+The `samples/android/` change SHALL be additive only. It SHALL NOT modify
+files under `at-protocol-runtime/`, `at-protocol-models/`, or
+`at-protocol-generator/`. It SHALL NOT add an `androidTarget()` to the
+KMP configuration of the runtime or models modules. It SHALL NOT
+introduce AGP into the root `build.gradle.kts` or any module other than
+`samples/android/`.
+
+#### Scenario: Library modules are untouched
+
+- **WHEN** the samples-android-bluesky-feed change is archived
+- **THEN** a `git diff` between the pre-change and post-change main
+  branches shows zero modifications to any file under
+  `at-protocol-runtime/`, `at-protocol-models/`, or
+  `at-protocol-generator/` other than (a) new samples module wiring and
+  (b) one `include(":samples:android")` line in `settings.gradle.kts`.
+
+#### Scenario: KMP targets are unchanged
+
+- **WHEN** `./gradlew :at-protocol-runtime:tasks` and
+  `./gradlew :at-protocol-models:tasks` are run before and after the
+  samples change
+- **THEN** the list of compile tasks for each KMP module is identical.
+  No `compileKotlinAndroid` or `assembleRelease` tasks appear on the
+  library modules.
