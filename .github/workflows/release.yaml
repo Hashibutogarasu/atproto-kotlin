@@ -2,90 +2,44 @@ name: Release
 
 on:
   # Manual trigger only for the first few runs — flip to `push: branches: [main]`
-  # once we've verified semantic-release is picking up versions correctly
-  # against the existing commit history.
+  # once we've verified the full flow end-to-end against real pushes.
   workflow_dispatch:
 
 permissions:
   contents: write
   pull-requests: write
+  packages: write
 
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    outputs:
-      new-release-published: ${{ steps.release.outputs.new-release-published }}
-      new-release-version: ${{ steps.release.outputs.new-release-version }}
     steps:
+      # `open-turo/actions-jvm/release@v2` wraps semantic-release with the
+      # `gradle-semantic-release-plugin`, which ALSO handles publishing —
+      # its `publish` step invokes `./gradlew publish -q` after bumping
+      # `gradle.properties` and creating the git tag. The `publish` task
+      # is a Gradle lifecycle that runs every `publishXxxToGitHubPackagesRepository`
+      # task configured by `:at-protocol-runtime` and `:at-protocol-models`.
+      # So this single step does everything: commit analysis, version
+      # bump, git tag, GitHub release, and GitHub Packages upload.
+      #
+      # Required env:
+      # - RELEASE_PAT: fine-grained PAT with `contents:write`,
+      #   `pull-requests:write`, `actions:read`. Configured as a repo
+      #   secret. Used by semantic-release to push the version-bump
+      #   commit and create the tag.
+      # - GITHUB_TOKEN: auto-provisioned, grants `packages:write` via
+      #   the `permissions` block above. Used by `./gradlew publish` to
+      #   authenticate against `maven.pkg.github.com`.
+      # - GITHUB_ACTOR: auto-provisioned, the user who triggered the
+      #   workflow. Used as the GitHub Packages Maven basic-auth
+      #   username.
       - id: release
         uses: open-turo/actions-jvm/release@v2
-        with:
-          # RELEASE_PAT is a fine-grained PAT with `contents:write`,
-          # `pull-requests:write`, and `actions:read` on this repo.
-          # The default GITHUB_TOKEN can't push back to the default
-          # branch or trigger downstream workflows, so open-turo
-          # requires a real PAT for the release commit + tag.
-          github-token: ${{ secrets.RELEASE_PAT }}
-          checkout-repo: true
-
-  publish:
-    name: Publish to GitHub Packages
-    needs: release
-    if: needs.release.outputs.new-release-published == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          # Pick up the release commit (which bumped `version=...` in
-          # gradle.properties). Default branch HEAD is where
-          # open-turo/actions-jvm/release just pushed.
-          ref: main
-
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        with:
-          distribution: zulu
-          java-version-file: .java-version
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: at-protocol-generator/package-lock.json
-
-      - name: Install lexicon corpus
-        working-directory: at-protocol-generator
-        run: |
-          npm ci
-          npx lex install --ci
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
-
-      # Publishes the JVM + kotlinMultiplatform metadata publications for
-      # both library modules. iOS publications aren't declared on Linux
-      # (see :at-protocol-runtime/build.gradle.kts), so only the JVM
-      # artifacts and KMP metadata files get uploaded.
-      #
-      # --max-workers=1 is LOAD-BEARING: GitHub Packages is strictly
-      # immutable (PUT returns HTTP 409 Conflict on re-upload to an
-      # existing coordinate), and Gradle's default parallel execution
-      # races the `kotlinMultiplatform` meta publish against the `jvm`
-      # publish. Without serialization, whichever task gets there second
-      # fails the 409 and the whole publish step aborts mid-way, leaving
-      # the version half-uploaded and unrecoverable (can't retry the
-      # same version ever again). Serial publish is slow but correct.
-      - name: Publish library modules
-        run: |
-          ./gradlew --max-workers=1 \
-            :at-protocol-runtime:publishAllPublicationsToGitHubPackagesRepository \
-            :at-protocol-models:publishAllPublicationsToGitHubPackagesRepository
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          github-token: ${{ secrets.RELEASE_PAT }}
+          checkout-repo: true
