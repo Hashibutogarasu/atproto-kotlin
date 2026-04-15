@@ -1,0 +1,83 @@
+name: Release
+
+on:
+  # Manual trigger only for the first few runs — flip to `push: branches: [main]`
+  # once we've verified semantic-release is picking up versions correctly
+  # against the existing commit history.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    outputs:
+      new-release-published: ${{ steps.release.outputs.new-release-published }}
+      new-release-version: ${{ steps.release.outputs.new-release-version }}
+    steps:
+      - id: release
+        uses: open-turo/actions-jvm/release@v2
+        with:
+          # RELEASE_PAT is a fine-grained PAT with `contents:write`,
+          # `pull-requests:write`, and `actions:read` on this repo.
+          # The default GITHUB_TOKEN can't push back to the default
+          # branch or trigger downstream workflows, so open-turo
+          # requires a real PAT for the release commit + tag.
+          github-token: ${{ secrets.RELEASE_PAT }}
+          checkout-repo: true
+
+  publish:
+    name: Publish to GitHub Packages
+    needs: release
+    if: needs.release.outputs.new-release-published == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          # Pick up the release commit (which bumped `version=...` in
+          # gradle.properties). Default branch HEAD is where
+          # open-turo/actions-jvm/release just pushed.
+          ref: main
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version-file: .java-version
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: at-protocol-generator/package-lock.json
+
+      - name: Install lexicon corpus
+        working-directory: at-protocol-generator
+        run: |
+          npm ci
+          npx lex install --ci
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      # Publishes the JVM + kotlinMultiplatform metadata publications for
+      # both library modules. iOS publications are gated to macOS hosts
+      # by the `onlyIf` block in each module's build.gradle.kts, so they
+      # silently skip here — JVM consumers (including the Android sample)
+      # get everything they need; iOS consumers wait for Maven Central.
+      - name: Publish library modules
+        run: |
+          ./gradlew \
+            :at-protocol-runtime:publishAllPublicationsToGitHubPackagesRepository \
+            :at-protocol-models:publishAllPublicationsToGitHubPackagesRepository
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
