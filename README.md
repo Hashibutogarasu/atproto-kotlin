@@ -62,40 +62,59 @@ Local prerequisites: **JDK 17** (tracked by `.java-version` / `.sdkmanrc`),
 build the sample. Spotless + ktlint run on every commit via pre-commit hooks
 and on every push via the CI workflow.
 
-## Consuming from GitHub Packages (interim)
+## Consuming the library
 
-Released artifacts are currently published to **GitHub Packages** as an
-interim distribution channel while Sonatype Maven Central publishing is
-set up. GitHub Packages requires consumers to authenticate even for public
-packages, so you'll need a GitHub PAT with `read:packages` scope.
+Every release is published to **Maven Central** ([`io.github.kikin81.atproto`](https://central.sonatype.com/namespace/io.github.kikin81.atproto))
+and simultaneously to **GitHub Packages** as a secondary channel. For
+almost every consumer, Maven Central is what you want — no credentials,
+no extra repository configuration.
 
 ```kotlin
 // settings.gradle.kts
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
-        maven {
-            url = uri("https://maven.pkg.github.com/kikin81/atproto-kotlin")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: "<your-github-username>"
-                password = System.getenv("GITHUB_TOKEN") ?: "<your-pat-with-read-packages>"
-            }
-        }
     }
 }
 ```
 
 ```kotlin
-// build.gradle.kts
+// build.gradle.kts (or the KMP module's common source set)
 dependencies {
-    implementation("io.github.kikin81.atproto:at-protocol-runtime:$version")
-    implementation("io.github.kikin81.atproto:at-protocol-models:$version")
+    implementation("io.github.kikin81.atproto:at-protocol-runtime:1.1.2")
+    implementation("io.github.kikin81.atproto:at-protocol-models:1.1.2")
 }
 ```
 
-Replace `$version` with the current [latest release](https://github.com/kikin81/atproto-kotlin/releases/latest).
-Only JVM + metadata publications are cut on Linux CI; iOS klib
-publications are deferred to Maven Central.
+Check the [latest release](https://github.com/kikin81/atproto-kotlin/releases/latest)
+for the current version. Artifacts are GPG-signed and include POM
+metadata, Gradle Module Metadata, and sources JARs.
+
+**iOS** consumers: only JVM + metadata publications are cut from Linux
+CI runners today. The Kotlin Multiplatform Gradle Module Metadata
+describes the JVM target and allows iOS consumers to resolve the
+runtime dependency graph, but the iOS klibs themselves aren't on
+Maven Central yet. A macOS release runner will land in a follow-up.
+
+### GitHub Packages (pre-release / staging)
+
+Every release is also pushed to [GitHub Packages](https://github.com/kikin81/atproto-kotlin/packages)
+as a secondary channel. This is mostly useful if you want to pick up
+the exact same artifacts without routing through Maven Central's CDN,
+or for early-access testing of unreleased builds. **It requires
+authentication with a GitHub PAT (`read:packages` scope) even for
+public packages** — a persistent GitHub Packages limitation. Most
+consumers should stick with Maven Central.
+
+```kotlin
+maven {
+    url = uri("https://maven.pkg.github.com/kikin81/atproto-kotlin")
+    credentials {
+        username = System.getenv("GITHUB_ACTOR") ?: "<your-github-username>"
+        password = System.getenv("GITHUB_TOKEN") ?: "<your-pat-with-read-packages>"
+    }
+}
+```
 
 ## Releases
 
@@ -105,14 +124,29 @@ drives [`semantic-release`](https://semantic-release.gitbook.io/) via
 [Conventional Commits](https://www.conventionalcommits.org/) and cuts a
 version on `feat:` / `fix:` / `BREAKING CHANGE`:
 
-- `feat:` → minor bump (e.g. `1.0.2 → 1.1.0`)
-- `fix:` → patch bump (e.g. `1.0.2 → 1.0.3`)
+- `feat:` → minor bump (e.g. `1.1.2 → 1.2.0`)
+- `fix:` → patch bump (e.g. `1.1.2 → 1.1.3`)
 - `BREAKING CHANGE:` footer → major bump
 - `chore:` / `ci:` / `docs:` / `test:` / `refactor:` → no release
 
-The same release job runs `./gradlew publish` against GitHub Packages via
-the `gradle-semantic-release-plugin`, so one workflow invocation handles
-version bump → git tag → GitHub release → Maven artifact upload.
+The release workflow has two jobs:
+
+1. **release** — semantic-release analyzes commits, bumps
+   `gradle.properties`, creates a git tag + GitHub release, then runs
+   `./gradlew publish` via the `gradle-semantic-release-plugin` to
+   upload artifacts to **GitHub Packages**.
+2. **publish-to-central** — checks out the exact tag semantic-release
+   just pushed and runs `./gradlew publishToMavenCentral` via the
+   [vanniktech maven-publish plugin](https://vanniktech.github.io/gradle-maven-publish-plugin/),
+   which stages + signs + bundles all publications and uploads them
+   to Sonatype's Central Publisher Portal.
+
+Currently Central uploads go into **USER_MANAGED** state (pending
+release) — review in the [Central Portal deployments dashboard](https://central.sonatype.com/publishing/deployments)
+and click **Publish** to promote to `repo1.maven.org`. Once the
+pipeline has proven itself over a few more cycles, we'll flip
+`automaticRelease = true` in `:at-protocol-runtime/build.gradle.kts`
+and `:at-protocol-models/build.gradle.kts` so every version auto-releases.
 
 ## OpenSpec
 
