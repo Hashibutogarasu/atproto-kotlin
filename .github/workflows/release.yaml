@@ -1,9 +1,13 @@
 name: Release
 
 on:
-  # Manual trigger only for the first few runs — flip to `push: branches: [main]`
-  # once we've verified the full flow end-to-end against real pushes.
+  # Auto-cut releases on every push to main, plus manual dispatch as
+  # an escape hatch. Verified against v1.0.0/1.0.1/1.0.2 manual runs
+  # before flipping on push triggering — semantic-release correctly
+  # no-ops on chore/ci/docs commits and only bumps on feat/fix.
   workflow_dispatch:
+  push:
+    branches: [main]
 
 permissions:
   contents: write
