@@ -1,0 +1,37 @@
+{
+  "lexicon": 1,
+  "id": "example.feed.post",
+  "description": "Record def with a union embed field. Post is reached from mutation context; its optional fields get AtField<T> wrappers. Exercises primary-in-non-defs naming (terminal → `Post`), StringType formats (datetime, language), and records-as-union-targets supertype wiring.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["text", "createdAt"],
+        "properties": {
+          "text": { "type": "string", "maxLength": 3000 },
+          "createdAt": { "type": "string", "format": "datetime" },
+          "embed": {
+            "type": "union",
+            "refs": ["example.embed.images", "example.embed.recordWithMedia#view"]
+          },
+          "langs": {
+            "type": "array",
+            "items": { "type": "string", "format": "language" },
+            "maxLength": 3
+          },
+          "reply": { "type": "ref", "ref": "#replyRef" }
+        }
+      }
+    },
+    "replyRef": {
+      "type": "object",
+      "required": ["root", "parent"],
+      "properties": {
+        "root": { "type": "ref", "ref": "example.strongRef" },
+        "parent": { "type": "ref", "ref": "example.strongRef" }
+      }
+    }
+  }
+}

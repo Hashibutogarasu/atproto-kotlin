@@ -1,0 +1,45 @@
+{
+  "lexicon": 1,
+  "id": "example.embed.images",
+  "description": "Blob field coverage. An image record embeds `image: blob`. v1 renders blobs as JsonObject fall-through (tracked in §13 for a typed Blob class).",
+  "defs": {
+    "main": {
+      "type": "object",
+      "required": ["images"],
+      "properties": {
+        "images": {
+          "type": "array",
+          "items": { "type": "ref", "ref": "#image" },
+          "maxLength": 4
+        }
+      }
+    },
+    "image": {
+      "type": "object",
+      "required": ["image", "alt"],
+      "properties": {
+        "image": { "type": "blob", "accept": ["image/*"], "maxSize": 1000000 },
+        "alt": { "type": "string" }
+      }
+    },
+    "view": {
+      "type": "object",
+      "required": ["images"],
+      "properties": {
+        "images": {
+          "type": "array",
+          "items": { "type": "ref", "ref": "#viewImage" }
+        }
+      }
+    },
+    "viewImage": {
+      "type": "object",
+      "required": ["thumb", "fullsize", "alt"],
+      "properties": {
+        "thumb": { "type": "string", "format": "uri" },
+        "fullsize": { "type": "string", "format": "uri" },
+        "alt": { "type": "string" }
+      }
+    }
+  }
+}

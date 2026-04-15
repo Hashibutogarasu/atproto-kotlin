@@ -1,0 +1,31 @@
+{
+  "lexicon": 1,
+  "id": "example.sendShared",
+  "description": "Procedure that reaches example.split#shared from BOTH mutation (input.schema) and read (output.schema) paths, triggering contextual split on Shared.",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Round-trips a Shared value through a procedure.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["req"],
+          "properties": {
+            "req": { "type": "ref", "ref": "example.split#shared" }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["resp"],
+          "properties": {
+            "resp": { "type": "ref", "ref": "example.split#shared" }
+          }
+        }
+      }
+    }
+  }
+}

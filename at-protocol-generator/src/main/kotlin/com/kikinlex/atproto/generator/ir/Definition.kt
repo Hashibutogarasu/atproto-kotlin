@@ -1,0 +1,121 @@
+package com.kikinlex.atproto.generator.ir
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+/**
+ * Top-level definition appearing under `defs` in a lexicon document.
+ *
+ * The lexicon JSON uses `"type"` as the discriminator. The set of legal values at
+ * this level is a subset of all lexicon types — only the ones that are valid as a
+ * standalone definition. Inline field types (primitives, refs, unions, etc.) use
+ * [FieldType] instead, not this hierarchy.
+ */
+@Serializable
+public sealed interface Definition {
+    public val description: String?
+}
+
+public sealed interface PrimaryDefinition : Definition
+
+@Serializable
+@SerialName("record")
+public data class RecordDef(
+    override val description: String? = null,
+    public val key: String,
+    public val record: ObjectType,
+) : PrimaryDefinition
+
+@Serializable
+@SerialName("query")
+public data class QueryDef(
+    override val description: String? = null,
+    public val parameters: ParamsType? = null,
+    public val output: HttpBody? = null,
+    public val errors: List<HttpError>? = null,
+) : PrimaryDefinition
+
+@Serializable
+@SerialName("procedure")
+public data class ProcedureDef(
+    override val description: String? = null,
+    public val parameters: ParamsType? = null,
+    public val input: HttpBody? = null,
+    public val output: HttpBody? = null,
+    public val errors: List<HttpError>? = null,
+) : PrimaryDefinition
+
+@Serializable
+@SerialName("subscription")
+public data class SubscriptionDef(
+    override val description: String? = null,
+    public val parameters: ParamsType? = null,
+    public val message: SubscriptionMessage? = null,
+    public val errors: List<HttpError>? = null,
+) : PrimaryDefinition
+
+@Serializable
+@SerialName("object")
+public data class ObjectDef(
+    override val description: String? = null,
+    public val required: List<String>? = null,
+    public val nullable: List<String>? = null,
+    public val properties: Map<String, FieldType> = emptyMap(),
+) : Definition
+
+@Serializable
+@SerialName("token")
+public data class TokenDef(
+    override val description: String? = null,
+) : Definition
+
+@Serializable
+@SerialName("params")
+public data class ParamsDefTopLevel(
+    override val description: String? = null,
+    public val required: List<String>? = null,
+    public val properties: Map<String, FieldType> = emptyMap(),
+) : Definition
+
+@Serializable
+@SerialName("array")
+public data class ArrayDefTopLevel(
+    override val description: String? = null,
+    public val items: FieldType,
+    public val minLength: Int? = null,
+    public val maxLength: Int? = null,
+) : Definition
+
+@Serializable
+@SerialName("string")
+public data class StringDefTopLevel(
+    override val description: String? = null,
+    public val format: String? = null,
+    public val minLength: Int? = null,
+    public val maxLength: Int? = null,
+    public val minGraphemes: Int? = null,
+    public val maxGraphemes: Int? = null,
+    public val knownValues: List<String>? = null,
+    public val enum: List<String>? = null,
+    public val default: String? = null,
+    public val const: String? = null,
+) : Definition
+
+@Serializable
+public data class HttpBody(
+    public val description: String? = null,
+    public val encoding: String,
+    public val schema: FieldType? = null,
+)
+
+@Serializable
+public data class HttpError(
+    public val name: String,
+    public val description: String? = null,
+)
+
+@Serializable
+public data class SubscriptionMessage(
+    public val description: String? = null,
+    public val schema: FieldType? = null,
+)

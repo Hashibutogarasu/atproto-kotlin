@@ -1,0 +1,58 @@
+# Pre-commit config. Install once with: `pre-commit install && pre-commit install --hook-type commit-msg`
+# Run across the whole repo with: `pre-commit run --all-files`
+
+# Paths that pre-commit should never touch. The generator's installed lexicon
+# corpus, the generated Kotlin sources, node_modules, and gradle build dirs
+# are all machine-managed and shouldn't be rewritten by formatters.
+exclude: |
+  (?x)^(
+    at-protocol-generator/lexicons/.*|
+    at-protocol-generator/node_modules/.*|
+    at-protocol-generator/package-lock\.json|
+    at-protocol-models/build/.*|
+    .*/build/.*|
+    .*/\.gradle/.*
+  )$
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-json
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+        # Windows batch files (notably gradlew.bat) must retain CRLF or
+        # they break on Windows. Everything else normalizes to LF.
+        exclude: '\.bat$'
+
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.24.0
+    hooks:
+      - id: commitlint
+        stages: [commit-msg]
+        additional_dependencies: ["@commitlint/config-conventional"]
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
+
+  # Spotless + ktlint runs via the existing Gradle wiring so the config lives
+  # in one place (build.gradle.kts). pass_filenames is false because Gradle's
+  # spotless task already knows what to lint — we just re-trigger it when any
+  # Kotlin source or build script changes.
+  - repo: local
+    hooks:
+      - id: spotless
+        name: spotless (ktlint)
+        entry: ./gradlew spotlessApply
+        language: system
+        files: '\.(kt|kts)$'
+        pass_filenames: false

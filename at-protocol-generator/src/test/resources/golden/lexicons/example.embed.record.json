@@ -1,0 +1,57 @@
+{
+  "lexicon": 1,
+  "id": "example.embed.record",
+  "description": "Mutual recursion, open union, and unknown field. `#view` refs `#viewRecord`; `#viewRecord.embeds[]` is a union referencing `#view` (self-recursion) AND `example.embed.recordWithMedia#view` (cross-file recursion). `#viewRecord.value` is a wildcard `unknown` field.",
+  "defs": {
+    "main": {
+      "type": "object",
+      "required": ["record"],
+      "properties": {
+        "record": { "type": "ref", "ref": "example.strongRef" }
+      }
+    },
+    "view": {
+      "type": "object",
+      "required": ["record"],
+      "properties": {
+        "record": {
+          "type": "union",
+          "refs": [
+            "#viewRecord",
+            "#viewNotFound"
+          ]
+        }
+      }
+    },
+    "viewRecord": {
+      "type": "object",
+      "required": ["uri", "cid", "author", "value", "indexedAt"],
+      "properties": {
+        "uri": { "type": "string", "format": "at-uri" },
+        "cid": { "type": "string", "format": "cid" },
+        "author": { "type": "ref", "ref": "example.actor.defs#profileViewBasic" },
+        "value": { "type": "unknown", "description": "The record data itself." },
+        "indexedAt": { "type": "string", "format": "datetime" },
+        "embeds": {
+          "type": "array",
+          "items": {
+            "type": "union",
+            "refs": [
+              "example.embed.images#view",
+              "#view",
+              "example.embed.recordWithMedia#view"
+            ]
+          }
+        }
+      }
+    },
+    "viewNotFound": {
+      "type": "object",
+      "required": ["uri", "notFound"],
+      "properties": {
+        "uri": { "type": "string", "format": "at-uri" },
+        "notFound": { "type": "boolean", "const": true }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+rootProject.name = "kikinlex"
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        google()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        google()
+    }
+}
+
+include(":at-protocol-runtime")
+include(":at-protocol-models")
+include(":at-protocol-generator")
