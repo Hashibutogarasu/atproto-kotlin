@@ -61,13 +61,19 @@ jobs:
     if: needs.release.outputs.new-release-published == 'true'
     runs-on: ubuntu-latest
     steps:
-      # Check out main at HEAD — the previous job just pushed the
-      # release commit that bumped `gradle.properties` to the new
-      # version, so `project.version` reads correctly at publish time.
-      - name: Checkout
+      # Check out the EXACT tag semantic-release just pushed, not
+      # `main` at HEAD. Checking out `main` would race against any
+      # commit landing between when the `release` job finished and
+      # when this job started — fetching HEAD could return a commit
+      # with a different `gradle.properties` version, silently
+      # publishing the wrong artifacts to Central.
+      #
+      # `new-release-version` is bare (e.g. `1.1.2`); semantic-release
+      # tags with a `v` prefix (`v1.1.2`).
+      - name: Checkout release tag
         uses: actions/checkout@v6
         with:
-          ref: main
+          ref: v${{ needs.release.outputs.new-release-version }}
 
       - name: Set up JDK
         uses: actions/setup-java@v5
