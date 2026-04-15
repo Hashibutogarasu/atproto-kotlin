@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
-    `maven-publish`
+    alias(libs.plugins.vanniktech.maven.publish)
 }
 
 // iOS targets are declared only on macOS hosts. On Linux CI (and any
@@ -10,7 +10,7 @@ plugins {
 // with an NPE when it tries to register iosX64/iosArm64/iosSimulatorArm64
 // publications for klibs that don't exist. Gating the target declaration
 // at the source of truth keeps both the compile and publish paths
-// healthy on Linux.
+// healthy on Linux — iOS consumers wait for a macOS-hosted release job.
 val isMacHost = System.getProperty("os.name").lowercase().contains("mac")
 
 kotlin {
@@ -39,15 +39,71 @@ kotlin {
     }
 }
 
-// Publishing config — GitHub Packages for the interim, Maven Central
-// later. The `kotlin-multiplatform` plugin auto-registers publications
-// for every declared target plus a `kotlinMultiplatform` metadata
-// publication, so we only need to configure the repository here.
+// Publishing config.
 //
-// iOS publications require macOS runners to produce klibs; skip them on
-// non-macOS hosts so Linux CI can publish the JVM + metadata pair
-// without failing on missing iOS artifacts. iOS consumers wait for
-// the Maven Central cut on a macOS publisher.
+// `com.vanniktech.maven.publish` auto-detects the `kotlin-multiplatform`
+// plugin, creates publications for every declared target plus the
+// `kotlinMultiplatform` metadata publication, applies the signing
+// plugin via `signAllPublications()`, and targets Sonatype's Central
+// Publisher Portal (the new API, not the legacy OSSRH staging flow).
+//
+// The `pom { }` block here is applied to EVERY publication the plugin
+// creates, including the ones that get published to GitHub Packages
+// via the additional `publishing.repositories.maven { ... }` block
+// below. One source of truth for POM metadata across both registries.
+//
+// `automaticRelease = false` puts each upload in Central Portal's
+// "pending release" state (USER_MANAGED mode) — we review + click
+// Release in the Central Portal UI before the version propagates to
+// `repo1.maven.org`. Switch to `true` once we trust the pipeline.
+//
+// Credentials are read from Gradle properties (or `ORG_GRADLE_PROJECT_*`
+// env vars in CI):
+//   - mavenCentralUsername / mavenCentralPassword
+//   - signingInMemoryKey / signingInMemoryKeyPassword
+// Locally, these come from `~/.gradle/gradle.properties`; in CI, from
+// the `.github/workflows/release.yaml` env block. Missing credentials
+// make `signAllPublications` a no-op (Gradle's signing plugin sets
+// `isRequired=false` when keys aren't available), so local
+// `./gradlew build` stays unsigned and works without GPG setup.
+mavenPublishing {
+    publishToMavenCentral(automaticRelease = false)
+    signAllPublications()
+
+    pom {
+        name.set("at-protocol-runtime")
+        description.set(
+            "Hand-written runtime for the AT Protocol Kotlin Multiplatform SDK " +
+                "(value classes, AtField, open-union serializers, XrpcClient).",
+        )
+        url.set("https://github.com/kikin81/atproto-kotlin")
+        licenses {
+            license {
+                name.set("MIT")
+                url.set("https://opensource.org/licenses/MIT")
+            }
+        }
+        developers {
+            developer {
+                id.set("kikin81")
+                name.set("Francisco Velazquez")
+                url.set("https://github.com/kikin81")
+            }
+        }
+        scm {
+            url.set("https://github.com/kikin81/atproto-kotlin")
+            connection.set("scm:git:git://github.com/kikin81/atproto-kotlin.git")
+            developerConnection.set("scm:git:ssh://git@github.com/kikin81/atproto-kotlin.git")
+        }
+    }
+}
+
+// Keep GitHub Packages as a secondary repository alongside Central.
+// `./gradlew publish` targets this (the standard maven-publish lifecycle
+// task that semantic-release's gradle plugin invokes); the Central
+// upload runs via `./gradlew publishToMavenCentral` in a separate
+// workflow step. Both registries get the same POM + the same
+// publications.
 publishing {
     repositories {
         maven {
@@ -58,35 +114,6 @@ publishing {
                     ?: providers.gradleProperty("gpr.user").orNull
                 password = System.getenv("GITHUB_TOKEN")
                     ?: providers.gradleProperty("gpr.key").orNull
-            }
-        }
-    }
-
-    publications.withType<MavenPublication>().configureEach {
-        pom {
-            name.set("at-protocol-runtime")
-            description.set(
-                "Hand-written runtime for the AT Protocol Kotlin Multiplatform SDK " +
-                    "(value classes, AtField, open-union serializers, XrpcClient).",
-            )
-            url.set("https://github.com/kikin81/atproto-kotlin")
-            licenses {
-                license {
-                    name.set("MIT")
-                    url.set("https://opensource.org/licenses/MIT")
-                }
-            }
-            developers {
-                developer {
-                    id.set("kikin81")
-                    name.set("Francisco Velazquez")
-                    url.set("https://github.com/kikin81")
-                }
-            }
-            scm {
-                url.set("https://github.com/kikin81/atproto-kotlin")
-                connection.set("scm:git:git://github.com/kikin81/atproto-kotlin.git")
-                developerConnection.set("scm:git:ssh://git@github.com/kikin81/atproto-kotlin.git")
             }
         }
     }

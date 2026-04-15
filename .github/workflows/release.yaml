@@ -1,10 +1,6 @@
 name: Release
 
 on:
-  # Auto-cut releases on every push to main, plus manual dispatch as
-  # an escape hatch. Verified against v1.0.0/1.0.1/1.0.2 manual runs
-  # before flipping on push triggering — semantic-release correctly
-  # no-ops on chore/ci/docs commits and only bumps on feat/fix.
   workflow_dispatch:
   push:
     branches: [main]
@@ -18,27 +14,25 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    # Outputs are consumed by the downstream `publish-to-central` job so
+    # we only upload to Maven Central when semantic-release actually cuts
+    # a new version. `chore:` / `ci:` / `docs:` / `test:` / `refactor:`
+    # commits leave these unset and the central job no-ops.
+    outputs:
+      new-release-published: ${{ steps.release.outputs.new-release-published }}
+      new-release-version: ${{ steps.release.outputs.new-release-version }}
     steps:
       # `open-turo/actions-jvm/release@v2` wraps semantic-release with the
-      # `gradle-semantic-release-plugin`, which ALSO handles publishing —
-      # its `publish` step invokes `./gradlew publish -q` after bumping
-      # `gradle.properties` and creating the git tag. The `publish` task
-      # is a Gradle lifecycle that runs every `publishXxxToGitHubPackagesRepository`
-      # task configured by `:at-protocol-runtime` and `:at-protocol-models`.
-      # So this single step does everything: commit analysis, version
-      # bump, git tag, GitHub release, and GitHub Packages upload.
+      # `gradle-semantic-release-plugin`, which runs `./gradlew publish -q`
+      # against the secondary `GitHubPackages` maven repository declared
+      # in each library module. So this single step: analyzes commits,
+      # bumps `gradle.properties`, tags, creates a GitHub release, AND
+      # publishes the new version to GitHub Packages.
       #
-      # Required env:
-      # - RELEASE_PAT: fine-grained PAT with `contents:write`,
-      #   `pull-requests:write`, `actions:read`. Configured as a repo
-      #   secret. Used by semantic-release to push the version-bump
-      #   commit and create the tag.
-      # - GITHUB_TOKEN: auto-provisioned, grants `packages:write` via
-      #   the `permissions` block above. Used by `./gradlew publish` to
-      #   authenticate against `maven.pkg.github.com`.
-      # - GITHUB_ACTOR: auto-provisioned, the user who triggered the
-      #   workflow. Used as the GitHub Packages Maven basic-auth
-      #   username.
+      # The subsequent `publish-to-central` job then uploads the same
+      # version to Maven Central via `./gradlew publishToMavenCentral`
+      # (the vanniktech plugin's task). Central and GitHub Packages are
+      # published from distinct task graphs — no 409 race.
       - id: release
         uses: open-turo/actions-jvm/release@v2
         env:
@@ -47,3 +41,66 @@ jobs:
         with:
           github-token: ${{ secrets.RELEASE_PAT }}
           checkout-repo: true
+
+  publish-to-central:
+    name: Publish to Maven Central
+    needs: release
+    if: needs.release.outputs.new-release-published == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      # Check out main at HEAD — the previous job just pushed the
+      # release commit that bumped `gradle.properties` to the new
+      # version, so `project.version` reads correctly at publish time.
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version-file: .java-version
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: at-protocol-generator/package-lock.json
+
+      # Restore the pinned lexicon corpus so `:at-protocol-models` has
+      # its generator input. Same step as ci.yaml — the corpus is
+      # gitignored and restored from CID pins in `lexicons.json`.
+      - name: Install lexicon corpus
+        working-directory: at-protocol-generator
+        run: |
+          npm ci
+          npx lex install --ci
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      # `publishToMavenCentral` (NOT `publishAndReleaseToMavenCentral`)
+      # uploads the bundle to Central Portal and leaves it in the
+      # USER_MANAGED "pending release" state. You review and click
+      # "Release" in the Central Portal UI before the version propagates
+      # to `repo1.maven.org`. Flip to `publishAndReleaseToMavenCentral`
+      # in `mavenPublishing { publishToMavenCentral(..., automaticRelease = true) }`
+      # once the pipeline has proven itself over a few cycles.
+      #
+      # Credentials are injected as Gradle project properties via the
+      # `ORG_GRADLE_PROJECT_*` env convention. The vanniktech plugin
+      # picks them up automatically:
+      #   - mavenCentralUsername / mavenCentralPassword: Central Portal
+      #     User Token (generated at central.sonatype.com → View Account)
+      #   - signingInMemoryKey: base64-encoded GPG private key (from
+      #     `gpg --export-secret-keys --armor | base64`)
+      #   - signingInMemoryKeyPassword: GPG key passphrase
+      - name: Publish to Maven Central (user-managed)
+        run: ./gradlew publishToMavenCentral --no-configuration-cache
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}

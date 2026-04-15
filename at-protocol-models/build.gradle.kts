@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
-    `maven-publish`
+    alias(libs.plugins.vanniktech.maven.publish)
 }
 
 // iOS targets are declared only on macOS hosts — see
@@ -46,9 +46,44 @@ tasks.matching {
     dependsOn(":at-protocol-generator:generateModels")
 }
 
-// Publishing config — see `:at-protocol-runtime` for the rationale.
-// The same pattern applies: GitHub Packages for interim; iOS publications
-// are skipped on non-macOS hosts so Linux CI produces JVM + metadata.
+// Publishing config — see `:at-protocol-runtime/build.gradle.kts` for the
+// detailed rationale. Same structure: vanniktech plugin handles Central
+// Portal + signing + POM for all publications, plus a secondary
+// GitHub Packages repository block so `./gradlew publish` keeps
+// hitting the GH Packages endpoint via semantic-release's gradle plugin.
+mavenPublishing {
+    publishToMavenCentral(automaticRelease = false)
+    signAllPublications()
+
+    pom {
+        name.set("at-protocol-models")
+        description.set(
+            "Code-generated AT Protocol lexicon models (records, queries, " +
+                "procedures, open unions) for the Kotlin Multiplatform SDK. " +
+                "Depends on :at-protocol-runtime for shared base types.",
+        )
+        url.set("https://github.com/kikin81/atproto-kotlin")
+        licenses {
+            license {
+                name.set("MIT")
+                url.set("https://opensource.org/licenses/MIT")
+            }
+        }
+        developers {
+            developer {
+                id.set("kikin81")
+                name.set("Francisco Velazquez")
+                url.set("https://github.com/kikin81")
+            }
+        }
+        scm {
+            url.set("https://github.com/kikin81/atproto-kotlin")
+            connection.set("scm:git:git://github.com/kikin81/atproto-kotlin.git")
+            developerConnection.set("scm:git:ssh://git@github.com/kikin81/atproto-kotlin.git")
+        }
+    }
+}
+
 publishing {
     repositories {
         maven {
@@ -59,36 +94,6 @@ publishing {
                     ?: providers.gradleProperty("gpr.user").orNull
                 password = System.getenv("GITHUB_TOKEN")
                     ?: providers.gradleProperty("gpr.key").orNull
-            }
-        }
-    }
-
-    publications.withType<MavenPublication>().configureEach {
-        pom {
-            name.set("at-protocol-models")
-            description.set(
-                "Code-generated AT Protocol lexicon models (records, queries, " +
-                    "procedures, open unions) for the Kotlin Multiplatform SDK. " +
-                    "Depends on :at-protocol-runtime for shared base types.",
-            )
-            url.set("https://github.com/kikin81/atproto-kotlin")
-            licenses {
-                license {
-                    name.set("MIT")
-                    url.set("https://opensource.org/licenses/MIT")
-                }
-            }
-            developers {
-                developer {
-                    id.set("kikin81")
-                    name.set("Francisco Velazquez")
-                    url.set("https://github.com/kikin81")
-                }
-            }
-            scm {
-                url.set("https://github.com/kikin81/atproto-kotlin")
-                connection.set("scm:git:git://github.com/kikin81/atproto-kotlin.git")
-                developerConnection.set("scm:git:ssh://git@github.com/kikin81/atproto-kotlin.git")
             }
         }
     }

@@ -7,6 +7,7 @@ kotlinpoet = "1.18.1"
 junit = "5.11.0"
 spotless = "7.0.2"
 ktlint = "1.5.0"
+vanniktech-maven-publish = "0.36.0"
 
 # Android sample (samples/android). Everything AndroidX / Material3; no
 # com.android.support.* libraries anywhere (the AS wizard populated a few —
@@ -53,3 +54,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 android-application = { id = "com.android.application", version.ref = "agp" }
+vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-maven-publish" }
