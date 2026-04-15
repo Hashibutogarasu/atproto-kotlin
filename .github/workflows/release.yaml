@@ -69,13 +69,21 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       # Publishes the JVM + kotlinMultiplatform metadata publications for
-      # both library modules. iOS publications are gated to macOS hosts
-      # by the `onlyIf` block in each module's build.gradle.kts, so they
-      # silently skip here — JVM consumers (including the Android sample)
-      # get everything they need; iOS consumers wait for Maven Central.
+      # both library modules. iOS publications aren't declared on Linux
+      # (see :at-protocol-runtime/build.gradle.kts), so only the JVM
+      # artifacts and KMP metadata files get uploaded.
+      #
+      # --max-workers=1 is LOAD-BEARING: GitHub Packages is strictly
+      # immutable (PUT returns HTTP 409 Conflict on re-upload to an
+      # existing coordinate), and Gradle's default parallel execution
+      # races the `kotlinMultiplatform` meta publish against the `jvm`
+      # publish. Without serialization, whichever task gets there second
+      # fails the 409 and the whole publish step aborts mid-way, leaving
+      # the version half-uploaded and unrecoverable (can't retry the
+      # same version ever again). Serial publish is slow but correct.
       - name: Publish library modules
         run: |
-          ./gradlew \
+          ./gradlew --max-workers=1 \
             :at-protocol-runtime:publishAllPublicationsToGitHubPackagesRepository \
             :at-protocol-models:publishAllPublicationsToGitHubPackagesRepository
         env:
