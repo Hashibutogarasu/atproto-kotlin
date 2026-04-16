@@ -56,9 +56,9 @@ class DpopAuthProvider(
     }
 
     /**
-     * Called by [XrpcClient] on HTTP 401. Checks for a `DPoP-Nonce` header
-     * and updates the stored nonce so the retry uses the fresh value.
-     * Also calibrates the clock from the server's `Date` header.
+     * Called by [XrpcClient] on HTTP 401. First checks for a new `DPoP-Nonce`
+     * header (nonce rotation). If no new nonce, assumes the access token is
+     * expired and attempts a transparent refresh.
      */
     override suspend fun onUnauthorized(responseHeaders: Map<String, String>): Boolean {
         val newNonce = responseHeaders["DPoP-Nonce"] ?: responseHeaders["dpop-nonce"]
@@ -66,26 +66,6 @@ class DpopAuthProvider(
         if (dateHeader != null) signer.calibrateClockFromHeader(dateHeader)
         if (newNonce != null && newNonce != pdsNonce) {
             pdsNonce = newNonce
-            persistNonces()
-            return true
-        }
-        return false
-    }
-
-    /**
-     * Called by the consumer (or an interceptor) when a PDS request
-     * returns HTTP 401. Handles DPoP-Nonce rotation and token refresh.
-     *
-     * @return `true` if the request should be retried with fresh headers,
-     *   `false` if the session is irrecoverable (caller should re-auth).
-     */
-    suspend fun handleUnauthorized(
-        dpopNonceHeader: String?,
-        method: String,
-        url: String,
-    ): Boolean {
-        if (dpopNonceHeader != null && dpopNonceHeader != pdsNonce) {
-            pdsNonce = dpopNonceHeader
             persistNonces()
             return true
         }
@@ -104,7 +84,7 @@ class DpopAuthProvider(
                 formParameters = Parameters.build {
                     append("grant_type", "refresh_token")
                     append("refresh_token", session.refreshToken)
-                    append("client_id", "") // filled by consumer's AtOAuth config
+                    append("client_id", session.clientId ?: "")
                 },
             ) {
                 headers.append("DPoP", proof)
@@ -113,14 +93,17 @@ class DpopAuthProvider(
             throw OAuthSessionExpiredException("Refresh request failed", e)
         }
 
-        if (response.status == HttpStatusCode.Unauthorized) {
+        val needsNonce = response.status == HttpStatusCode.Unauthorized ||
+            response.status == HttpStatusCode.BadRequest
+        if (needsNonce) {
             val nonceHeader = response.headers["DPoP-Nonce"]
             if (nonceHeader != null) {
+                signer.calibrateClockFromHeader(response.headers["Date"]?.toString())
                 authServerNonce = nonceHeader
                 return refreshTokensWithNonce()
             }
             sessionStore.clear()
-            throw OAuthSessionExpiredException("Refresh token rejected (HTTP 401)")
+            throw OAuthSessionExpiredException("Refresh token rejected (HTTP ${response.status})")
         }
 
         if (response.status != HttpStatusCode.OK) {
@@ -150,6 +133,7 @@ class DpopAuthProvider(
             formParameters = Parameters.build {
                 append("grant_type", "refresh_token")
                 append("refresh_token", session.refreshToken)
+                append("client_id", session.clientId ?: "")
             },
         ) {
             headers.append("DPoP", proof)

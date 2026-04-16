@@ -144,6 +144,8 @@ class AtOAuth(
             handle = pending.metadata.handle,
             pdsUrl = pending.metadata.pdsUrl,
             tokenEndpoint = pending.metadata.tokenEndpoint,
+            revocationEndpoint = pending.metadata.revocationEndpoint,
+            clientId = clientMetadataUrl,
             dpopPrivateKey = exported.privateKeyEncoded,
             dpopPublicKey = exported.publicKeyEncoded,
             clockOffsetSeconds = pending.signer.clockOffsetSeconds,
@@ -177,10 +179,58 @@ class AtOAuth(
     }
 
     /**
-     * Clears the persisted session. The user must re-authenticate.
+     * Revokes the current tokens on the authorization server, then clears
+     * the persisted session. If revocation fails (network error, missing
+     * endpoint), the local session is still cleared.
      */
     suspend fun logout() {
+        val session = sessionStore.load()
+        if (session != null) {
+            revokeToken(session)
+        }
         sessionStore.clear()
+    }
+
+    private suspend fun revokeToken(session: OAuthSession) {
+        val endpoint = session.revocationEndpoint ?: return
+        val clientId = session.clientId ?: return
+        val signer = DpopSigner.fromExported(
+            DpopSigner.ExportedKeyPair(session.dpopPrivateKey, session.dpopPublicKey),
+        )
+        signer.clockOffsetSeconds = session.clockOffsetSeconds
+        try {
+            val proof = signer.sign(method = "POST", url = endpoint, nonce = session.authServerNonce)
+            val response = httpClient.submitForm(
+                url = endpoint,
+                formParameters = Parameters.build {
+                    append("token", session.refreshToken)
+                    append("token_type_hint", "refresh_token")
+                    append("client_id", clientId)
+                },
+            ) {
+                header("DPoP", proof)
+            }
+            // Revocation may require a nonce retry
+            if (response.status == HttpStatusCode.Unauthorized || response.status == HttpStatusCode.BadRequest) {
+                val nonce = response.headers["DPoP-Nonce"]
+                if (nonce != null) {
+                    signer.calibrateClockFromHeader(response.headers["Date"])
+                    val retryProof = signer.sign(method = "POST", url = endpoint, nonce = nonce)
+                    httpClient.submitForm(
+                        url = endpoint,
+                        formParameters = Parameters.build {
+                            append("token", session.refreshToken)
+                            append("token_type_hint", "refresh_token")
+                            append("client_id", clientId)
+                        },
+                    ) {
+                        header("DPoP", retryProof)
+                    }
+                }
+            }
+        } catch (_: Exception) {
+            // Best-effort: if revocation fails, we still clear locally
+        }
     }
 
     // --- Internal helpers ---

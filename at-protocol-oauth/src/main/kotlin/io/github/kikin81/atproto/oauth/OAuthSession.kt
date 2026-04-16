@@ -20,6 +20,8 @@ data class OAuthSession(
     val handle: String,
     val pdsUrl: String,
     val tokenEndpoint: String,
+    val revocationEndpoint: String? = null,
+    val clientId: String? = null,
     val dpopPrivateKey: ByteArray,
     val dpopPublicKey: ByteArray,
     val authServerNonce: String? = null,

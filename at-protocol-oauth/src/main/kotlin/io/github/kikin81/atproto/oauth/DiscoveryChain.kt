@@ -18,6 +18,7 @@ data class AuthServerMetadata(
     val authorizationEndpoint: String,
     val tokenEndpoint: String,
     val parEndpoint: String,
+    val revocationEndpoint: String?,
     val pdsUrl: String,
     val did: String,
     val handle: String,
@@ -71,6 +72,7 @@ class DiscoveryChain(
                 ?: throw OAuthDiscoveryException("token_endpoint missing from auth server metadata at $authServerUrl"),
             parEndpoint = metadata.pushedAuthorizationRequestEndpoint
                 ?: throw OAuthDiscoveryException("pushed_authorization_request_endpoint missing from auth server metadata at $authServerUrl"),
+            revocationEndpoint = metadata.revocationEndpoint,
             pdsUrl = pdsUrl,
             did = did,
             handle = handle,
@@ -267,12 +269,14 @@ internal data class AuthorizationServerMetadata(
     val authorization_endpoint: String? = null,
     val token_endpoint: String? = null,
     val pushed_authorization_request_endpoint: String? = null,
+    val revocation_endpoint: String? = null,
     val dpop_signing_alg_values_supported: List<String>? = null,
     val scopes_supported: List<String>? = null,
 ) {
     val authorizationEndpoint: String? get() = authorization_endpoint
     val tokenEndpoint: String? get() = token_endpoint
     val pushedAuthorizationRequestEndpoint: String? get() = pushed_authorization_request_endpoint
+    val revocationEndpoint: String? get() = revocation_endpoint
 }
 
 @Serializable
