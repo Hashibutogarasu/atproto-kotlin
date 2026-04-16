@@ -109,7 +109,7 @@
 
 - [x] 14.1 Publish `at-protocol-runtime:1.0.0` to Maven Central _(first Central release is v1.1.2, live at `repo1.maven.org/maven2/io/github/kikin81/atproto/at-protocol-runtime/1.1.2/`. Published via vanniktech maven-publish plugin → Sonatype Central Portal → user-managed release → promoted to Central.)_
 - [x] 14.2 Publish `at-protocol-models:<lexicon-version>` to Maven Central _(same version, same pipeline. Browse at `central.sonatype.com/artifact/io.github.kikin81.atproto/at-protocol-models`.)_
-- [ ] 14.3 Verify a scratch KMP project can consume both artifacts and call `app.bsky.feed.getTimeline` against the public Bluesky AppView
+- [x] 14.3 Verify a scratch KMP project can consume both artifacts and call `app.bsky.feed.getTimeline` against the public Bluesky AppView _(verified at v1.1.3: a fresh Gradle JVM project at `/tmp/atproto-scratch-consumer/` pulled both artifacts from `mavenCentral()` with zero extra config, compiled 3 unit tests that construct `XrpcClient`, call `FeedService.getTimeline()` via MockEngine, deserialize `GetTimelineResponse` with typed `PostView` + `ImagesView` union dispatch, and assert the generated `GetTimelineRequest(limit = 50L)` uses nullable params not AtField. All 3 pass. Jar verified at 2.3 MB / 1,196 entries including `ActorService.class`, `FeedService.class`, etc.)_
 - [x] 14.4 Document consumer usage in a short README (dependency coordinates, minimal example, versioning model) _(root README now leads with Maven Central `mavenCentral()` snippet + `io.github.kikin81.atproto:at-protocol-runtime:1.1.2` coordinates; GitHub Packages demoted to a secondary "pre-release / staging" sub-section with PAT auth caveat.)_
 
 ## 15. Backlog (deferred until consumer signal)
