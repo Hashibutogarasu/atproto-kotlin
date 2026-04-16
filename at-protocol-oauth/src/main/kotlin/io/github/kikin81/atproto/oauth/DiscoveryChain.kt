@@ -2,6 +2,7 @@ package io.github.kikin81.atproto.oauth
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.Serializable
@@ -77,23 +78,65 @@ class DiscoveryChain(
     }
 
     /**
-     * Handle → DID via HTTP `/.well-known/atproto-did` on the handle's domain.
+     * Handle → DID resolution. Tries two methods in order:
+     *
+     * 1. **DNS-over-HTTPS**: queries `_atproto.<handle>` TXT record via
+     *    Cloudflare's DoH endpoint. Most custom-domain Bluesky handles
+     *    (e.g. `franciscovelazquez.com`) use a DNS TXT record like
+     *    `did=did:plc:abc123` for handle verification.
+     *
+     * 2. **HTTP fallback**: fetches `https://<handle>/.well-known/atproto-did`.
+     *    Used by handles that host the DID at their domain directly
+     *    (less common but supported by the spec).
      */
     internal suspend fun resolveHandle(handle: String): String {
+        // Try DNS-over-HTTPS first (most common for custom domains)
+        val dnsDid = tryResolveDns(handle)
+        if (dnsDid != null) return dnsDid
+
+        // Fallback to HTTP /.well-known/atproto-did
+        val httpDid = tryResolveHttp(handle)
+        if (httpDid != null) return httpDid
+
+        throw OAuthDiscoveryException(
+            "Failed to resolve handle '$handle': neither DNS TXT record " +
+                "(_atproto.$handle) nor HTTP (https://$handle/.well-known/atproto-did) returned a valid DID",
+        )
+    }
+
+    private suspend fun tryResolveDns(handle: String): String? {
+        val dohUrl = "https://cloudflare-dns.com/dns-query?name=_atproto.$handle&type=TXT"
+        return try {
+            val response = httpClient.get(dohUrl) {
+                header("Accept", "application/dns-json")
+            }
+            if (response.status != HttpStatusCode.OK) return null
+            val body = response.bodyAsText()
+            val dnsResponse = json.decodeFromString(DnsResponse.serializer(), body)
+            val txtData = dnsResponse.Answer?.firstOrNull { it.type == 16 }?.data ?: return null
+            // TXT record data is quoted: "did=did:plc:abc123" → strip quotes + prefix
+            val cleaned = txtData.trim('"').trim()
+            if (cleaned.startsWith("did=")) {
+                val did = cleaned.removePrefix("did=")
+                if (did.startsWith("did:")) did else null
+            } else {
+                null
+            }
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private suspend fun tryResolveHttp(handle: String): String? {
         val url = "https://$handle/.well-known/atproto-did"
-        val response = try {
-            httpClient.get(url)
-        } catch (e: Exception) {
-            throw OAuthDiscoveryException("Failed to resolve handle '$handle' via $url", e)
+        return try {
+            val response = httpClient.get(url)
+            if (response.status != HttpStatusCode.OK) return null
+            val did = response.bodyAsText().trim()
+            if (did.startsWith("did:")) did else null
+        } catch (_: Exception) {
+            null
         }
-        if (response.status != HttpStatusCode.OK) {
-            throw OAuthDiscoveryException("Handle resolution for '$handle' returned ${response.status}")
-        }
-        val did = response.bodyAsText().trim()
-        if (!did.startsWith("did:")) {
-            throw OAuthDiscoveryException("Handle resolution for '$handle' returned invalid DID: $did")
-        }
-        return did
     }
 
     /**
@@ -225,9 +268,20 @@ internal data class AuthorizationServerMetadata(
     val token_endpoint: String? = null,
     val pushed_authorization_request_endpoint: String? = null,
     val dpop_signing_alg_values_supported: List<String>? = null,
-    val scopes_supported: String? = null,
+    val scopes_supported: List<String>? = null,
 ) {
     val authorizationEndpoint: String? get() = authorization_endpoint
     val tokenEndpoint: String? get() = token_endpoint
     val pushedAuthorizationRequestEndpoint: String? get() = pushed_authorization_request_endpoint
 }
+
+@Serializable
+internal data class DnsResponse(
+    val Answer: List<DnsAnswer>? = null,
+)
+
+@Serializable
+internal data class DnsAnswer(
+    val type: Int = 0,
+    val data: String? = null,
+)

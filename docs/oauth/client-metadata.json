@@ -9,7 +9,7 @@
   "dpop_bound_access_tokens": true,
   "grant_types": ["authorization_code", "refresh_token"],
   "redirect_uris": [
-    "atproto-kotlin-sample://oauth-redirect"
+    "io.github.kikin81:/oauth-redirect"
   ],
   "response_types": ["code"],
   "scope": "atproto transition:generic",

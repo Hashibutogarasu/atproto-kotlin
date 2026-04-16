@@ -89,7 +89,7 @@ class DiscoveryChainTest {
         val ex = assertFailsWith<OAuthDiscoveryException> {
             DiscoveryChain(client).resolve("bad.example.com")
         }
-        assertTrue(ex.message!!.contains("invalid DID"))
+        assertTrue(ex.message!!.contains("DID"), "expected DID-related error, got: ${ex.message}")
     }
 
     @Test

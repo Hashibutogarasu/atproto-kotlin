@@ -24,7 +24,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="atproto-kotlin-sample" android:host="oauth-redirect" />
+                <data android:scheme="io.github.kikin81" android:path="/oauth-redirect" />
             </intent-filter>
         </activity>
     </application>

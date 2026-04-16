@@ -108,10 +108,46 @@ class DpopSigner private constructor(
     }
 
     private fun signEs256(data: ByteArray): ByteArray {
-        val sig = Signature.getInstance("SHA256withECDSAinP1363Format")
+        // Android doesn't have SHA256withECDSAinP1363Format — use the
+        // standard DER-encoded signature and convert to the fixed-length
+        // IEEE P1363 format (64 bytes: 32-byte r || 32-byte s) that
+        // JWS/JWT ES256 requires.
+        val sig = Signature.getInstance("SHA256withECDSA")
         sig.initSign(privateKey)
         sig.update(data)
-        return sig.sign()
+        val derSig = sig.sign()
+        return derToP1363(derSig)
+    }
+
+    /**
+     * Converts a DER-encoded ECDSA signature to the fixed-length IEEE
+     * P1363 format used by JWS. DER structure:
+     * ```
+     * SEQUENCE { INTEGER r, INTEGER s }
+     * ```
+     * P1363 output: exactly 64 bytes (32-byte r || 32-byte s), each
+     * zero-padded or trimmed from BigInteger's two's-complement encoding.
+     */
+    private fun derToP1363(der: ByteArray): ByteArray {
+        // Parse DER: 0x30 <len> 0x02 <rLen> <r...> 0x02 <sLen> <s...>
+        var offset = 0
+        check(der[offset++].toInt() == 0x30) { "Expected SEQUENCE tag" }
+        // skip sequence length (may be 1 or 2 bytes)
+        if (der[offset].toInt() and 0x80 != 0) offset += (der[offset].toInt() and 0x7F) + 1 else offset++
+
+        check(der[offset++].toInt() == 0x02) { "Expected INTEGER tag for r" }
+        val rLen = der[offset++].toInt() and 0xFF
+        val rBytes = der.copyOfRange(offset, offset + rLen)
+        offset += rLen
+
+        check(der[offset++].toInt() == 0x02) { "Expected INTEGER tag for s" }
+        val sLen = der[offset++].toInt() and 0xFF
+        val sBytes = der.copyOfRange(offset, offset + sLen)
+
+        val result = ByteArray(64)
+        rBytes.padOrTrimTo32().copyInto(result, 0)
+        sBytes.padOrTrimTo32().copyInto(result, 32)
+        return result
     }
 
     @OptIn(ExperimentalEncodingApi::class)

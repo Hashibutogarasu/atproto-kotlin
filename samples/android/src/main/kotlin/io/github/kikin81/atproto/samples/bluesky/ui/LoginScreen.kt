@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -21,13 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
-/**
- * OAuth login screen. The user enters their handle and taps "Sign in".
- * The parent wires [onLogin] to `AtOAuth.beginLogin(handle)` → Custom
- * Tabs, so this composable doesn't touch OAuth internals at all.
- */
 @Composable
-fun LoginScreen(onLogin: (String) -> Unit) {
+fun LoginScreen(
+    errorMessage: String? = null,
+    busy: Boolean = false,
+    onLogin: (String) -> Unit,
+) {
     var handle by remember { mutableStateOf("") }
 
     Column(
@@ -45,16 +46,35 @@ fun LoginScreen(onLogin: (String) -> Unit) {
             label = { Text("Handle") },
             placeholder = { Text("alice.bsky.social") },
             singleLine = true,
+            enabled = !busy,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth(),
         )
+
+        if (errorMessage != null) {
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+
         Spacer(Modifier.height(24.dp))
         Button(
             onClick = { onLogin(handle.trim()) },
-            enabled = handle.isNotBlank(),
+            enabled = handle.isNotBlank() && !busy,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("Sign in")
+            if (busy) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(18.dp),
+                    strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                )
+            } else {
+                Text("Sign in")
+            }
         }
         Spacer(Modifier.height(8.dp))
         Text(

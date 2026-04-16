@@ -118,7 +118,7 @@ class AtOAuthTest {
 
         // Simulate the browser redirect
         oauth.completeLogin(
-            "atproto-kotlin-sample://oauth-redirect?code=auth_code_123&state=${extractState(oauth)}&iss=https://auth.test",
+            "io.github.kikin81:/oauth-redirect?code=auth_code_123&state=${extractState(oauth)}&iss=https://auth.test",
         )
 
         val session = store.session
@@ -142,7 +142,7 @@ class AtOAuthTest {
 
         assertFailsWith<OAuthException> {
             oauth.completeLogin(
-                "atproto-kotlin-sample://oauth-redirect?code=abc&state=wrong_state&iss=https://auth.test",
+                "io.github.kikin81:/oauth-redirect?code=abc&state=wrong_state&iss=https://auth.test",
             )
         }
     }
@@ -159,7 +159,7 @@ class AtOAuthTest {
 
         assertFailsWith<OAuthException> {
             oauth.completeLogin(
-                "atproto-kotlin-sample://oauth-redirect?code=abc&state=${extractState(oauth)}&iss=https://evil.test",
+                "io.github.kikin81:/oauth-redirect?code=abc&state=${extractState(oauth)}&iss=https://evil.test",
             )
         }
     }
@@ -218,7 +218,7 @@ class AtOAuthTest {
 
         assertFailsWith<OAuthAccountMismatchException> {
             oauth.completeLogin(
-                "atproto-kotlin-sample://oauth-redirect?code=abc&state=${extractState(oauth)}&iss=https://auth.test",
+                "io.github.kikin81:/oauth-redirect?code=abc&state=${extractState(oauth)}&iss=https://auth.test",
             )
         }
     }

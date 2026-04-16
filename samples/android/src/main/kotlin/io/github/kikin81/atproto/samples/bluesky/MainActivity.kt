@@ -86,15 +86,15 @@ class MainActivity : ComponentActivity() {
 
     private fun handleRedirectIntent(intent: Intent?) {
         val uri = intent?.data ?: return
-        if (uri.scheme == REDIRECT_SCHEME && uri.host == REDIRECT_HOST) {
+        if (uri.scheme == REDIRECT_SCHEME && uri.path == REDIRECT_PATH) {
             pendingRedirectUri = uri.toString()
         }
     }
 
     companion object {
         const val CLIENT_METADATA_URL = "https://kikin81.github.io/atproto-kotlin/oauth/client-metadata.json"
-        const val REDIRECT_SCHEME = "atproto-kotlin-sample"
-        const val REDIRECT_HOST = "oauth-redirect"
+        const val REDIRECT_SCHEME = "io.github.kikin81"
+        const val REDIRECT_PATH = "/oauth-redirect"
 
         @Volatile
         var pendingRedirectUri: String? = null
@@ -108,6 +108,8 @@ private fun App(
     launchCustomTab: (String) -> Unit,
 ) {
     var state: AppState by remember { mutableStateOf(AppState.Loading) }
+    var loginError: String? by remember { mutableStateOf(null) }
+    var loginBusy: Boolean by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
@@ -120,12 +122,18 @@ private fun App(
     if (redirect != null && (state is AppState.LoggedOut || state is AppState.Loading)) {
         MainActivity.pendingRedirectUri = null
         LaunchedEffect(redirect) {
+            loginBusy = true
             runCatching { oauth.completeLogin(redirect) }
                 .onSuccess {
                     val session = sessionStore.load()
                     state = if (session != null) AppState.LoggedIn(session.handle) else AppState.LoggedOut
+                    loginError = null
                 }
-                .onFailure { state = AppState.LoggedOut }
+                .onFailure { t ->
+                    loginError = t.message ?: t::class.simpleName
+                    state = AppState.LoggedOut
+                }
+            loginBusy = false
         }
     }
 
@@ -137,12 +145,20 @@ private fun App(
         }
         AppState.LoggedOut -> {
             LoginScreen(
+                errorMessage = loginError,
+                busy = loginBusy,
                 onLogin = { handle ->
+                    loginError = null
+                    loginBusy = true
                     scope.launch {
                         runCatching {
                             val authUrl = oauth.beginLogin(handle)
                             launchCustomTab(authUrl)
+                        }.onFailure { t ->
+                            loginError = t.message ?: "Login failed: ${t::class.simpleName}"
+                            android.util.Log.e("AtOAuth", "beginLogin failed", t)
                         }
+                        loginBusy = false
                     }
                 },
             )

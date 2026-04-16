@@ -298,7 +298,7 @@ class AtOAuth(
         // For now, the redirect URI is derived from the client metadata URL's scheme.
         // In a real app, this would come from the client metadata JSON.
         // Placeholder: consumers should override or configure this.
-        return "atproto-kotlin-sample://oauth-redirect"
+        return "io.github.kikin81:/oauth-redirect"
     }
 
     @OptIn(ExperimentalEncodingApi::class)
