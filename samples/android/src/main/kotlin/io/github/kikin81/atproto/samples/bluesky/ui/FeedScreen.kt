@@ -26,24 +26,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import io.github.kikin81.atproto.app.bsky.embed.ImagesView
-import io.github.kikin81.atproto.app.bsky.feed.FeedService
-import io.github.kikin81.atproto.app.bsky.feed.FeedViewPost
-import io.github.kikin81.atproto.app.bsky.feed.GetTimelineRequest
 import io.github.kikin81.atproto.app.bsky.feed.PostView
-import io.github.kikin81.atproto.oauth.AtOAuth
 import io.github.kikin81.atproto.runtime.Datetime
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
@@ -52,44 +46,22 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
-private sealed interface FeedState {
-    data object Loading : FeedState
-    data class Error(val message: String) : FeedState
-    data class Loaded(val feed: List<FeedViewPost>) : FeedState
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedScreen(
     handle: String,
-    oauth: AtOAuth,
     onLogout: () -> Unit,
+    viewModel: FeedViewModel = hiltViewModel(),
 ) {
-    var state by remember { mutableStateOf<FeedState>(FeedState.Loading) }
-    var reloadTick by remember { mutableStateOf(0) }
-
-    LaunchedEffect(reloadTick) {
-        state = FeedState.Loading
-        val result = runCatching {
-            val client = oauth.createClient()
-            FeedService(client).getTimeline(GetTimelineRequest(limit = 50L))
-        }
-        state = result.fold(
-            onSuccess = { FeedState.Loaded(it.feed) },
-            onFailure = { t -> FeedState.Error(t.message ?: t::class.simpleName.orEmpty()) },
-        )
-    }
+    val state by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("@$handle") },
                 actions = {
-                    IconButton(onClick = { onLogout() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Logout,
-                            contentDescription = "Sign out",
-                        )
+                    IconButton(onClick = onLogout) {
+                        Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = "Sign out")
                     }
                 },
             )
@@ -97,26 +69,26 @@ fun FeedScreen(
     ) { padding ->
         Box(modifier = Modifier.padding(padding).fillMaxSize()) {
             when (val s = state) {
-                is FeedState.Loading -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                FeedUiState.Loading -> {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
                 }
-                is FeedState.Error -> {
+                is FeedUiState.Error -> {
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(24.dp),
+                        Modifier.fillMaxSize().padding(24.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text(text = "Failed to load timeline", style = MaterialTheme.typography.titleMedium)
+                        Text("Failed to load timeline", style = MaterialTheme.typography.titleMedium)
                         Spacer(Modifier.height(8.dp))
-                        Text(text = s.message, style = MaterialTheme.typography.bodySmall)
+                        Text(s.message, style = MaterialTheme.typography.bodySmall)
                         Spacer(Modifier.height(16.dp))
-                        Button(onClick = { reloadTick++ }) { Text("Retry") }
+                        Button(onClick = { viewModel.onEvent(FeedEvent.Retry) }) { Text("Retry") }
                     }
                 }
-                is FeedState.Loaded -> {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                is FeedUiState.Loaded -> {
+                    LazyColumn(Modifier.fillMaxSize()) {
                         items(s.feed) { entry ->
                             PostRow(entry.post)
                             HorizontalDivider()
@@ -134,23 +106,23 @@ private fun PostRow(post: PostView) {
     val createdAt = extractCreatedAt(post) ?: post.indexedAt
     val thumbUrl = extractFirstImageThumb(post)
 
-    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
+    Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "@${post.author.handle.raw}",
+                "@${post.author.handle.raw}",
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.bodyMedium,
             )
             Spacer(Modifier.size(8.dp))
             Text(
-                text = formatDatetime(createdAt),
+                formatDatetime(createdAt),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         if (text.isNotBlank()) {
             Spacer(Modifier.height(4.dp))
-            Text(text = text, style = MaterialTheme.typography.bodyLarge)
+            Text(text, style = MaterialTheme.typography.bodyLarge)
         }
         if (thumbUrl != null) {
             Spacer(Modifier.height(8.dp))
@@ -178,8 +150,7 @@ internal fun extractCreatedAt(post: PostView): Datetime? {
 internal fun extractFirstImageThumb(post: PostView): String? {
     val embed = post.embed ?: return null
     val imagesView = embed as? ImagesView ?: return null
-    val first = imagesView.images.firstOrNull() ?: return null
-    return first.thumb.raw
+    return imagesView.images.firstOrNull()?.thumb?.raw
 }
 
 private val datetimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM d, h:mm a")

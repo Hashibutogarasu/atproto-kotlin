@@ -3,8 +3,10 @@ package io.github.kikin81.atproto.samples.bluesky
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -16,163 +18,88 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import io.github.kikin81.atproto.oauth.AtOAuth
-import io.github.kikin81.atproto.oauth.OAuthSessionStore
-import io.github.kikin81.atproto.samples.bluesky.session.AndroidOAuthSessionStore
+import dagger.hilt.android.AndroidEntryPoint
 import io.github.kikin81.atproto.samples.bluesky.ui.FeedScreen
 import io.github.kikin81.atproto.samples.bluesky.ui.LoginScreen
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import kotlinx.coroutines.launch
 
-/**
- * Single activity. Manages the OAuth flow lifecycle:
- *
- * 1. `onCreate`: creates [AtOAuth], checks for a persisted session.
- * 2. Login: [LoginScreen] calls `oauth.beginLogin(handle)` → opens
- *    Custom Tabs → user authenticates on their PDS.
- * 3. Redirect: the browser redirects to `atproto-kotlin-sample://oauth-redirect`
- *    which the intent filter captures. `onNewIntent` stores the URI.
- * 4. Complete: on recomposition, the app calls `oauth.completeLogin(uri)`
- *    which exchanges the code for DPoP-bound tokens.
- * 5. Feed: [FeedScreen] calls `oauth.createClient()` and renders the timeline.
- *
- * `singleTask` launch mode ensures the redirect intent replaces the
- * existing activity instance instead of creating a new one.
- */
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private lateinit var oauth: AtOAuth
-    private lateinit var sessionStore: OAuthSessionStore
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        sessionStore = AndroidOAuthSessionStore(applicationContext)
-        oauth = AtOAuth(
-            clientMetadataUrl = CLIENT_METADATA_URL,
-            sessionStore = sessionStore,
-            httpClient = HttpClient(CIO),
-        )
-
         setContent {
             BlueskySampleTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    App(
-                        oauth = oauth,
-                        sessionStore = sessionStore,
+                    MainScreen(
+                        viewModel = viewModel,
                         launchCustomTab = { url ->
-                            CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, Uri.parse(url))
+                            CustomTabsIntent.Builder().build()
+                                .launchUrl(this@MainActivity, Uri.parse(url))
                         },
                     )
                 }
             }
         }
-
-        handleRedirectIntent(intent)
+        handleIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        handleRedirectIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
     }
 
-    private fun handleRedirectIntent(intent: Intent?) {
-        val uri = intent?.data ?: return
-        if (uri.scheme == REDIRECT_SCHEME && uri.path == REDIRECT_PATH) {
-            pendingRedirectUri = uri.toString()
+    private fun handleIntent(intent: Intent) {
+        val uri = intent.data ?: return
+        Log.d(TAG, "handleIntent: $uri")
+        if (uri.scheme == REDIRECT_SCHEME) {
+            viewModel.onEvent(MainEvent.CompleteOAuthRedirect(uri.toString()))
+            // Consume the intent so it's not re-processed on configuration changes
+            intent.data = null
         }
     }
 
     companion object {
-        const val CLIENT_METADATA_URL = "https://kikin81.github.io/atproto-kotlin/oauth/client-metadata.json"
-        const val REDIRECT_SCHEME = "io.github.kikin81"
-        const val REDIRECT_PATH = "/oauth-redirect"
-
-        @Volatile
-        var pendingRedirectUri: String? = null
+        private const val TAG = "MainActivity"
+        private const val REDIRECT_SCHEME = "io.github.kikin81"
     }
 }
 
 @Composable
-private fun App(
-    oauth: AtOAuth,
-    sessionStore: OAuthSessionStore,
+private fun MainScreen(
     launchCustomTab: (String) -> Unit,
+    viewModel: MainViewModel,
 ) {
-    var state: AppState by remember { mutableStateOf(AppState.Loading) }
-    var loginError: String? by remember { mutableStateOf(null) }
-    var loginBusy: Boolean by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
+    val state by viewModel.uiState.collectAsState()
 
+    // Collect one-shot auth URL events → open Custom Tabs
     LaunchedEffect(Unit) {
-        val existing = sessionStore.load()
-        state = if (existing != null) AppState.LoggedIn(existing.handle) else AppState.LoggedOut
-    }
-
-    // Check for pending OAuth redirect
-    val redirect = MainActivity.pendingRedirectUri
-    if (redirect != null && (state is AppState.LoggedOut || state is AppState.Loading)) {
-        MainActivity.pendingRedirectUri = null
-        LaunchedEffect(redirect) {
-            loginBusy = true
-            runCatching { oauth.completeLogin(redirect) }
-                .onSuccess {
-                    val session = sessionStore.load()
-                    state = if (session != null) AppState.LoggedIn(session.handle) else AppState.LoggedOut
-                    loginError = null
-                }
-                .onFailure { t ->
-                    loginError = t.message ?: t::class.simpleName
-                    state = AppState.LoggedOut
-                }
-            loginBusy = false
-        }
+        viewModel.authUrl.collect { url -> launchCustomTab(url) }
     }
 
     when (val current = state) {
-        AppState.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        MainUiState.Loading -> {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }
-        AppState.LoggedOut -> {
+        is MainUiState.LoggedOut -> {
             LoginScreen(
-                errorMessage = loginError,
-                busy = loginBusy,
-                onLogin = { handle ->
-                    loginError = null
-                    loginBusy = true
-                    scope.launch {
-                        runCatching {
-                            val authUrl = oauth.beginLogin(handle)
-                            launchCustomTab(authUrl)
-                        }.onFailure { t ->
-                            loginError = t.message ?: "Login failed: ${t::class.simpleName}"
-                            android.util.Log.e("AtOAuth", "beginLogin failed", t)
-                        }
-                        loginBusy = false
-                    }
-                },
+                errorMessage = current.error,
+                busy = current.busy,
+                onLogin = { handle -> viewModel.onEvent(MainEvent.Login(handle)) },
             )
         }
-        is AppState.LoggedIn -> {
+        is MainUiState.LoggedIn -> {
             FeedScreen(
                 handle = current.handle,
-                oauth = oauth,
-                onLogout = {
-                    scope.launch {
-                        oauth.logout()
-                        state = AppState.LoggedOut
-                    }
-                },
+                onLogout = { viewModel.onEvent(MainEvent.Logout) },
             )
         }
     }

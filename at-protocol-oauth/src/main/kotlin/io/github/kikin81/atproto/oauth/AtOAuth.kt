@@ -205,11 +205,15 @@ class AtOAuth(
             return body.request_uri
         }
 
-        // Expected: 401 with use_dpop_nonce
+        // Expected: 401 with use_dpop_nonce. Also calibrate the clock
+        // from the server's Date header to fix iat drift on devices
+        // whose clock is off.
+        signer.calibrateClockFromHeader(firstResponse.headers["Date"])
+
         val nonce = firstResponse.headers["DPoP-Nonce"]
             ?: throw OAuthException("PAR failed (${firstResponse.status}) and no DPoP-Nonce header in response")
 
-        // Retry with nonce
+        // Retry with nonce + calibrated clock
         val retryProof = signer.sign(method = "POST", url = metadata.parEndpoint, nonce = nonce)
         val retryResponse = httpClient.submitForm(
             url = metadata.parEndpoint,

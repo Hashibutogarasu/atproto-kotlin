@@ -47,6 +47,33 @@ class DpopSigner private constructor(
     private val privateKey: ECPrivateKey get() = keyPair.private as ECPrivateKey
 
     /**
+     * Clock offset in seconds between the device and the server. If the
+     * server's `Date` header says 12:00:05 and the device says 12:00:00,
+     * offset is +5. Applied to `iat` claims so DPoP proofs are accepted
+     * even when the device clock is off.
+     */
+    var clockOffsetSeconds: Long = 0
+
+    /**
+     * Calibrates [clockOffsetSeconds] from a server response's `Date` header.
+     * Call this after the first response from any AT Protocol server.
+     */
+    fun calibrateClockFromHeader(dateHeader: String?) {
+        if (dateHeader == null) return
+        try {
+            val serverTime = java.time.ZonedDateTime.parse(
+                dateHeader,
+                java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME,
+            )
+            val serverEpoch = serverTime.toEpochSecond()
+            val deviceEpoch = System.currentTimeMillis() / 1000
+            clockOffsetSeconds = serverEpoch - deviceEpoch
+        } catch (_: Exception) {
+            // Couldn't parse — leave offset at 0
+        }
+    }
+
+    /**
      * Signs a DPoP proof JWT for the given HTTP method + URL.
      *
      * @param method HTTP method (GET, POST, etc.)
@@ -98,7 +125,7 @@ class DpopSigner private constructor(
         nonce: String?,
     ): String {
         val jti = UUID.randomUUID().toString()
-        val iat = System.currentTimeMillis() / 1000
+        val iat = (System.currentTimeMillis() / 1000) + clockOffsetSeconds
         val sb = StringBuilder()
         sb.append("""{"jti":"$jti","htm":"$method","htu":"$url","iat":$iat""")
         if (nonce != null) sb.append(""","nonce":"$nonce"""")
