@@ -19,4 +19,5 @@ dependencyResolutionManagement {
 include(":at-protocol-runtime")
 include(":at-protocol-models")
 include(":at-protocol-generator")
+include(":at-protocol-oauth")
 include(":samples:android")

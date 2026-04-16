@@ -9,7 +9,6 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import kotlinx.serialization.KSerializer
@@ -131,8 +130,13 @@ public class XrpcClient(
     }
 
     private suspend fun io.ktor.client.request.HttpRequestBuilder.applyAuth(provider: AuthProvider) {
-        val token = provider.bearerToken() ?: return
-        header(HttpHeaders.Authorization, "Bearer $token")
+        // Build the target URL without query string for the DPoP `htu` claim.
+        // Per the DPoP spec, `htu` is scheme + host + path (no query/fragment).
+        val targetUrl = url.buildString().substringBefore('?')
+        val headers = provider.authHeaders(method.value, targetUrl)
+        for ((name, value) in headers) {
+            header(name, value)
+        }
     }
 
     private suspend fun <R> handle(

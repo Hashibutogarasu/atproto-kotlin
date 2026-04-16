@@ -1,32 +1,32 @@
 ## 1. Module scaffolding
 
-- [ ] 1.1 Create `:at-protocol-oauth` as a Kotlin/JVM module in `at-protocol-oauth/`, add to `settings.gradle.kts`
-- [ ] 1.2 Add `nimbus-jose-jwt` (or `java.security`-only — decide after prototyping in 3.1) to the version catalog and module deps
-- [ ] 1.3 Add `implementation(project(":at-protocol-runtime"))` dependency (for `AuthProvider`, `XrpcClient`, Ktor client types)
-- [ ] 1.4 Wire `maven-publish` + vanniktech plugin so the module publishes alongside runtime + models
-- [ ] 1.5 Verify `./gradlew :at-protocol-oauth:compileKotlin` passes with an empty module
+- [x] 1.1 Create `:at-protocol-oauth` as a Kotlin/JVM module in `at-protocol-oauth/`, add to `settings.gradle.kts`
+- [x] 1.2 Add `nimbus-jose-jwt` (or `java.security`-only — decide after prototyping in 3.1) to the version catalog and module deps
+- [x] 1.3 Add `implementation(project(":at-protocol-runtime"))` dependency (for `AuthProvider`, `XrpcClient`, Ktor client types)
+- [x] 1.4 Wire `maven-publish` + vanniktech plugin so the module publishes alongside runtime + models
+- [x] 1.5 Verify `./gradlew :at-protocol-oauth:compileKotlin` passes with an empty module
 
 ## 2. AuthProvider contract widening (BREAKING CHANGE)
 
-- [ ] 2.1 Design the new `AuthProvider` API: `suspend fun authHeaders(method: String, url: String): Map<String, String>` (or finalized alternative from prototyping)
-- [ ] 2.2 Update `AuthProvider` interface in `:at-protocol-runtime` with the new signature
-- [ ] 2.3 Update `BearerTokenAuth` → returns `mapOf("Authorization" to "Bearer $token")`
-- [ ] 2.4 Update `NoAuth` → returns `emptyMap()`
-- [ ] 2.5 Update `XrpcClient` internals to call `authHeaders(method, url)` and apply all returned headers to the request
-- [ ] 2.6 Update `:samples:android`'s `AtClientFactory` to use the new API
-- [ ] 2.7 Update all existing tests (runtime `XrpcClientTest`, sample `AtClientFactoryTest`) for the new contract
-- [ ] 2.8 Commit as `BREAKING CHANGE:` so semantic-release bumps the major version (1.x → 2.0.0)
+- [x] 2.1 Design the new `AuthProvider` API: `suspend fun authHeaders(method: String, url: String): Map<String, String>` (or finalized alternative from prototyping)
+- [x] 2.2 Update `AuthProvider` interface in `:at-protocol-runtime` with the new signature
+- [x] 2.3 Update `BearerTokenAuth` → returns `mapOf("Authorization" to "Bearer $token")`
+- [x] 2.4 Update `NoAuth` → returns `emptyMap()`
+- [x] 2.5 Update `XrpcClient` internals to call `authHeaders(method, url)` and apply all returned headers to the request
+- [x] 2.6 Update `:samples:android`'s `AtClientFactory` to use the new API
+- [x] 2.7 Update all existing tests (runtime `XrpcClientTest`, sample `AtClientFactoryTest`) for the new contract
+- [x] 2.8 Commit as `BREAKING CHANGE:` so semantic-release bumps the major version (1.x → 2.0.0)
 
 ## 3. DPoP JWT signer
 
-- [ ] 3.1 Prototype: build a minimal DPoP proof JWT with `java.security` EC P-256 (KeyPairGenerator + Signature + manual JWT header/payload/signature construction). Evaluate complexity vs. Nimbus JOSE+JWT. Make the build-vs-buy decision.
-- [ ] 3.2 Implement `DpopSigner` class: `generateKeyPair()`, `sign(method: String, url: String, accessTokenHash: String?, nonce: String?): String` returning a signed JWT string. JWT header: `{"typ":"dpop+jwt","alg":"ES256","jwk":<public-key>}`. JWT payload: `{"jti","htm","htu","iat","exp"(optional),"nonce"(if provided),"ath"(if provided)}`. Omit `iss` from all DPoP proofs.
-- [ ] 3.3 Implement JWK thumbprint computation (RFC 7638) for the DPoP proof header's `jwk` field
-- [ ] 3.4 Implement `ath` computation: SHA-256 hash of the access token, base64url-encoded (same as PKCE S256). Only included in DPoP proofs for PDS resource requests, NOT for PAR or token endpoint requests.
-- [ ] 3.5 Unit-test: generate a DPoP proof, decode it, verify ES256 signature, verify claims (`htm`, `htu`, `jti`, `iat`), verify JWK thumbprint matches the signing key
-- [ ] 3.6 Unit-test: DPoP proof with a server-issued nonce includes the `nonce` claim
-- [ ] 3.7 Unit-test: DPoP proof for PDS request includes `ath` claim; DPoP proof for token request omits `ath`
-- [ ] 3.8 Unit-test: DPoP proof omits `iss` claim
+- [x] 3.1 Prototype: build a minimal DPoP proof JWT with `java.security` EC P-256 (KeyPairGenerator + Signature + manual JWT header/payload/signature construction). Evaluate complexity vs. Nimbus JOSE+JWT. Make the build-vs-buy decision.
+- [x] 3.2 Implement `DpopSigner` class: `generateKeyPair()`, `sign(method: String, url: String, accessTokenHash: String?, nonce: String?): String` returning a signed JWT string. JWT header: `{"typ":"dpop+jwt","alg":"ES256","jwk":<public-key>}`. JWT payload: `{"jti","htm","htu","iat","exp"(optional),"nonce"(if provided),"ath"(if provided)}`. Omit `iss` from all DPoP proofs.
+- [x] 3.3 Implement JWK thumbprint computation (RFC 7638) for the DPoP proof header's `jwk` field
+- [x] 3.4 Implement `ath` computation: SHA-256 hash of the access token, base64url-encoded (same as PKCE S256). Only included in DPoP proofs for PDS resource requests, NOT for PAR or token endpoint requests.
+- [x] 3.5 Unit-test: generate a DPoP proof, decode it, verify ES256 signature, verify claims (`htm`, `htu`, `jti`, `iat`), verify JWK thumbprint matches the signing key
+- [x] 3.6 Unit-test: DPoP proof with a server-issued nonce includes the `nonce` claim
+- [x] 3.7 Unit-test: DPoP proof for PDS request includes `ath` claim; DPoP proof for token request omits `ath`
+- [x] 3.8 Unit-test: DPoP proof omits `iss` claim
 
 ## 4. AT Protocol discovery chain
 
