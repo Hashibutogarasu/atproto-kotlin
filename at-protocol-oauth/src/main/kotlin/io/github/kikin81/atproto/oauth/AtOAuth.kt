@@ -146,6 +146,7 @@ class AtOAuth(
             tokenEndpoint = pending.metadata.tokenEndpoint,
             dpopPrivateKey = exported.privateKeyEncoded,
             dpopPublicKey = exported.publicKeyEncoded,
+            clockOffsetSeconds = pending.signer.clockOffsetSeconds,
         )
         sessionStore.save(session)
     }
@@ -161,6 +162,7 @@ class AtOAuth(
         val signer = DpopSigner.fromExported(
             DpopSigner.ExportedKeyPair(session.dpopPrivateKey, session.dpopPublicKey),
         )
+        signer.clockOffsetSeconds = session.clockOffsetSeconds
         val authProvider = DpopAuthProvider(
             session = session,
             signer = signer,
@@ -267,9 +269,14 @@ class AtOAuth(
             header("DPoP", proof)
         }
 
-        if (response.status == HttpStatusCode.Unauthorized) {
+        // Token endpoint returns 400 (not 401) for use_dpop_nonce.
+        // Also handle 401 defensively in case the server behavior changes.
+        val needsNonce = response.status == HttpStatusCode.BadRequest ||
+            response.status == HttpStatusCode.Unauthorized
+        if (needsNonce) {
             val nonce = response.headers["DPoP-Nonce"]
             if (nonce != null) {
+                signer.calibrateClockFromHeader(response.headers["Date"])
                 val retryProof = signer.sign(method = "POST", url = metadata.tokenEndpoint, nonce = nonce)
                 val retryResponse = httpClient.submitForm(
                     url = metadata.tokenEndpoint,
@@ -288,7 +295,7 @@ class AtOAuth(
                 }
                 return json.decodeFromString(TokenResponse.serializer(), retryResponse.bodyAsText())
             }
-            throw OAuthException("Token exchange failed: HTTP 401 without DPoP-Nonce")
+            throw OAuthException("Token exchange failed: HTTP ${response.status} without DPoP-Nonce: ${response.bodyAsText()}")
         }
 
         if (response.status != HttpStatusCode.OK) {

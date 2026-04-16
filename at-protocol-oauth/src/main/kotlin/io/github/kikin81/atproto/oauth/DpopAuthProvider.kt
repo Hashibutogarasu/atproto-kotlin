@@ -56,6 +56,23 @@ class DpopAuthProvider(
     }
 
     /**
+     * Called by [XrpcClient] on HTTP 401. Checks for a `DPoP-Nonce` header
+     * and updates the stored nonce so the retry uses the fresh value.
+     * Also calibrates the clock from the server's `Date` header.
+     */
+    override suspend fun onUnauthorized(responseHeaders: Map<String, String>): Boolean {
+        val newNonce = responseHeaders["DPoP-Nonce"] ?: responseHeaders["dpop-nonce"]
+        val dateHeader = responseHeaders["Date"] ?: responseHeaders["date"]
+        if (dateHeader != null) signer.calibrateClockFromHeader(dateHeader)
+        if (newNonce != null && newNonce != pdsNonce) {
+            pdsNonce = newNonce
+            persistNonces()
+            return true
+        }
+        return false
+    }
+
+    /**
      * Called by the consumer (or an interceptor) when a PDS request
      * returns HTTP 401. Handles DPoP-Nonce rotation and token refresh.
      *

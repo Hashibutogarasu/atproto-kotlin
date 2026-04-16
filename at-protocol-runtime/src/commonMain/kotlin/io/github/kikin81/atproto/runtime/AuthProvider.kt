@@ -29,7 +29,7 @@ package io.github.kikin81.atproto.runtime
  * `BearerTokenAuth` and `NoAuth` are updated in-place; custom impls
  * need to implement `authHeaders` instead of `bearerToken`.
  */
-public fun interface AuthProvider {
+public interface AuthProvider {
     /**
      * Returns the HTTP headers to attach to an XRPC request.
      *
@@ -39,6 +39,16 @@ public fun interface AuthProvider {
      *   at least `"Authorization"`. Empty for unauthenticated requests.
      */
     public suspend fun authHeaders(method: String, url: String): Map<String, String>
+
+    /**
+     * Called by [XrpcClient] when a request returns HTTP 401. The provider
+     * can inspect the response headers (e.g. `DPoP-Nonce`) and update its
+     * internal state for a retry.
+     *
+     * @return `true` if the provider handled the error and the request
+     *   should be retried with fresh [authHeaders], `false` otherwise.
+     */
+    public suspend fun onUnauthorized(responseHeaders: Map<String, String>): Boolean = false
 }
 
 /** No authentication — requests are sent without auth headers. */

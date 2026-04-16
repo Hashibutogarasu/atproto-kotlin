@@ -48,9 +48,22 @@ public class XrpcClient(
         errorMapper: XrpcErrorMapper = DefaultXrpcErrorMapper,
         auth: AuthProvider? = null,
     ): R {
+        val provider = auth ?: authProvider
         val response = httpClient.get("$baseUrl/xrpc/$nsid") {
             appendQueryParams(params, paramsSerializer)
-            applyAuth(auth ?: authProvider)
+            applyAuth(provider)
+        }
+        // DPoP nonce retry: if 401 + DPoP-Nonce, let the auth provider
+        // update its nonce and retry once.
+        if (response.status == HttpStatusCode.Unauthorized) {
+            val headers = response.headers.entries().associate { it.key to it.value.first() }
+            if (provider.onUnauthorized(headers)) {
+                val retry = httpClient.get("$baseUrl/xrpc/$nsid") {
+                    appendQueryParams(params, paramsSerializer)
+                    applyAuth(provider)
+                }
+                return handle(retry, responseSerializer, errorMapper)
+            }
         }
         return handle(response, responseSerializer, errorMapper)
     }
@@ -66,11 +79,24 @@ public class XrpcClient(
         errorMapper: XrpcErrorMapper = DefaultXrpcErrorMapper,
         auth: AuthProvider? = null,
     ): R {
+        val provider = auth ?: authProvider
         val response = httpClient.post("$baseUrl/xrpc/$nsid") {
             appendQueryParams(params, paramsSerializer)
-            applyAuth(auth ?: authProvider)
+            applyAuth(provider)
             contentType(ContentType.parse(encoding))
             setBody(json.encodeToString(inputSerializer, input))
+        }
+        if (response.status == HttpStatusCode.Unauthorized) {
+            val headers = response.headers.entries().associate { it.key to it.value.first() }
+            if (provider.onUnauthorized(headers)) {
+                val retry = httpClient.post("$baseUrl/xrpc/$nsid") {
+                    appendQueryParams(params, paramsSerializer)
+                    applyAuth(provider)
+                    contentType(ContentType.parse(encoding))
+                    setBody(json.encodeToString(inputSerializer, input))
+                }
+                return handle(retry, responseSerializer, errorMapper)
+            }
         }
         return handle(response, responseSerializer, errorMapper)
     }
@@ -86,9 +112,20 @@ public class XrpcClient(
         errorMapper: XrpcErrorMapper = DefaultXrpcErrorMapper,
         auth: AuthProvider? = null,
     ): R {
+        val provider = auth ?: authProvider
         val response = httpClient.post("$baseUrl/xrpc/$nsid") {
             appendQueryParams(params, paramsSerializer)
-            applyAuth(auth ?: authProvider)
+            applyAuth(provider)
+        }
+        if (response.status == HttpStatusCode.Unauthorized) {
+            val headers = response.headers.entries().associate { it.key to it.value.first() }
+            if (provider.onUnauthorized(headers)) {
+                val retry = httpClient.post("$baseUrl/xrpc/$nsid") {
+                    appendQueryParams(params, paramsSerializer)
+                    applyAuth(provider)
+                }
+                return handle(retry, responseSerializer, errorMapper)
+            }
         }
         return handle(response, responseSerializer, errorMapper)
     }

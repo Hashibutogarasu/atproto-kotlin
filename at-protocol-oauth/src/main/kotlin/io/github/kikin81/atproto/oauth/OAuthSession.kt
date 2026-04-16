@@ -23,6 +23,7 @@ data class OAuthSession(
     val dpopPrivateKey: ByteArray,
     val dpopPublicKey: ByteArray,
     val authServerNonce: String? = null,
+    val clockOffsetSeconds: Long = 0,
     val pdsNonce: String? = null,
 ) {
     override fun equals(other: Any?): Boolean {
