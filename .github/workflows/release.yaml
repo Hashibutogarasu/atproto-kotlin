@@ -14,46 +14,52 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    # Outputs are consumed by the downstream `publish-to-central` job so
-    # we only upload to Maven Central when semantic-release actually cuts
-    # a new version. `chore:` / `ci:` / `docs:` / `test:` / `refactor:`
-    # commits leave these unset and the central job no-ops.
     outputs:
       new-release-published: ${{ steps.release.outputs.new-release-published }}
       new-release-version: ${{ steps.release.outputs.new-release-version }}
     steps:
-      # `open-turo/actions-jvm/release@v2` wraps semantic-release with the
-      # `gradle-semantic-release-plugin`, which runs `./gradlew publish -q`
-      # against the secondary `GitHubPackages` maven repository declared
-      # in each library module. So this single step: analyzes commits,
-      # bumps `gradle.properties`, tags, creates a GitHub release, AND
-      # publishes the new version to GitHub Packages.
+      # We do our own checkout (instead of letting open-turo do it) so
+      # we can install the lexicon corpus BEFORE semantic-release's
+      # embedded `./gradlew publish -q` runs. Without the lexicons,
+      # `:at-protocol-models:generateModels` skips and the published
+      # models jar is empty.
       #
-      # The subsequent `publish-to-central` job then uploads the same
-      # version to Maven Central via `./gradlew publishToMavenCentral`
-      # (the vanniktech plugin's task). Central and GitHub Packages are
-      # published from distinct task graphs — no 409 race.
+      # `fetch-depth: 0` gives semantic-release the full commit + tag
+      # history it needs for commit analysis. `token` is the RELEASE_PAT
+      # so semantic-release can push the version-bump commit + tag back.
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PAT }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: at-protocol-generator/package-lock.json
+
+      - name: Install lexicon corpus
+        working-directory: at-protocol-generator
+        run: |
+          npm ci
+          npx lex install --ci
+
       - id: release
         uses: open-turo/actions-jvm/release@v2
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # The vanniktech plugin's `prepareMavenCentralPublishing` task
-          # runs as part of the standard `publish` lifecycle (before any
-          # network call) to validate that Central credentials exist
-          # up-front. Even though the actual Central bundle upload
-          # happens in the downstream `publish-to-central` job, these
-          # env vars must be set here so the release job's embedded
-          # `./gradlew publish -q` call passes validation. Without them,
-          # the whole release step fails at `prepareMavenCentralPublishing`
-          # and no GitHub Packages upload happens either.
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
         with:
           github-token: ${{ secrets.RELEASE_PAT }}
-          checkout-repo: true
+          # Skip the action's internal checkout — we already checked out
+          # above with full history + PAT + lexicon corpus installed.
+          checkout-repo: false
 
   publish-to-central:
     name: Publish to Maven Central
@@ -61,15 +67,6 @@ jobs:
     if: needs.release.outputs.new-release-published == 'true'
     runs-on: ubuntu-latest
     steps:
-      # Check out the EXACT tag semantic-release just pushed, not
-      # `main` at HEAD. Checking out `main` would race against any
-      # commit landing between when the `release` job finished and
-      # when this job started — fetching HEAD could return a commit
-      # with a different `gradle.properties` version, silently
-      # publishing the wrong artifacts to Central.
-      #
-      # `new-release-version` is bare (e.g. `1.1.2`); semantic-release
-      # tags with a `v` prefix (`v1.1.2`).
       - name: Checkout release tag
         uses: actions/checkout@v6
         with:
@@ -88,9 +85,6 @@ jobs:
           cache: npm
           cache-dependency-path: at-protocol-generator/package-lock.json
 
-      # Restore the pinned lexicon corpus so `:at-protocol-models` has
-      # its generator input. Same step as ci.yaml — the corpus is
-      # gitignored and restored from CID pins in `lexicons.json`.
       - name: Install lexicon corpus
         working-directory: at-protocol-generator
         run: |
@@ -100,24 +94,13 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      # `publishToMavenCentral` (NOT `publishAndReleaseToMavenCentral`)
-      # uploads the bundle to Central Portal and leaves it in the
-      # USER_MANAGED "pending release" state. You review and click
-      # "Release" in the Central Portal UI before the version propagates
-      # to `repo1.maven.org`. Flip to `publishAndReleaseToMavenCentral`
-      # in `mavenPublishing { publishToMavenCentral(..., automaticRelease = true) }`
-      # once the pipeline has proven itself over a few cycles.
-      #
-      # Credentials are injected as Gradle project properties via the
-      # `ORG_GRADLE_PROJECT_*` env convention. The vanniktech plugin
-      # picks them up automatically:
-      #   - mavenCentralUsername / mavenCentralPassword: Central Portal
-      #     User Token (generated at central.sonatype.com → View Account)
-      #   - signingInMemoryKey: base64-encoded GPG private key (from
-      #     `gpg --export-secret-keys --armor | base64`)
-      #   - signingInMemoryKeyPassword: GPG key passphrase
+      # --no-build-cache prevents a stale empty-jar from the release
+      # job's runner from being reused — forces a full recompile from
+      # the freshly-generated lexicon sources. Adds ~30s of compile
+      # overhead per release but guarantees the Central bundle contains
+      # the actual generated classes, not a cached empty jar.
       - name: Publish to Maven Central (user-managed)
-        run: ./gradlew publishToMavenCentral --no-configuration-cache
+        run: ./gradlew publishToMavenCentral --no-configuration-cache --no-build-cache
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
