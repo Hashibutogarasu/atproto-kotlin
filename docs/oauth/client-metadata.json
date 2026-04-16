@@ -2,10 +2,9 @@
   "client_id": "https://kikin81.github.io/atproto-kotlin/oauth/client-metadata.json",
   "application_type": "native",
   "client_name": "AT Protocol Kotlin SDK Sample",
-  "client_uri": "https://github.com/kikin81/atproto-kotlin",
-  "logo_uri": "https://kikin81.github.io/atproto-kotlin/oauth/logo.png",
-  "tos_uri": "https://github.com/kikin81/atproto-kotlin/blob/main/LICENSE",
-  "policy_uri": "https://github.com/kikin81/atproto-kotlin/blob/main/LICENSE",
+  "client_uri": "https://kikin81.github.io/atproto-kotlin",
+  "tos_uri": "https://kikin81.github.io/atproto-kotlin",
+  "policy_uri": "https://kikin81.github.io/atproto-kotlin",
   "dpop_bound_access_tokens": true,
   "grant_types": ["authorization_code", "refresh_token"],
   "redirect_uris": [
