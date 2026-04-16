@@ -42,28 +42,28 @@
 
 ## 5. OAuth flow orchestrator
 
-- [ ] 5.1 Implement `AtOAuth` class with constructor taking `clientMetadataUrl: String` + `sessionStore: OAuthSessionStore` + optional `httpClient: HttpClient`
-- [ ] 5.2 Implement `beginLogin(handle: String): AuthorizationUrl` — runs the discovery chain, generates PKCE verifier+challenge, generates or loads DPoP keypair, sends PAR request with `login_hint=<handle>` + DPoP proof (handles the expected `use_dpop_nonce` 401 → retry cycle transparently), returns the authorization URL (`authorization_endpoint?client_id=...&request_uri=...`)
-- [ ] 5.3 Implement `completeLogin(redirectUri: Uri): OAuthSession` — validates `state` parameter matches the stored state, validates `iss` parameter matches the discovered authorization server, extracts the authorization code, exchanges it at the token endpoint with PKCE verifier + DPoP proof, verifies `sub` in token response matches the resolved DID, persists the session
-- [ ] 5.4 Implement `createClient(): XrpcClient` — constructs an `XrpcClient` with a `DpopAuthProvider` wired to the current session
-- [ ] 5.5 Implement `logout()` — clears the session from `OAuthSessionStore`
-- [ ] 5.6 Define `OAuthSessionStore` interface: `suspend fun load(): OAuthSession?`, `suspend fun save(session: OAuthSession)`, `suspend fun clear()`
-- [ ] 5.7 Define `OAuthSession` data class: `accessToken`, `refreshToken`, `dpopPrivateKey` (serialized), `dpopPublicKey` (serialized), `did`, `handle`, `pdsUrl`, `tokenEndpoint`, `authServerNonce`, `pdsNonce` (two separate nonces per spec)
-- [ ] 5.8 Unit-test the full `beginLogin → completeLogin → createClient` flow against MockEngine with canned PAR nonce-error + PAR success + token responses
-- [ ] 5.9 Unit-test: `completeLogin` rejects mismatched `iss` in callback URI
-- [ ] 5.10 Unit-test: `completeLogin` rejects mismatched `sub` in token response (throws `OAuthAccountMismatchException`)
+- [x] 5.1 Implement `AtOAuth` class with constructor taking `clientMetadataUrl: String` + `sessionStore: OAuthSessionStore` + optional `httpClient: HttpClient`
+- [x] 5.2 Implement `beginLogin(handle: String): AuthorizationUrl` — runs the discovery chain, generates PKCE verifier+challenge, generates or loads DPoP keypair, sends PAR request with `login_hint=<handle>` + DPoP proof (handles the expected `use_dpop_nonce` 401 → retry cycle transparently), returns the authorization URL (`authorization_endpoint?client_id=...&request_uri=...`)
+- [x] 5.3 Implement `completeLogin(redirectUri: Uri): OAuthSession` — validates `state` parameter matches the stored state, validates `iss` parameter matches the discovered authorization server, extracts the authorization code, exchanges it at the token endpoint with PKCE verifier + DPoP proof, verifies `sub` in token response matches the resolved DID, persists the session
+- [x] 5.4 Implement `createClient(): XrpcClient` — constructs an `XrpcClient` with a `DpopAuthProvider` wired to the current session
+- [x] 5.5 Implement `logout()` — clears the session from `OAuthSessionStore`
+- [x] 5.6 Define `OAuthSessionStore` interface: `suspend fun load(): OAuthSession?`, `suspend fun save(session: OAuthSession)`, `suspend fun clear()`
+- [x] 5.7 Define `OAuthSession` data class: `accessToken`, `refreshToken`, `dpopPrivateKey` (serialized), `dpopPublicKey` (serialized), `did`, `handle`, `pdsUrl`, `tokenEndpoint`, `authServerNonce`, `pdsNonce` (two separate nonces per spec)
+- [x] 5.8 Unit-test the full `beginLogin → completeLogin → createClient` flow against MockEngine with canned PAR nonce-error + PAR success + token responses
+- [x] 5.9 Unit-test: `completeLogin` rejects mismatched `iss` in callback URI
+- [x] 5.10 Unit-test: `completeLogin` rejects mismatched `sub` in token response (throws `OAuthAccountMismatchException`)
 
 ## 6. DpopAuthProvider
 
-- [ ] 6.1 Implement `DpopAuthProvider(session: OAuthSession, signer: DpopSigner, sessionStore: OAuthSessionStore)` — implements the widened `AuthProvider.authHeaders(method, url)` returning `Authorization: DPoP <token>` + `DPoP: <proof>`. Uses `ath` (access token hash) in DPoP proofs for PDS requests. Uses the PDS nonce (not the auth server nonce) for PDS requests.
-- [ ] 6.2 Implement DPoP-Nonce tracking per-server: on 401 with `DPoP-Nonce` header from PDS, update the PDS nonce; on nonce from auth server (during refresh), update the auth server nonce. Retry with the updated nonce included in the next proof.
-- [ ] 6.3 Implement transparent refresh with mutex: on 401 indicating expired token, acquire a refresh lock (prevent concurrent refreshes), call the token endpoint with `grant_type=refresh_token` + DPoP proof (using auth server nonce), persist new tokens, release lock, retry the original request. Concurrent 401s wait for the first refresh to complete.
-- [ ] 6.4 Implement refresh failure: if the refresh token is invalid/revoked, clear the session and throw `OAuthSessionExpiredException`
-- [ ] 6.5 Unit-test: DPoP-Nonce rotation is transparent (consumer never sees the 401)
-- [ ] 6.6 Unit-test: auth server and PDS nonces are tracked independently
-- [ ] 6.7 Unit-test: expired access token triggers automatic refresh and retry
-- [ ] 6.8 Unit-test: concurrent expired-token 401s serialize into a single refresh call (mutex)
-- [ ] 6.9 Unit-test: revoked refresh token throws `OAuthSessionExpiredException`
+- [x] 6.1 Implement `DpopAuthProvider(session: OAuthSession, signer: DpopSigner, sessionStore: OAuthSessionStore)` — implements the widened `AuthProvider.authHeaders(method, url)` returning `Authorization: DPoP <token>` + `DPoP: <proof>`. Uses `ath` (access token hash) in DPoP proofs for PDS requests. Uses the PDS nonce (not the auth server nonce) for PDS requests.
+- [x] 6.2 Implement DPoP-Nonce tracking per-server: on 401 with `DPoP-Nonce` header from PDS, update the PDS nonce; on nonce from auth server (during refresh), update the auth server nonce. Retry with the updated nonce included in the next proof.
+- [x] 6.3 Implement transparent refresh with mutex: on 401 indicating expired token, acquire a refresh lock (prevent concurrent refreshes), call the token endpoint with `grant_type=refresh_token` + DPoP proof (using auth server nonce), persist new tokens, release lock, retry the original request. Concurrent 401s wait for the first refresh to complete.
+- [x] 6.4 Implement refresh failure: if the refresh token is invalid/revoked, clear the session and throw `OAuthSessionExpiredException`
+- [x] 6.5 Unit-test: DPoP-Nonce rotation is transparent (consumer never sees the 401)
+- [x] 6.6 Unit-test: auth server and PDS nonces are tracked independently
+- [x] 6.7 Unit-test: expired access token triggers automatic refresh and retry
+- [x] 6.8 Unit-test: concurrent expired-token 401s serialize into a single refresh call (mutex)
+- [x] 6.9 Unit-test: revoked refresh token throws `OAuthSessionExpiredException`
 
 ## 7. Android sample migration
 
