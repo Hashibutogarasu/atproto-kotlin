@@ -30,15 +30,15 @@
 
 ## 4. AT Protocol discovery chain
 
-- [ ] 4.1 Implement handle → DID resolution (DNS `_atproto.<handle>` TXT record → `did=did:plc:...`, with HTTP fallback via `/.well-known/atproto-did`)
-- [ ] 4.2 Implement DID → PDS resolution (fetch the DID document from `plc.directory` or the DID method's resolution endpoint, extract the `#atproto_pds` service endpoint)
-- [ ] 4.3 Implement PDS → authorization server resolution (fetch `<pds>/.well-known/oauth-protected-resource` → extract `authorization_servers[0]`, then fetch `<authserver>/.well-known/oauth-authorization-server` → extract `authorization_endpoint`, `token_endpoint`, `pushed_authorization_request_endpoint`, `dpop_signing_alg_values_supported`)
-- [ ] 4.4 Implement bidirectional handle verification: after resolving handle → DID, fetch the DID document and verify the `alsoKnownAs` field claims the original handle. Critical security requirement per spec.
-- [ ] 4.5 Implement hardened HTTP client for discovery: enforce timeouts, max response body size, URL validation, reject local/private IP ranges (SSRF mitigation)
-- [ ] 4.6 Unit-test the full discovery chain against MockEngine with canned DNS/HTTP responses
-- [ ] 4.7 Unit-test: handle that fails DNS resolution falls through to HTTP `/.well-known/atproto-did`
-- [ ] 4.8 Unit-test: missing or malformed discovery responses throw `OAuthDiscoveryException`
-- [ ] 4.9 Unit-test: bidirectional handle verification fails when DID document doesn't claim the handle
+- [x] 4.1 Implement handle → DID resolution (DNS `_atproto.<handle>` TXT record → `did=did:plc:...`, with HTTP fallback via `/.well-known/atproto-did`)
+- [x] 4.2 Implement DID → PDS resolution (fetch the DID document from `plc.directory` or the DID method's resolution endpoint, extract the `#atproto_pds` service endpoint)
+- [x] 4.3 Implement PDS → authorization server resolution (fetch `<pds>/.well-known/oauth-protected-resource` → extract `authorization_servers[0]`, then fetch `<authserver>/.well-known/oauth-authorization-server` → extract `authorization_endpoint`, `token_endpoint`, `pushed_authorization_request_endpoint`, `dpop_signing_alg_values_supported`)
+- [x] 4.4 Implement bidirectional handle verification: after resolving handle → DID, fetch the DID document and verify the `alsoKnownAs` field claims the original handle. Critical security requirement per spec.
+- [x] 4.5 Implement hardened HTTP client for discovery: enforce timeouts, max response body size, URL validation, reject local/private IP ranges (SSRF mitigation)
+- [x] 4.6 Unit-test the full discovery chain against MockEngine with canned DNS/HTTP responses
+- [x] 4.7 Unit-test: handle that fails DNS resolution falls through to HTTP `/.well-known/atproto-did`
+- [x] 4.8 Unit-test: missing or malformed discovery responses throw `OAuthDiscoveryException`
+- [x] 4.9 Unit-test: bidirectional handle verification fails when DID document doesn't claim the handle
 
 ## 5. OAuth flow orchestrator
 
