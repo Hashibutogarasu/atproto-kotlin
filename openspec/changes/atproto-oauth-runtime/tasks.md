@@ -67,16 +67,16 @@
 
 ## 7. Android sample migration
 
-- [ ] 7.1 Add `androidx.browser:browser` dependency to `:samples:android` for Custom Tabs
-- [ ] 7.2 Create `OAuthRedirectActivity` (or add intent filter to `MainActivity`) for the redirect URI scheme (e.g. `atproto-kotlin-sample://oauth-redirect`)
-- [ ] 7.3 Implement `AndroidOAuthSessionStore` wrapping `EncryptedSharedPreferences` — stores `OAuthSession` including the serialized DPoP keypair
-- [ ] 7.4 Replace `LoginScreen`'s `ServerService.createSession` call with `AtOAuth.beginLogin` → Custom Tabs launch
-- [ ] 7.5 Wire redirect capture: `OAuthRedirectActivity` receives the redirect URI and calls `AtOAuth.completeLogin`
-- [ ] 7.6 Replace `AtClientFactory.create(session)` with `oauth.createClient()` — the `DpopAuthProvider` is wired automatically
-- [ ] 7.7 Remove the `StopgapBanner` composable and all "NOT FOR PRODUCTION" references from `LoginScreen.kt`
-- [ ] 7.8 Remove the `NoXrpcParams`-based `ServerService.createSession` call path — it's no longer needed
-- [ ] 7.9 Update `FeedScreen` to handle `OAuthSessionExpiredException` by transitioning to `AppState.LoggedOut`
-- [ ] 7.10 Update `SessionStore` / `SessionStoreTest` to work with `OAuthSession` instead of the old `Session` data class
+- [x] 7.1 Add `androidx.browser:browser` dependency to `:samples:android` for Custom Tabs
+- [x] 7.2 Create `OAuthRedirectActivity` (or add intent filter to `MainActivity`) for the redirect URI scheme (e.g. `atproto-kotlin-sample://oauth-redirect`)
+- [x] 7.3 Implement `AndroidOAuthSessionStore` wrapping `EncryptedSharedPreferences` — stores `OAuthSession` including the serialized DPoP keypair
+- [x] 7.4 Replace `LoginScreen`'s `ServerService.createSession` call with `AtOAuth.beginLogin` → Custom Tabs launch
+- [x] 7.5 Wire redirect capture: `OAuthRedirectActivity` receives the redirect URI and calls `AtOAuth.completeLogin`
+- [x] 7.6 Replace `AtClientFactory.create(session)` with `oauth.createClient()` — the `DpopAuthProvider` is wired automatically
+- [x] 7.7 Remove the `StopgapBanner` composable and all "NOT FOR PRODUCTION" references from `LoginScreen.kt`
+- [x] 7.8 Remove the `NoXrpcParams`-based `ServerService.createSession` call path — it's no longer needed
+- [x] 7.9 Update `FeedScreen` to handle `OAuthSessionExpiredException` by transitioning to `AppState.LoggedOut`
+- [x] 7.10 Update `SessionStore` / `SessionStoreTest` to work with `OAuthSession` instead of the old `Session` data class
 
 ## 8. Client metadata
 

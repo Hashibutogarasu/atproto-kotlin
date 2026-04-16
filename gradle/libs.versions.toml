@@ -14,6 +14,7 @@ vanniktech-maven-publish = "0.36.0"
 # they were replaced during the spec-driven implementation of the sample).
 agp = "9.1.1"
 androidx-activity-compose = "1.9.3"
+androidx-browser = "1.8.0"
 androidx-core-ktx = "1.15.0"
 androidx-lifecycle = "2.8.7"
 androidx-security-crypto = "1.1.0-alpha06"
@@ -36,6 +37,7 @@ kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 # Android sample deps
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core-ktx" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "androidx-browser" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "androidx-security-crypto" }
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
