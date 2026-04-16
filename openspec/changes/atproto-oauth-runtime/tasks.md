@@ -80,30 +80,30 @@
 
 ## 8. Client metadata
 
-- [ ] 8.1 Create a sample `client-metadata.json` with all required AT Protocol OAuth fields including `application_type: "native"`, `dpop_bound_access_tokens: true`, `token_endpoint_auth_method: "none"`, `grant_types: ["authorization_code", "refresh_token"]`, `redirect_uris`, `scope: "atproto transition:generic"`
-- [ ] 8.2 Host it at a public HTTPS URL (GitHub Pages under `kikin81.github.io` or similar)
-- [ ] 8.3 Document the required fields and hosting instructions in `at-protocol-oauth/README.md`
-- [ ] 8.4 Reference the hosted URL in `samples/android/MainActivity.kt`'s `AtOAuth` constructor
+- [x] 8.1 Create a sample `client-metadata.json` with all required AT Protocol OAuth fields including `application_type: "native"`, `dpop_bound_access_tokens: true`, `token_endpoint_auth_method: "none"`, `grant_types: ["authorization_code", "refresh_token"]`, `redirect_uris`, `scope: "atproto transition:generic"`
+- [x] 8.2 Host it at a public HTTPS URL (GitHub Pages under `kikin81.github.io` or similar)
+- [x] 8.3 Document the required fields and hosting instructions in `at-protocol-oauth/README.md`
+- [x] 8.4 Reference the hosted URL in `samples/android/MainActivity.kt`'s `AtOAuth` constructor
 
 ## 9. Documentation
 
-- [ ] 9.1 Write `at-protocol-oauth/README.md` covering: module purpose, consumer integration example, client metadata setup, redirect URI configuration, security considerations (DPoP, PKCE, custom-scheme risks)
-- [ ] 9.2 Update `samples/android/README.md` to reflect the OAuth flow (remove app-password references, add Custom Tabs setup, add redirect URI scheme)
-- [ ] 9.3 Update root `README.md` module table to include `:at-protocol-oauth`
+- [x] 9.1 Write `at-protocol-oauth/README.md` covering: module purpose, consumer integration example, client metadata setup, redirect URI configuration, security considerations (DPoP, PKCE, custom-scheme risks)
+- [x] 9.2 Update `samples/android/README.md` to reflect the OAuth flow (remove app-password references, add Custom Tabs setup, add redirect URI scheme)
+- [x] 9.3 Update root `README.md` module table to include `:at-protocol-oauth`
 
 ## 10. Testing + verification
 
 - [ ] 10.1 Full MockEngine integration test: `beginLogin → (mock browser redirect) → completeLogin → createClient → FeedService.getTimeline` — end-to-end with canned responses
-- [ ] 10.2 `./gradlew :at-protocol-oauth:test` passes all unit tests
-- [ ] 10.3 `./gradlew :samples:android:testDebugUnitTest` passes with OAuth-migrated tests
-- [ ] 10.4 `./gradlew :samples:android:assembleDebug` produces an APK
-- [ ] 10.5 Manual test: install on emulator/device, log in with a real Bluesky account via Custom Tabs, verify feed renders
-- [ ] 10.6 `./gradlew spotlessCheck` green across the whole repo
-- [ ] 10.7 `pre-commit run --all-files` green
+- [x] 10.2 `./gradlew :at-protocol-oauth:test` passes all unit tests
+- [x] 10.3 `./gradlew :samples:android:testDebugUnitTest` passes with OAuth-migrated tests
+- [x] 10.4 `./gradlew :samples:android:assembleDebug` produces an APK
+- [x] 10.5 Manual test: install on emulator/device, log in with a real Bluesky account via Custom Tabs, verify feed renders
+- [x] 10.6 `./gradlew spotlessCheck` green across the whole repo
+- [x] 10.7 `pre-commit run --all-files` green
 
 ## 11. Publication
 
 - [ ] 11.1 Verify `./gradlew :at-protocol-oauth:publishToMavenLocal` produces a valid artifact
 - [ ] 11.2 Commit the `AuthProvider` change as `BREAKING CHANGE:` to trigger major version bump (2.0.0)
 - [ ] 11.3 After release, verify `io.github.kikin81.atproto:at-protocol-oauth:2.0.0` resolves from `mavenCentral()`
-- [ ] 11.4 Update the root README's consumer snippet to include the OAuth module coordinate
+- [x] 11.4 Update the root README's consumer snippet to include the OAuth module coordinate

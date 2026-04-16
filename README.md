@@ -19,33 +19,21 @@ ready to drop into a Ktor client.
 | `:at-protocol-runtime` | KMP library (JVM + iOS) holding the hand-written base: typed value classes for every string format (`Did`, `Handle`, `AtUri`, `Cid`, `Datetime`, …), `sealed AtField<T>` for three-state optionality on mutation paths, `OpenUnionSerializer<T>` + `UnknownOpenUnionMember` for open-union `$type` dispatch, typed `Blob` + `CidLink`, and an `XrpcClient` built on Ktor with a pluggable `AuthProvider`. |
 | `:at-protocol-generator` | JVM-only code generator. Parses the lexicon JSON corpus, resolves refs, tags mutation/read usage contexts, runs a verification pass (INV-1..4 + pair-keyed collision overrides), then emits idiomatic Kotlin via KotlinPoet: records, sealed-equivalent open unions, request/response pairs for queries and procedures, and `<Namespace>Service` classes wrapping `XrpcClient`. |
 | `:at-protocol-models` | KMP library that picks up the generator's output at build time via `:at-protocol-generator:generateModels`. This is what downstream consumers depend on. |
-| `:samples:android` | **Reference consumer.** A minimal Compose app that logs in to Bluesky and renders a timeline end-to-end. Dogfoods every interesting part of the generated API surface: `AtField`, open unions on embeds, typed `Blob`, `Datetime`, XRPC service classes. See [`samples/android/README.md`](samples/android/README.md). |
+| `:at-protocol-oauth` | JVM library implementing AT Protocol OAuth 2.0 for public clients: handle/DID/PDS/auth-server discovery, PAR with PKCE (S256) + DPoP (EC P-256), browser-based authorization, token exchange, and transparent refresh with DPoP-bound rotation. See [`at-protocol-oauth/README.md`](at-protocol-oauth/README.md). |
+| `:samples:android` | **Reference consumer.** A minimal Compose app that authenticates via OAuth 2.0 + DPoP and renders a Bluesky timeline. Dogfoods the generated API surface and the OAuth module end-to-end. See [`samples/android/README.md`](samples/android/README.md). |
 
 ## Sample app
 
 The Android reference consumer lives at [`samples/android/`](samples/android/).
-It authenticates via the deprecated app-password flow (a stopgap — OAuth is
-tracked as a separate follow-up) and renders a feed from
-`app.bsky.feed.getTimeline`. **Do not ship a production app built on this
-sample's auth flow.**
-
-<table>
-  <tr>
-    <th width="50%">Login</th>
-    <th width="50%">Feed</th>
-  </tr>
-  <tr>
-    <td><img src="samples/android/docs/screenshots/login.png" alt="Login screen with app-password form and NOT FOR PRODUCTION banner"></td>
-    <td><img src="samples/android/docs/screenshots/feed.png" alt="Timeline feed rendered via app.bsky.feed.getTimeline with an image embed"></td>
-  </tr>
-</table>
+It authenticates via **AT Protocol OAuth 2.0** (PAR + PKCE + DPoP) using
+Chrome Custom Tabs and renders a feed from `app.bsky.feed.getTimeline`.
 
 ```bash
 ./gradlew :samples:android:installDebug
 ```
 
 See [`samples/android/README.md`](samples/android/README.md) for run
-instructions and known v1 limitations.
+instructions and architecture details.
 
 ## Getting started as a contributor
 
@@ -83,6 +71,7 @@ dependencyResolutionManagement {
 dependencies {
     implementation("io.github.kikin81.atproto:at-protocol-runtime:1.1.2")
     implementation("io.github.kikin81.atproto:at-protocol-models:1.1.2")
+    implementation("io.github.kikin81.atproto:at-protocol-oauth:1.1.2") // OAuth 2.0 + DPoP
 }
 ```
 
