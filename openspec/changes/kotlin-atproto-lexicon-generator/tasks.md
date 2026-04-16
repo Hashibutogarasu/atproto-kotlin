@@ -3,7 +3,7 @@
 - [x] 1.1 Add `:at-protocol-runtime` KMP module with targets jvm, iosX64, iosArm64, iosSimulatorArm64 _(android target deferred — requires AGP setup)_
 - [x] 1.2 Add `:at-protocol-models` KMP module with the same target matrix and a dependency on `:at-protocol-runtime`
 - [x] 1.3 Add `:at-protocol-generator` JVM-only module with KotlinPoet dependency
-- [ ] 1.4 Configure Maven Central publishing for `runtime` and `models` with independent version strings (runtime on SemVer, models pinned to the upstream `@atproto/lex` version)
+- [x] 1.4 Configure Maven Central publishing for `runtime` and `models` with independent version strings (runtime on SemVer, models pinned to the upstream `@atproto/lex` version) _(shipped with unified SemVer via `gradle.properties` bumped by semantic-release, not split runtime/models versions as originally envisioned. Both modules share the same version and are published atomically to Maven Central via `com.vanniktech.maven.publish:0.36.0` + Sonatype Central Portal. GPG signing via in-memory key from CI secrets. v1.1.2 is the first version live on `repo1.maven.org`.)_
 - [x] 1.5 Wire `npm install @atproto/lex` into `:at-protocol-generator` and commit `package.json` + `package-lock.json` _(uses the `lex install <nsid>` CLI which fetches lexicons live from the AT network via DID-hosted `com.atproto.lexicon.schema` records and pins each by CID in `lexicons.json`)_
 - [x] 1.6 Verify the npm install populates `at-protocol-generator/lexicons/` with the full lexicon tree _(installed 87 lexicon documents across `app.bsky.*`, `com.atproto.*`, `chat.bsky.*`, `tools.ozone.*` via a broad seed-set + transitive dependency resolution)_
 
@@ -107,10 +107,10 @@
 
 ## 14. Publication
 
-- [ ] 14.1 Publish `at-protocol-runtime:1.0.0` to Maven Central
-- [ ] 14.2 Publish `at-protocol-models:<lexicon-version>` to Maven Central
+- [x] 14.1 Publish `at-protocol-runtime:1.0.0` to Maven Central _(first Central release is v1.1.2, live at `repo1.maven.org/maven2/io/github/kikin81/atproto/at-protocol-runtime/1.1.2/`. Published via vanniktech maven-publish plugin → Sonatype Central Portal → user-managed release → promoted to Central.)_
+- [x] 14.2 Publish `at-protocol-models:<lexicon-version>` to Maven Central _(same version, same pipeline. Browse at `central.sonatype.com/artifact/io.github.kikin81.atproto/at-protocol-models`.)_
 - [ ] 14.3 Verify a scratch KMP project can consume both artifacts and call `app.bsky.feed.getTimeline` against the public Bluesky AppView
-- [ ] 14.4 Document consumer usage in a short README (dependency coordinates, minimal example, versioning model)
+- [x] 14.4 Document consumer usage in a short README (dependency coordinates, minimal example, versioning model) _(root README now leads with Maven Central `mavenCentral()` snippet + `io.github.kikin81.atproto:at-protocol-runtime:1.1.2` coordinates; GitHub Packages demoted to a secondary "pre-release / staging" sub-section with PAT auth caveat.)_
 
 ## 15. Backlog (deferred until consumer signal)
 
