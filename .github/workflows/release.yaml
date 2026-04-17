@@ -162,6 +162,8 @@ jobs:
 
       - name: Stage API docs for GitHub Pages
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           rm -rf docs/api
           cp -r build/dokka/html docs/api
           git add docs/api
