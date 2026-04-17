@@ -42,7 +42,8 @@ tasks.matching {
     it.name.startsWith("compileKotlin") ||
         it.name == "compileCommonMainKotlinMetadata" ||
         it.name.endsWith("SourcesJar") ||
-        it.name == "sourcesJar"
+        it.name == "sourcesJar" ||
+        it.name.startsWith("dokka")
 }.configureEach {
     dependsOn(":at-protocol-generator:generateModels")
 }
