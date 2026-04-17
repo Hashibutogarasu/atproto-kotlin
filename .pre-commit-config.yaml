@@ -11,7 +11,8 @@ exclude: |
     at-protocol-generator/package-lock\.json|
     at-protocol-models/build/.*|
     .*/build/.*|
-    .*/\.gradle/.*
+    .*/\.gradle/.*|
+    docs/api/.*
   )$
 
 repos:

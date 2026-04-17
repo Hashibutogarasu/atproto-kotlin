@@ -1,0 +1,1097 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>io.github.kikin81.atproto.app.bsky.actor</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+<a class="library-name--link" href="../../index.html">
+                    kikinlex
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">4.1.0
+        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":at-protocol-models/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":at-protocol-models/commonMain" data-filter=":at-protocol-models/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    kikinlex
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="at-protocol-models::io.github.kikin81.atproto.app.bsky.actor////PointingToDeclaration//1119804208">
+  <div class="breadcrumbs"><a href="../index.html">at-protocol-models</a><span class="delimiter">/</span><span class="current">io.github.kikin81.atproto.app.bsky.actor</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="141217204%2FClasslikes%2F1119804208" anchor-label="ActorService" id="141217204%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-actor-service/index.html"><span>Actor</span><wbr><span><span>Service</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="141217204%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-actor-service/index.html">ActorService</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">client<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1621716654%2FClasslikes%2F1119804208" anchor-label="AdultContentPref" id="-1621716654%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-adult-content-pref/index.html"><span>Adult</span><wbr><span>Content</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1621716654%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-adult-content-pref/index.html">AdultContentPref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>enabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="866660999%2FClasslikes%2F1119804208" anchor-label="BskyAppProgressGuide" id="866660999%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-bsky-app-progress-guide/index.html"><span>Bsky</span><wbr><span>App</span><wbr><span>Progress</span><wbr><span><span>Guide</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="866660999%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-bsky-app-progress-guide/index.html">BskyAppProgressGuide</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>guide<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">If set, an active progress guide. Once completed, can be set to undefined. Should have unspecced fields tracking progress.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="698523426%2FClasslikes%2F1119804208" anchor-label="BskyAppStatePref" id="698523426%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-bsky-app-state-pref/index.html"><span>Bsky</span><wbr><span>App</span><wbr><span>State</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="698523426%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-bsky-app-state-pref/index.html">BskyAppStatePref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>activeProgressGuide<span class="token operator">: </span><a href="-bsky-app-progress-guide/index.html">BskyAppProgressGuide</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>nuxs<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-nux/index.html">Nux</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>queuedNudges<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A grab bag of state that's specific to the bsky.app program. Third-party apps shouldn't use this.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1793913290%2FClasslikes%2F1119804208" anchor-label="ContentLabelPref" id="-1793913290%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-content-label-pref/index.html"><span>Content</span><wbr><span>Label</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1793913290%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-content-label-pref/index.html">ContentLabelPref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>label<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>labelerDid<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>visibility<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1702170714%2FClasslikes%2F1119804208" anchor-label="DeclaredAgePref" id="-1702170714%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-declared-age-pref/index.html"><span>Declared</span><wbr><span>Age</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1702170714%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-declared-age-pref/index.html">DeclaredAgePref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>isOverAge13<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isOverAge16<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isOverAge18<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Read-only preference containing value(s) inferred from the user's declared birthdate. Absence of this preference object in the response indicates that the user has not made a declaration.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1778698574%2FClasslikes%2F1119804208" anchor-label="FeedViewPref" id="1778698574%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-feed-view-pref/index.html"><span>Feed</span><wbr><span>View</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1778698574%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-feed-view-pref/index.html">FeedViewPref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>feed<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>hideQuotePosts<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>hideReplies<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>hideRepliesByLikeCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>hideRepliesByUnfollowed<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>hideReposts<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1224489281%2FClasslikes%2F1119804208" anchor-label="GetPreferencesRequest" id="1224489281%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-get-preferences-request/index.html"><span>Get</span><wbr><span>Preferences</span><wbr><span><span>Request</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1224489281%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-get-preferences-request/index.html">GetPreferencesRequest</a></div><div class="brief "><p class="paragraph">Get private preferences attached to the current account. Expected use is synchronization between multiple devices, and import/export during account migration. Requires auth.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1912762831%2FClasslikes%2F1119804208" anchor-label="GetPreferencesResponse" id="-1912762831%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-get-preferences-response/index.html"><span>Get</span><wbr><span>Preferences</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1912762831%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-get-preferences-response/index.html">GetPreferencesResponse</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>preferences<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1486173326%2FClasslikes%2F1119804208" anchor-label="GetProfileRequest" id="-1486173326%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-get-profile-request/index.html"><span>Get</span><wbr><span>Profile</span><wbr><span><span>Request</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1486173326%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-get-profile-request/index.html">GetProfileRequest</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>actor<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Get detailed profile view of an actor. Does not require auth, but contains relevant metadata with auth.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-43957728%2FClasslikes%2F1119804208" anchor-label="GetProfileResponse" id="-43957728%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-get-profile-response/index.html"><span>Get</span><wbr><span>Profile</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-43957728%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-get-profile-response/index.html">GetProfileResponse</a><span class="token operator"> = </span><a href="-profile-view-detailed/index.html">ProfileViewDetailed</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1831899067%2FClasslikes%2F1119804208" anchor-label="GetProfilesRequest" id="-1831899067%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-get-profiles-request/index.html"><span>Get</span><wbr><span>Profiles</span><wbr><span><span>Request</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1831899067%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-get-profiles-request/index.html">GetProfilesRequest</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>actors<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Get detailed profile views of multiple actors.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2123446189%2FClasslikes%2F1119804208" anchor-label="GetProfilesResponse" id="2123446189%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-get-profiles-response/index.html"><span>Get</span><wbr><span>Profiles</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2123446189%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-get-profiles-response/index.html">GetProfilesResponse</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>profiles<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-profile-view-detailed/index.html">ProfileViewDetailed</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1165937352%2FClasslikes%2F1119804208" anchor-label="GetSuggestionsRequest" id="-1165937352%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-get-suggestions-request/index.html"><span>Get</span><wbr><span>Suggestions</span><wbr><span><span>Request</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1165937352%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-get-suggestions-request/index.html">GetSuggestionsRequest</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>cursor<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>limit<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Get a list of suggested actors. Expected use is discovery of accounts to follow during new account onboarding.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1293422874%2FClasslikes%2F1119804208" anchor-label="GetSuggestionsResponse" id="1293422874%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-get-suggestions-response/index.html"><span>Get</span><wbr><span>Suggestions</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1293422874%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-get-suggestions-response/index.html">GetSuggestionsResponse</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>actors<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-profile-view/index.html">ProfileView</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>cursor<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>recId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>recIdStr<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="739145794%2FClasslikes%2F1119804208" anchor-label="HiddenPostsPref" id="739145794%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-hidden-posts-pref/index.html"><span>Hidden</span><wbr><span>Posts</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="739145794%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-hidden-posts-pref/index.html">HiddenPostsPref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>items<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1299172674%2FClasslikes%2F1119804208" anchor-label="InterestsPref" id="1299172674%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-interests-pref/index.html"><span>Interests</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1299172674%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-interests-pref/index.html">InterestsPref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>tags<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2108406818%2FClasslikes%2F1119804208" anchor-label="KnownFollowers" id="2108406818%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-known-followers/index.html"><span>Known</span><wbr><span><span>Followers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2108406818%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-known-followers/index.html">KnownFollowers</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>count<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>followers<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-profile-view-basic/index.html">ProfileViewBasic</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The subject's followers whom you also follow</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="92312343%2FClasslikes%2F1119804208" anchor-label="LabelerPrefItem" id="92312343%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-labeler-pref-item/index.html"><span>Labeler</span><wbr><span>Pref</span><wbr><span><span>Item</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="92312343%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-labeler-pref-item/index.html">LabelerPrefItem</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>did<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-730527969%2FClasslikes%2F1119804208" anchor-label="LabelersPref" id="-730527969%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-labelers-pref/index.html"><span>Labelers</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-730527969%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-labelers-pref/index.html">LabelersPref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>labelers<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-labeler-pref-item/index.html">LabelerPrefItem</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-462146582%2FClasslikes%2F1119804208" anchor-label="LiveEventPreferences" id="-462146582%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-live-event-preferences/index.html"><span>Live</span><wbr><span>Event</span><wbr><span><span>Preferences</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-462146582%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-live-event-preferences/index.html">LiveEventPreferences</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>hiddenFeedIds<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>hideAllFeeds<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Preferences for live events.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-672157415%2FClasslikes%2F1119804208" anchor-label="MutedWord" id="-672157415%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-muted-word/index.html"><span>Muted</span><wbr><span><span>Word</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-672157415%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-muted-word/index.html">MutedWord</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>actorTarget<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>expiresAt<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>targets<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-muted-word-target/index.html">MutedWordTarget</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A word that the account owner has muted.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1950486483%2FClasslikes%2F1119804208" anchor-label="MutedWordsPref" id="1950486483%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-muted-words-pref/index.html"><span>Muted</span><wbr><span>Words</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1950486483%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-muted-words-pref/index.html">MutedWordsPref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>items<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-muted-word/index.html">MutedWord</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1016831624%2FClasslikes%2F1119804208" anchor-label="MutedWordTarget" id="1016831624%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-muted-word-target/index.html"><span>Muted</span><wbr><span>Word</span><wbr><span><span>Target</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1016831624%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-muted-word-target/index.html">MutedWordTarget</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1887965661%2FClasslikes%2F1119804208" anchor-label="Nux" id="1887965661%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-nux/index.html"><span><span>Nux</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1887965661%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-nux/index.html">Nux</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>completed<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>data<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>expiresAt<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A new user experiences (NUX) storage object</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1354080055%2FClasslikes%2F1119804208" anchor-label="PersonalDetailsPref" id="-1354080055%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-personal-details-pref/index.html"><span>Personal</span><wbr><span>Details</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1354080055%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-personal-details-pref/index.html">PersonalDetailsPref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>birthDate<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1905445110%2FClasslikes%2F1119804208" anchor-label="PostInteractionSettingsPref" id="1905445110%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-post-interaction-settings-pref/index.html"><span>Post</span><wbr><span>Interaction</span><wbr><span>Settings</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1905445110%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-post-interaction-settings-pref/index.html">PostInteractionSettingsPref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>postgateEmbeddingRules<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-post-interaction-settings-pref-postgate-embedding-rules-union/index.html">PostInteractionSettingsPrefPostgateEmbeddingRulesUnion</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>threadgateAllowRules<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-post-interaction-settings-pref-threadgate-allow-rules-union/index.html">PostInteractionSettingsPrefThreadgateAllowRulesUnion</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Default post interaction settings for the account. These values should be applied as default values when creating new posts. These refs should mirror the threadgate and postgate records exactly.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="920808840%2FClasslikes%2F1119804208" anchor-label="PostInteractionSettingsPrefPostgateEmbeddingRulesUnion" id="920808840%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-post-interaction-settings-pref-postgate-embedding-rules-union/index.html"><span>Post</span><wbr><span>Interaction</span><wbr><span>Settings</span><wbr><span>Pref</span><wbr><span>Postgate</span><wbr><span>Embedding</span><wbr><span>Rules</span><wbr><span><span>Union</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="920808840%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-post-interaction-settings-pref-postgate-embedding-rules-union/index.html">PostInteractionSettingsPrefPostgateEmbeddingRulesUnion</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1015416662%2FClasslikes%2F1119804208" anchor-label="PostInteractionSettingsPrefPostgateEmbeddingRulesUnionSerializer" id="1015416662%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-post-interaction-settings-pref-postgate-embedding-rules-union-serializer/index.html"><span>Post</span><wbr><span>Interaction</span><wbr><span>Settings</span><wbr><span>Pref</span><wbr><span>Postgate</span><wbr><span>Embedding</span><wbr><span>Rules</span><wbr><span>Union</span><wbr><span><span>Serializer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1015416662%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-post-interaction-settings-pref-postgate-embedding-rules-union-serializer/index.html">PostInteractionSettingsPrefPostgateEmbeddingRulesUnionSerializer</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1292701150%2FClasslikes%2F1119804208" anchor-label="PostInteractionSettingsPrefPostgateEmbeddingRulesUnionUnknownSerializer" id="1292701150%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-post-interaction-settings-pref-postgate-embedding-rules-union-unknown-serializer/index.html"><span>Post</span><wbr><span>Interaction</span><wbr><span>Settings</span><wbr><span>Pref</span><wbr><span>Postgate</span><wbr><span>Embedding</span><wbr><span>Rules</span><wbr><span>Union</span><wbr><span>Unknown</span><wbr><span><span>Serializer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1292701150%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-post-interaction-settings-pref-postgate-embedding-rules-union-unknown-serializer/index.html">PostInteractionSettingsPrefPostgateEmbeddingRulesUnionUnknownSerializer</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1777169664%2FClasslikes%2F1119804208" anchor-label="PostInteractionSettingsPrefThreadgateAllowRulesUnion" id="-1777169664%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-post-interaction-settings-pref-threadgate-allow-rules-union/index.html"><span>Post</span><wbr><span>Interaction</span><wbr><span>Settings</span><wbr><span>Pref</span><wbr><span>Threadgate</span><wbr><span>Allow</span><wbr><span>Rules</span><wbr><span><span>Union</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1777169664%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-post-interaction-settings-pref-threadgate-allow-rules-union/index.html">PostInteractionSettingsPrefThreadgateAllowRulesUnion</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="321498830%2FClasslikes%2F1119804208" anchor-label="PostInteractionSettingsPrefThreadgateAllowRulesUnionSerializer" id="321498830%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-post-interaction-settings-pref-threadgate-allow-rules-union-serializer/index.html"><span>Post</span><wbr><span>Interaction</span><wbr><span>Settings</span><wbr><span>Pref</span><wbr><span>Threadgate</span><wbr><span>Allow</span><wbr><span>Rules</span><wbr><span>Union</span><wbr><span><span>Serializer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="321498830%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-post-interaction-settings-pref-threadgate-allow-rules-union-serializer/index.html">PostInteractionSettingsPrefThreadgateAllowRulesUnionSerializer</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-555970714%2FClasslikes%2F1119804208" anchor-label="PostInteractionSettingsPrefThreadgateAllowRulesUnionUnknownSerializer" id="-555970714%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-post-interaction-settings-pref-threadgate-allow-rules-union-unknown-serializer/index.html"><span>Post</span><wbr><span>Interaction</span><wbr><span>Settings</span><wbr><span>Pref</span><wbr><span>Threadgate</span><wbr><span>Allow</span><wbr><span>Rules</span><wbr><span>Union</span><wbr><span>Unknown</span><wbr><span><span>Serializer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-555970714%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-post-interaction-settings-pref-threadgate-allow-rules-union-unknown-serializer/index.html">PostInteractionSettingsPrefThreadgateAllowRulesUnionUnknownSerializer</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="515926085%2FClasslikes%2F1119804208" anchor-label="Profile" id="515926085%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-profile/index.html"><span><span>Profile</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="515926085%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-profile/index.html">Profile</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>avatar<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>AtField.Missing<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>banner<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>AtField.Missing<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>createdAt<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>AtField.Missing<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>description<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>AtField.Missing<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>displayName<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>AtField.Missing<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>joinedViaStarterPack<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><a href="../io.github.kikin81.atproto.com.atproto.repo/-strong-ref/index.html">StrongRef</a><span class="token operator">&gt;</span><span class="token operator"> = </span>AtField.Missing<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>labels<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><a href="-profile-labels-union/index.html">ProfileLabelsUnion</a><span class="token operator">&gt;</span><span class="token operator"> = </span>AtField.Missing<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pinnedPost<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><a href="../io.github.kikin81.atproto.com.atproto.repo/-strong-ref/index.html">StrongRef</a><span class="token operator">&gt;</span><span class="token operator"> = </span>AtField.Missing<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pronouns<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>AtField.Missing<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>website<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>AtField.Missing</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A declaration of a Bluesky account profile.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-511204129%2FClasslikes%2F1119804208" anchor-label="ProfileAssociated" id="-511204129%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-profile-associated/index.html"><span>Profile</span><wbr><span><span>Associated</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-511204129%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-profile-associated/index.html">ProfileAssociated</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>activitySubscription<span class="token operator">: </span><a href="-profile-associated-activity-subscription/index.html">ProfileAssociatedActivitySubscription</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>chat<span class="token operator">: </span><a href="-profile-associated-chat/index.html">ProfileAssociatedChat</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>feedgens<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>germ<span class="token operator">: </span><a href="-profile-associated-germ/index.html">ProfileAssociatedGerm</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>labeler<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>lists<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>starterPacks<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-222425741%2FClasslikes%2F1119804208" anchor-label="ProfileAssociatedActivitySubscription" id="-222425741%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-profile-associated-activity-subscription/index.html"><span>Profile</span><wbr><span>Associated</span><wbr><span>Activity</span><wbr><span><span>Subscription</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-222425741%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-profile-associated-activity-subscription/index.html">ProfileAssociatedActivitySubscription</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>allowSubscriptions<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1388932455%2FClasslikes%2F1119804208" anchor-label="ProfileAssociatedChat" id="1388932455%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-profile-associated-chat/index.html"><span>Profile</span><wbr><span>Associated</span><wbr><span><span>Chat</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1388932455%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-profile-associated-chat/index.html">ProfileAssociatedChat</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>allowIncoming<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-418987962%2FClasslikes%2F1119804208" anchor-label="ProfileAssociatedGerm" id="-418987962%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-profile-associated-germ/index.html"><span>Profile</span><wbr><span>Associated</span><wbr><span><span>Germ</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-418987962%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-profile-associated-germ/index.html">ProfileAssociatedGerm</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>messageMeUrl<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>showButtonTo<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-539252819%2FClasslikes%2F1119804208" anchor-label="ProfileLabelsUnion" id="-539252819%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-profile-labels-union/index.html"><span>Profile</span><wbr><span>Labels</span><wbr><span><span>Union</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-539252819%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-profile-labels-union/index.html">ProfileLabelsUnion</a></div><div class="brief "><p class="paragraph">Self-label values, specific to the Bluesky application, on the overall account.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="399284027%2FClasslikes%2F1119804208" anchor-label="ProfileLabelsUnionSerializer" id="399284027%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-profile-labels-union-serializer/index.html"><span>Profile</span><wbr><span>Labels</span><wbr><span>Union</span><wbr><span><span>Serializer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="399284027%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-profile-labels-union-serializer/index.html">ProfileLabelsUnionSerializer</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="193249881%2FClasslikes%2F1119804208" anchor-label="ProfileLabelsUnionUnknownSerializer" id="193249881%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-profile-labels-union-unknown-serializer/index.html"><span>Profile</span><wbr><span>Labels</span><wbr><span>Union</span><wbr><span>Unknown</span><wbr><span><span>Serializer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="193249881%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-profile-labels-union-unknown-serializer/index.html">ProfileLabelsUnionUnknownSerializer</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-501922016%2FClasslikes%2F1119804208" anchor-label="ProfileView" id="-501922016%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-profile-view/index.html"><span>Profile</span><wbr><span><span>View</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-501922016%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-profile-view/index.html">ProfileView</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>associated<span class="token operator">: </span><a href="-profile-associated/index.html">ProfileAssociated</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>avatar<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>createdAt<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>debug<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>description<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>did<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>displayName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>handle<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>indexedAt<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>labels<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../io.github.kikin81.atproto.com.atproto.label/-label/index.html">Label</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pronouns<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>status<span class="token operator">: </span><a href="-status-view/index.html">StatusView</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>verification<span class="token operator">: </span><a href="-verification-state/index.html">VerificationState</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>viewer<span class="token operator">: </span><a href="-viewer-state/index.html">ViewerState</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1776732756%2FClasslikes%2F1119804208" anchor-label="ProfileViewBasic" id="1776732756%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-profile-view-basic/index.html"><span>Profile</span><wbr><span>View</span><wbr><span><span>Basic</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1776732756%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-profile-view-basic/index.html">ProfileViewBasic</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>associated<span class="token operator">: </span><a href="-profile-associated/index.html">ProfileAssociated</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>avatar<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>createdAt<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>debug<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>did<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>displayName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>handle<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>labels<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../io.github.kikin81.atproto.com.atproto.label/-label/index.html">Label</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pronouns<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>status<span class="token operator">: </span><a href="-status-view/index.html">StatusView</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>verification<span class="token operator">: </span><a href="-verification-state/index.html">VerificationState</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>viewer<span class="token operator">: </span><a href="-viewer-state/index.html">ViewerState</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1864087888%2FClasslikes%2F1119804208" anchor-label="ProfileViewDetailed" id="1864087888%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-profile-view-detailed/index.html"><span>Profile</span><wbr><span>View</span><wbr><span><span>Detailed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1864087888%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-profile-view-detailed/index.html">ProfileViewDetailed</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>associated<span class="token operator">: </span><a href="-profile-associated/index.html">ProfileAssociated</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>avatar<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>banner<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>createdAt<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>debug<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>description<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>did<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>displayName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>followersCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>followsCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>handle<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>indexedAt<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>joinedViaStarterPack<span class="token operator">: </span><a href="../io.github.kikin81.atproto.app.bsky.graph/-starter-pack-view-basic/index.html">StarterPackViewBasic</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>labels<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../io.github.kikin81.atproto.com.atproto.label/-label/index.html">Label</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pinnedPost<span class="token operator">: </span><a href="../io.github.kikin81.atproto.com.atproto.repo/-strong-ref/index.html">StrongRef</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>postsCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pronouns<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>status<span class="token operator">: </span><a href="-status-view/index.html">StatusView</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>verification<span class="token operator">: </span><a href="-verification-state/index.html">VerificationState</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>viewer<span class="token operator">: </span><a href="-viewer-state/index.html">ViewerState</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>website<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2017221608%2FClasslikes%2F1119804208" anchor-label="PutPreferencesRequest" id="2017221608%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-put-preferences-request/index.html"><span>Put</span><wbr><span>Preferences</span><wbr><span><span>Request</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2017221608%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-put-preferences-request/index.html">PutPreferencesRequest</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>preferences<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Set the private preferences attached to the account.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1922943337%2FClasslikes%2F1119804208" anchor-label="SavedFeed" id="1922943337%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-saved-feed/index.html"><span>Saved</span><wbr><span><span>Feed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1922943337%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-saved-feed/index.html">SavedFeed</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pinned<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>type<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-752440957%2FClasslikes%2F1119804208" anchor-label="SavedFeedsPref" id="-752440957%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-saved-feeds-pref/index.html"><span>Saved</span><wbr><span>Feeds</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-752440957%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-saved-feeds-pref/index.html">SavedFeedsPref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>pinned<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>saved<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>timelineIndex<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="319617511%2FClasslikes%2F1119804208" anchor-label="SavedFeedsPrefV2" id="319617511%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-saved-feeds-pref-v2/index.html"><span>Saved</span><wbr><span>Feeds</span><wbr><span>Pref</span><wbr><span><span>V2</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="319617511%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-saved-feeds-pref-v2/index.html">SavedFeedsPrefV2</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>items<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-saved-feed/index.html">SavedFeed</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1602150491%2FClasslikes%2F1119804208" anchor-label="SearchActorsRequest" id="-1602150491%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-search-actors-request/index.html"><span>Search</span><wbr><span>Actors</span><wbr><span><span>Request</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1602150491%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-search-actors-request/index.html">SearchActorsRequest</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>cursor<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>limit<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>q<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>term<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Find actors (profiles) matching search criteria. Does not require auth.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="655717453%2FClasslikes%2F1119804208" anchor-label="SearchActorsResponse" id="655717453%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-search-actors-response/index.html"><span>Search</span><wbr><span>Actors</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="655717453%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-search-actors-response/index.html">SearchActorsResponse</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>actors<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-profile-view/index.html">ProfileView</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>cursor<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-750723162%2FClasslikes%2F1119804208" anchor-label="SearchActorsTypeaheadRequest" id="-750723162%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-search-actors-typeahead-request/index.html"><span>Search</span><wbr><span>Actors</span><wbr><span>Typeahead</span><wbr><span><span>Request</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-750723162%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-search-actors-typeahead-request/index.html">SearchActorsTypeaheadRequest</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>limit<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>q<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>term<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Find actor suggestions for a prefix search term. Expected use is for auto-completion during text field entry. Does not require auth.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1280160876%2FClasslikes%2F1119804208" anchor-label="SearchActorsTypeaheadResponse" id="1280160876%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-search-actors-typeahead-response/index.html"><span>Search</span><wbr><span>Actors</span><wbr><span>Typeahead</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1280160876%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-search-actors-typeahead-response/index.html">SearchActorsTypeaheadResponse</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>actors<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-profile-view-basic/index.html">ProfileViewBasic</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1097664702%2FClasslikes%2F1119804208" anchor-label="Status" id="-1097664702%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-status/index.html"><span><span>Status</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1097664702%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-status/index.html">Status</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>createdAt<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>durationMinutes<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">&gt;</span><span class="token operator"> = </span>AtField.Missing<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>embed<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><a href="-status-embed-union/index.html">StatusEmbedUnion</a><span class="token operator">&gt;</span><span class="token operator"> = </span>AtField.Missing<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>status<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A declaration of a Bluesky account status.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-90548436%2FClasslikes%2F1119804208" anchor-label="StatusEmbedUnion" id="-90548436%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-status-embed-union/index.html"><span>Status</span><wbr><span>Embed</span><wbr><span><span>Union</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-90548436%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-status-embed-union/index.html">StatusEmbedUnion</a></div><div class="brief "><p class="paragraph">An optional embed associated with the status.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1867435014%2FClasslikes%2F1119804208" anchor-label="StatusEmbedUnionSerializer" id="-1867435014%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-status-embed-union-serializer/index.html"><span>Status</span><wbr><span>Embed</span><wbr><span>Union</span><wbr><span><span>Serializer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1867435014%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-status-embed-union-serializer/index.html">StatusEmbedUnionSerializer</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1115234490%2FClasslikes%2F1119804208" anchor-label="StatusEmbedUnionUnknownSerializer" id="1115234490%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-status-embed-union-unknown-serializer/index.html"><span>Status</span><wbr><span>Embed</span><wbr><span>Union</span><wbr><span>Unknown</span><wbr><span><span>Serializer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1115234490%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-status-embed-union-unknown-serializer/index.html">StatusEmbedUnionUnknownSerializer</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="668864413%2FClasslikes%2F1119804208" anchor-label="StatusView" id="668864413%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-status-view/index.html"><span>Status</span><wbr><span><span>View</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="668864413%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-status-view/index.html">StatusView</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>cid<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>embed<span class="token operator">: </span><a href="-status-view-embed-union/index.html">StatusViewEmbedUnion</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>expiresAt<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isActive<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isDisabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>labels<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../io.github.kikin81.atproto.com.atproto.label/-label/index.html">Label</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>record<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>status<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>uri<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-533530169%2FClasslikes%2F1119804208" anchor-label="StatusViewEmbedUnion" id="-533530169%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-status-view-embed-union/index.html"><span>Status</span><wbr><span>View</span><wbr><span>Embed</span><wbr><span><span>Union</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-533530169%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-status-view-embed-union/index.html">StatusViewEmbedUnion</a></div><div class="brief "><p class="paragraph">An optional embed associated with the status.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="937398485%2FClasslikes%2F1119804208" anchor-label="StatusViewEmbedUnionSerializer" id="937398485%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-status-view-embed-union-serializer/index.html"><span>Status</span><wbr><span>View</span><wbr><span>Embed</span><wbr><span>Union</span><wbr><span><span>Serializer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="937398485%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-status-view-embed-union-serializer/index.html">StatusViewEmbedUnionSerializer</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1790138497%2FClasslikes%2F1119804208" anchor-label="StatusViewEmbedUnionUnknownSerializer" id="-1790138497%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-status-view-embed-union-unknown-serializer/index.html"><span>Status</span><wbr><span>View</span><wbr><span>Embed</span><wbr><span>Union</span><wbr><span>Unknown</span><wbr><span><span>Serializer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1790138497%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-status-view-embed-union-unknown-serializer/index.html">StatusViewEmbedUnionUnknownSerializer</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-994981470%2FClasslikes%2F1119804208" anchor-label="ThreadViewPref" id="-994981470%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-thread-view-pref/index.html"><span>Thread</span><wbr><span>View</span><wbr><span><span>Pref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-994981470%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-thread-view-pref/index.html">ThreadViewPref</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>sort<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-54684199%2FClasslikes%2F1119804208" anchor-label="VerificationPrefs" id="-54684199%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-verification-prefs/index.html"><span>Verification</span><wbr><span><span>Prefs</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-54684199%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-verification-prefs/index.html">VerificationPrefs</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>hideBadges<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Preferences for how verified accounts appear in the app.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1767136488%2FClasslikes%2F1119804208" anchor-label="VerificationState" id="-1767136488%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-verification-state/index.html"><span>Verification</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1767136488%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-verification-state/index.html">VerificationState</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>trustedVerifierStatus<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>verifications<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-verification-view/index.html">VerificationView</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>verifiedStatus<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Represents the verification information about the user this object is attached to.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="329156564%2FClasslikes%2F1119804208" anchor-label="VerificationView" id="329156564%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-verification-view/index.html"><span>Verification</span><wbr><span><span>View</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="329156564%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-verification-view/index.html">VerificationView</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>createdAt<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isValid<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>issuer<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>uri<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">An individual verification for an associated subject.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-773587313%2FClasslikes%2F1119804208" anchor-label="ViewerState" id="-773587313%2FClasslikes%2F1119804208" data-filterable-set=":at-protocol-models/commonMain"></a>
+          <div class="table-row" data-filterable-current=":at-protocol-models/commonMain" data-filterable-set=":at-protocol-models/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-viewer-state/index.html"><span>Viewer</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-773587313%2FClasslikes%2F1119804208"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":at-protocol-models/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-viewer-state/index.html">ViewerState</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>activitySubscription<span class="token operator">: </span><a href="../io.github.kikin81.atproto.app.bsky.notification/-activity-subscription/index.html">ActivitySubscription</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>blockedBy<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>blocking<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>blockingByList<span class="token operator">: </span><a href="../io.github.kikin81.atproto.app.bsky.graph/-list-view-basic/index.html">ListViewBasic</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>followedBy<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>following<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>knownFollowers<span class="token operator">: </span><a href="-known-followers/index.html">KnownFollowers</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>muted<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>mutedByList<span class="token operator">: </span><a href="../io.github.kikin81.atproto.app.bsky.graph/-list-view-basic/index.html">ListViewBasic</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Metadata about the requesting account's relationship with the subject account. Only has meaningful content for authed requests.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2026 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
