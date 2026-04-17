@@ -8,6 +8,7 @@ unions, typed value classes, XRPC service interfaces, and KDoc documentation.
 
 **Repo:** https://github.com/kikin81/atproto-kotlin
 **Maven Central:** `io.github.kikin81.atproto:at-protocol-*`
+**API Docs:** https://kikin81.github.io/atproto-kotlin/api/
 
 ## Modules
 
