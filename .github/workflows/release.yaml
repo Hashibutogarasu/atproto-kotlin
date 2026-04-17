@@ -115,8 +115,8 @@ jobs:
 
   # ── Release + publish ─────────────────────────────────────────────
   # Only runs after all gate jobs pass. Semantic-release analyzes
-  # commits, bumps version, tags, publishes to GitHub Packages.
-  # Then publish-to-central uploads the same version to Maven Central.
+  # commits, bumps version, tags, and runs `./gradlew publish` which
+  # publishes to both GitHub Packages and Maven Central in one step.
 
   release:
     name: Release
@@ -157,44 +157,3 @@ jobs:
         with:
           github-token: ${{ secrets.RELEASE_PAT }}
           checkout-repo: false
-
-  publish-to-central:
-    name: Publish to Maven Central
-    needs: release
-    if: needs.release.outputs.new-release-published == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout release tag
-        uses: actions/checkout@v6
-        with:
-          ref: v${{ needs.release.outputs.new-release-version }}
-
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        with:
-          distribution: zulu
-          java-version-file: .java-version
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: at-protocol-generator/package-lock.json
-
-      - name: Install lexicon corpus
-        working-directory: at-protocol-generator
-        run: |
-          npm ci
-          npx lex install --ci
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
-
-      - name: Publish to Maven Central (user-managed)
-        run: ./gradlew publishToMavenCentral --no-configuration-cache --no-build-cache
-        env:
-          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SIGNING_KEY }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}

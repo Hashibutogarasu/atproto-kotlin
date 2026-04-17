@@ -118,17 +118,12 @@ version on `feat:` / `fix:` / `BREAKING CHANGE`:
 - `BREAKING CHANGE:` footer → major bump
 - `chore:` / `ci:` / `docs:` / `test:` / `refactor:` → no release
 
-The release workflow has two jobs:
-
-1. **release** — semantic-release analyzes commits, bumps
-   `gradle.properties`, creates a git tag + GitHub release, then runs
-   `./gradlew publish` via the `gradle-semantic-release-plugin` to
-   upload artifacts to **GitHub Packages**.
-2. **publish-to-central** — checks out the exact tag semantic-release
-   just pushed and runs `./gradlew publishToMavenCentral` via the
-   [vanniktech maven-publish plugin](https://vanniktech.github.io/gradle-maven-publish-plugin/),
-   which stages + signs + bundles all publications and uploads them
-   to Sonatype's Central Publisher Portal.
+The release workflow runs a single **release** job: semantic-release
+analyzes commits, bumps `gradle.properties`, creates a git tag + GitHub
+release, then runs `./gradlew publish` via the
+`gradle-semantic-release-plugin` to upload artifacts to **both** GitHub
+Packages and Maven Central (via the
+[vanniktech maven-publish plugin](https://vanniktech.github.io/gradle-maven-publish-plugin/)).
 
 Currently Central uploads go into **USER_MANAGED** state (pending
 release) — review in the [Central Portal deployments dashboard](https://central.sonatype.com/publishing/deployments)
