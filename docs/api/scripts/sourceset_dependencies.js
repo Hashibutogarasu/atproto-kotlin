@@ -1,1 +1,1 @@
-sourceset_dependencies = '{":at-protocol-runtime/commonMain":[],":at-protocol-runtime/jvmMain":[":at-protocol-runtime/commonMain"],":at-protocol-oauth/main":[]}'
+sourceset_dependencies = '{":at-protocol-models/commonMain":[],":at-protocol-models/jvmMain":[":at-protocol-models/commonMain"],":at-protocol-runtime/commonMain":[],":at-protocol-runtime/jvmMain":[":at-protocol-runtime/commonMain"],":at-protocol-oauth/main":[]}'
