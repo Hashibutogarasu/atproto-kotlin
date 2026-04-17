@@ -162,12 +162,13 @@ jobs:
 
       - name: Stage API docs for GitHub Pages
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           rm -rf docs/api
           cp -r build/dokka/html docs/api
-          git add docs/api
-          git diff --staged --quiet || git commit -m "docs: update API documentation [skip ci]"
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: update API documentation [skip ci]"
+          file_pattern: "docs/api/**"
 
       - id: release
         uses: open-turo/actions-jvm/release@v2
