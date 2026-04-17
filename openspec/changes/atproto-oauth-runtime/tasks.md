@@ -103,7 +103,7 @@
 
 ## 11. Publication
 
-- [ ] 11.1 Verify `./gradlew :at-protocol-oauth:publishToMavenLocal` produces a valid artifact
+- [x] 11.1 Verify `./gradlew :at-protocol-oauth:publishToMavenLocal` produces a valid artifact
 - [x] 11.2 Commit the `AuthProvider` change as `BREAKING CHANGE:` to trigger major version bump (2.0.0)
-- [ ] 11.3 After release, verify `io.github.kikin81.atproto:at-protocol-oauth:2.0.0` resolves from `mavenCentral()`
+- [x] 11.3 After release, verify `io.github.kikin81.atproto:at-protocol-oauth:2.0.0` resolves from `mavenCentral()`
 - [x] 11.4 Update the root README's consumer snippet to include the OAuth module coordinate
