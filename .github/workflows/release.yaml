@@ -145,6 +145,28 @@ jobs:
           npm ci
           npx lex install --ci
 
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version-file: .java-version
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Generate API docs
+        run: ./gradlew :dokkaGeneratePublicationHtml --no-configuration-cache
+
+      - name: Stage API docs for GitHub Pages
+        run: |
+          rm -rf docs/api
+          cp -r build/dokka/html docs/api
+          git add docs/api
+          git diff --staged --quiet || git commit -m "docs: update API documentation [skip ci]"
+
       - id: release
         uses: open-turo/actions-jvm/release@v2
         env:

@@ -11,6 +11,7 @@ ready to drop into a Ktor client.
 [![Release](https://github.com/kikin81/atproto-kotlin/actions/workflows/release.yaml/badge.svg)](https://github.com/kikin81/atproto-kotlin/actions/workflows/release.yaml)
 [![Latest release](https://img.shields.io/github/v/release/kikin81/atproto-kotlin?label=release&color=blue)](https://github.com/kikin81/atproto-kotlin/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![API Docs](https://img.shields.io/badge/docs-API_Reference-blue)](https://kikin81.github.io/atproto-kotlin/api/)
 
 ## Modules
 

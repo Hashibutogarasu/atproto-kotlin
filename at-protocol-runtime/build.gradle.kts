@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.dokka)
     alias(libs.plugins.vanniktech.maven.publish)
 }
 
@@ -67,6 +68,7 @@ kotlin {
 // `isRequired=false` when keys aren't available), so local
 // `./gradlew build` stays unsigned and works without GPG setup.
 mavenPublishing {
+    configure(com.vanniktech.maven.publish.KotlinMultiplatform(javadocJar = com.vanniktech.maven.publish.JavadocJar.Dokka("dokkaGenerateModuleHtml")))
     publishToMavenCentral(automaticRelease = false)
     signAllPublications()
 

@@ -4,10 +4,17 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.spotless)
+    alias(libs.plugins.dokka)
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.vanniktech.maven.publish) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt) apply false
+}
+
+dependencies {
+    dokka(project(":at-protocol-runtime"))
+    dokka(project(":at-protocol-models"))
+    dokka(project(":at-protocol-oauth"))
 }
 
 allprojects {

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.dokka)
     alias(libs.plugins.vanniktech.maven.publish)
 }
 
@@ -25,6 +26,7 @@ tasks.test {
 }
 
 mavenPublishing {
+    configure(com.vanniktech.maven.publish.JavaLibrary(javadocJar = com.vanniktech.maven.publish.JavadocJar.Dokka("dokkaGenerateModuleHtml"), sourcesJar = true))
     publishToMavenCentral(automaticRelease = false)
     signAllPublications()
 

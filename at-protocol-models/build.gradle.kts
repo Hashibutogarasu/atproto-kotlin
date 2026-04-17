@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.dokka)
     alias(libs.plugins.vanniktech.maven.publish)
 }
 
@@ -52,6 +53,7 @@ tasks.matching {
 // GitHub Packages repository block so `./gradlew publish` keeps
 // hitting the GH Packages endpoint via semantic-release's gradle plugin.
 mavenPublishing {
+    configure(com.vanniktech.maven.publish.KotlinMultiplatform(javadocJar = com.vanniktech.maven.publish.JavadocJar.Dokka("dokkaGenerateModuleHtml")))
     publishToMavenCentral(automaticRelease = false)
     signAllPublications()
 

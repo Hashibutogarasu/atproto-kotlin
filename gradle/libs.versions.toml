@@ -7,6 +7,7 @@ kotlinpoet = "1.18.1"
 junit = "5.11.0"
 spotless = "7.0.2"
 ktlint = "1.4.1"
+dokka = "2.0.0"
 vanniktech-maven-publish = "0.36.0"
 
 # Android sample
@@ -65,4 +66,5 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-maven-publish" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
