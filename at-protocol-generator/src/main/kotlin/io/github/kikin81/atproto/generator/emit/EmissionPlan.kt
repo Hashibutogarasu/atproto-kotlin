@@ -30,6 +30,9 @@ public data class UnionSite(
     public val fieldName: String,
     public val refs: List<DefKey>,
     public val fqName: FqName,
+    public val description: String? = null,
+    public val deprecated: Boolean = false,
+    public val deprecatedMessage: String? = null,
 )
 
 /**
@@ -189,6 +192,9 @@ public class EmissionPlan(
                         fieldName = fieldName,
                         refs = targets,
                         fqName = unionFq,
+                        description = ft.description,
+                        deprecated = ft.deprecated,
+                        deprecatedMessage = ft.deprecatedMessage,
                     )
                     for (target in targets) {
                         if (classMap.containsKey(target)) {

@@ -52,11 +52,14 @@ public class XrpcGenerator(
                     origin = key.nsid,
                     params = def.parameters,
                     shape = Shape.ReadShape,
+                    description = def.description,
+                    deprecated = def.deprecated,
+                    deprecatedMessage = def.deprecatedMessage,
                 ),
             )
         }
         if (response != null) {
-            emitResponse(key, response.fqName, def.output?.schema)?.let { out += it }
+            emitResponse(key, response.fqName, def.output?.schema, def.deprecated, def.deprecatedMessage)?.let { out += it }
         }
         return out
     }
@@ -78,6 +81,9 @@ public class XrpcGenerator(
                         origin = key.nsid,
                         obj = inputSchema,
                         shape = Shape.MutationShape,
+                        description = def.description,
+                        deprecated = def.deprecated,
+                        deprecatedMessage = def.deprecatedMessage,
                     ),
                 )
                 // Procedure with no input body but URL params: same constraint
@@ -90,6 +96,9 @@ public class XrpcGenerator(
                         origin = key.nsid,
                         params = def.parameters,
                         shape = Shape.ReadShape,
+                        description = def.description,
+                        deprecated = def.deprecated,
+                        deprecatedMessage = def.deprecatedMessage,
                     ),
                 )
                 else -> System.err.println(
@@ -98,7 +107,7 @@ public class XrpcGenerator(
             }
         }
         if (response != null) {
-            emitResponse(key, response.fqName, def.output?.schema)?.let { out += it }
+            emitResponse(key, response.fqName, def.output?.schema, def.deprecated, def.deprecatedMessage)?.let { out += it }
         }
         return out
     }
@@ -107,6 +116,8 @@ public class XrpcGenerator(
         key: DefKey,
         responseFq: FqName,
         schema: io.github.kikin81.atproto.generator.ir.FieldType?,
+        deprecated: Boolean = false,
+        deprecatedMessage: String? = null,
     ): XrpcEmitted? = when (schema) {
         is ObjectType -> XrpcEmitted.Class(
             responseFq,
@@ -115,6 +126,8 @@ public class XrpcGenerator(
                 origin = key.nsid,
                 obj = schema,
                 shape = Shape.ReadShape,
+                deprecated = deprecated,
+                deprecatedMessage = deprecatedMessage,
             ),
         )
         is RefType -> {

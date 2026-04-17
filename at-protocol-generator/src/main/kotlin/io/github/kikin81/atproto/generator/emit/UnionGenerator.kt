@@ -52,7 +52,7 @@ public class UnionGenerator(
         //    while `PostEmbed` itself lives under `app.bsky.feed`). v1 uses a
         //    plain interface; static exhaustive `when` is lost but runtime
         //    polymorphism via `Unknown` is preserved.
-        val sealedInterface = TypeSpec.interfaceBuilder(site.fqName.simpleName)
+        val interfaceBuilder = TypeSpec.interfaceBuilder(site.fqName.simpleName)
             .addModifiers(KModifier.PUBLIC)
             .addSuperinterface(OPEN_UNION_MEMBER)
             .addAnnotation(
@@ -61,7 +61,11 @@ public class UnionGenerator(
                     .build(),
             )
             .addType(buildUnknownNested(unionCn, unknownSerializerCn))
-            .build()
+        site.description?.let { interfaceBuilder.addKdoc("%L", it.sanitizeForKdoc()) }
+        if (site.deprecated) {
+            interfaceBuilder.addAnnotation(deprecatedAnnotation(site.deprecatedMessage))
+        }
+        val sealedInterface = interfaceBuilder.build()
 
         // 2. Unknown serializer object.
         val unknownSerializerType = TypeSpec.objectBuilder(unknownSerializerCn.simpleName)

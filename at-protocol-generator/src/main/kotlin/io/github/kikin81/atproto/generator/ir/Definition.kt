@@ -2,6 +2,9 @@ package io.github.kikin81.atproto.generator.ir
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonPrimitive
 
 /**
  * Top-level definition appearing under `defs` in a lexicon document.
@@ -14,6 +17,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed interface Definition {
     public val description: String?
+    public val deprecated: Boolean
+    public val deprecatedMessage: String?
 }
 
 public sealed interface PrimaryDefinition : Definition
@@ -22,74 +27,107 @@ public sealed interface PrimaryDefinition : Definition
 @SerialName("record")
 public data class RecordDef(
     override val description: String? = null,
+    @SerialName("deprecated") private val _deprecated: JsonElement? = null,
     public val key: String,
     public val record: ObjectType,
-) : PrimaryDefinition
+) : PrimaryDefinition {
+    override val deprecated: Boolean get() = _deprecated != null && _deprecated !is JsonNull
+    override val deprecatedMessage: String? get() = (_deprecated as? JsonPrimitive)?.takeIf { it.isString }?.content
+}
 
 @Serializable
 @SerialName("query")
 public data class QueryDef(
     override val description: String? = null,
+    @SerialName("deprecated") private val _deprecated: JsonElement? = null,
     public val parameters: ParamsType? = null,
     public val output: HttpBody? = null,
     public val errors: List<HttpError>? = null,
-) : PrimaryDefinition
+) : PrimaryDefinition {
+    override val deprecated: Boolean get() = _deprecated != null && _deprecated !is JsonNull
+    override val deprecatedMessage: String? get() = (_deprecated as? JsonPrimitive)?.takeIf { it.isString }?.content
+}
 
 @Serializable
 @SerialName("procedure")
 public data class ProcedureDef(
     override val description: String? = null,
+    @SerialName("deprecated") private val _deprecated: JsonElement? = null,
     public val parameters: ParamsType? = null,
     public val input: HttpBody? = null,
     public val output: HttpBody? = null,
     public val errors: List<HttpError>? = null,
-) : PrimaryDefinition
+) : PrimaryDefinition {
+    override val deprecated: Boolean get() = _deprecated != null && _deprecated !is JsonNull
+    override val deprecatedMessage: String? get() = (_deprecated as? JsonPrimitive)?.takeIf { it.isString }?.content
+}
 
 @Serializable
 @SerialName("subscription")
 public data class SubscriptionDef(
     override val description: String? = null,
+    @SerialName("deprecated") private val _deprecated: JsonElement? = null,
     public val parameters: ParamsType? = null,
     public val message: SubscriptionMessage? = null,
     public val errors: List<HttpError>? = null,
-) : PrimaryDefinition
+) : PrimaryDefinition {
+    override val deprecated: Boolean get() = _deprecated != null && _deprecated !is JsonNull
+    override val deprecatedMessage: String? get() = (_deprecated as? JsonPrimitive)?.takeIf { it.isString }?.content
+}
 
 @Serializable
 @SerialName("object")
 public data class ObjectDef(
     override val description: String? = null,
+    @SerialName("deprecated") private val _deprecated: JsonElement? = null,
     public val required: List<String>? = null,
     public val nullable: List<String>? = null,
     public val properties: Map<String, FieldType> = emptyMap(),
-) : Definition
+) : Definition {
+    override val deprecated: Boolean get() = _deprecated != null && _deprecated !is JsonNull
+    override val deprecatedMessage: String? get() = (_deprecated as? JsonPrimitive)?.takeIf { it.isString }?.content
+}
 
 @Serializable
 @SerialName("token")
 public data class TokenDef(
     override val description: String? = null,
-) : Definition
+    @SerialName("deprecated") private val _deprecated: JsonElement? = null,
+) : Definition {
+    override val deprecated: Boolean get() = _deprecated != null && _deprecated !is JsonNull
+    override val deprecatedMessage: String? get() = (_deprecated as? JsonPrimitive)?.takeIf { it.isString }?.content
+}
 
 @Serializable
 @SerialName("params")
 public data class ParamsDefTopLevel(
     override val description: String? = null,
+    @SerialName("deprecated") private val _deprecated: JsonElement? = null,
     public val required: List<String>? = null,
     public val properties: Map<String, FieldType> = emptyMap(),
-) : Definition
+) : Definition {
+    override val deprecated: Boolean get() = _deprecated != null && _deprecated !is JsonNull
+    override val deprecatedMessage: String? get() = (_deprecated as? JsonPrimitive)?.takeIf { it.isString }?.content
+}
 
 @Serializable
 @SerialName("array")
 public data class ArrayDefTopLevel(
     override val description: String? = null,
+    @SerialName("deprecated") private val _deprecated: JsonElement? = null,
     public val items: FieldType,
     public val minLength: Int? = null,
     public val maxLength: Int? = null,
-) : Definition
+) : Definition {
+    override val deprecated: Boolean get() = _deprecated != null && _deprecated !is JsonNull
+    override val deprecatedMessage: String? get() = (_deprecated as? JsonPrimitive)?.takeIf { it.isString }?.content
+}
 
 @Serializable
 @SerialName("string")
 public data class StringDefTopLevel(
     override val description: String? = null,
+    @SerialName("deprecated") private val _deprecated: JsonElement? = null,
     public val format: String? = null,
     public val minLength: Int? = null,
     public val maxLength: Int? = null,
@@ -99,7 +137,10 @@ public data class StringDefTopLevel(
     public val enum: List<String>? = null,
     public val default: String? = null,
     public val const: String? = null,
-) : Definition
+) : Definition {
+    override val deprecated: Boolean get() = _deprecated != null && _deprecated !is JsonNull
+    override val deprecatedMessage: String? get() = (_deprecated as? JsonPrimitive)?.takeIf { it.isString }?.content
+}
 
 @Serializable
 public data class HttpBody(

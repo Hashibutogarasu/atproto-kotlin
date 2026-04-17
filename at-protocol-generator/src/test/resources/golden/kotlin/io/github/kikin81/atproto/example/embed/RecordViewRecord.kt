@@ -23,5 +23,8 @@ public data class RecordViewRecord(
   public val embeds: AtField<List<RecordViewRecordEmbedsUnion>> = AtField.Missing,
   public val indexedAt: Datetime,
   public val uri: AtUri,
+  /**
+   * The record data itself.
+   */
   public val `value`: JsonObject,
 ) : RecordViewRecordUnion

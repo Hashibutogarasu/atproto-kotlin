@@ -51,18 +51,23 @@ public class ModelGenerator(
         key = key,
         required = def.required.orEmpty().toSet(),
         properties = def.properties,
+        description = def.description,
+        deprecated = def.deprecated,
+        deprecatedMessage = def.deprecatedMessage,
     )
 
     public fun emitForParamsDef(key: DefKey, def: ParamsDefTopLevel): List<TypeSpec> = emitObjectBacked(
         key = key,
         required = def.required.orEmpty().toSet(),
         properties = def.properties,
+        description = def.description,
+        deprecated = def.deprecated,
+        deprecatedMessage = def.deprecatedMessage,
     )
 
     public fun emitForRecordDef(key: DefKey, def: RecordDef): List<TypeSpec> {
         val primary = plan.primaryFqName(key)
             ?: error("RecordDef $key missing Primary FqName in plan")
-        // Records are mutation-rooted; their primary shape is the mutation shape.
         val type = buildClass(
             fqName = primary,
             origin = key.nsid,
@@ -70,6 +75,9 @@ public class ModelGenerator(
             properties = def.record.properties,
             shape = Shape.MutationShape,
             supertypes = plan.unionMembership[key] ?: emptySet(),
+            description = def.description,
+            deprecated = def.deprecated,
+            deprecatedMessage = def.deprecatedMessage,
         )
         return listOf(type)
     }
@@ -78,6 +86,9 @@ public class ModelGenerator(
         key: DefKey,
         required: Set<String>,
         properties: Map<String, FieldType>,
+        description: String? = null,
+        deprecated: Boolean = false,
+        deprecatedMessage: String? = null,
     ): List<TypeSpec> {
         val primary = plan.primaryFqName(key) ?: return emptyList()
         val input = plan.inputFqName(key)
@@ -85,10 +96,9 @@ public class ModelGenerator(
         val supertypes = plan.unionMembership[key] ?: emptySet()
 
         return if (input != null) {
-            // Contextual split — Primary is the read-shape, Input is the mutation-shape.
             listOf(
-                buildClass(primary, key.nsid, required, properties, Shape.ReadShape, supertypes),
-                buildClass(input, key.nsid, required, properties, Shape.MutationShape, emptySet()),
+                buildClass(primary, key.nsid, required, properties, Shape.ReadShape, supertypes, description, deprecated, deprecatedMessage),
+                buildClass(input, key.nsid, required, properties, Shape.MutationShape, emptySet(), description, deprecated, deprecatedMessage),
             )
         } else {
             val shape = when (ctx) {
@@ -96,7 +106,7 @@ public class ModelGenerator(
                 UsageContext.Both -> Shape.MutationShape
                 UsageContext.Read, null -> Shape.ReadShape
             }
-            listOf(buildClass(primary, key.nsid, required, properties, shape, supertypes))
+            listOf(buildClass(primary, key.nsid, required, properties, shape, supertypes, description, deprecated, deprecatedMessage))
         }
     }
 
@@ -107,6 +117,9 @@ public class ModelGenerator(
         properties: Map<String, FieldType>,
         shape: Shape,
         supertypes: Set<FqName>,
+        description: String? = null,
+        deprecated: Boolean = false,
+        deprecatedMessage: String? = null,
     ): TypeSpec {
         val sortedPropsPreview = properties.toSortedMap()
         val builder = TypeSpec.classBuilder(fqName.simpleName)
@@ -116,17 +129,17 @@ public class ModelGenerator(
             builder.addModifiers(KModifier.DATA)
         }
 
+        description?.let { builder.addKdoc("%L", it.sanitizeForKdoc()) }
+        if (deprecated) {
+            builder.addAnnotation(deprecatedAnnotation(deprecatedMessage))
+        }
+
         for (st in supertypes.sortedBy { it.toString() }) {
             builder.addSuperinterface(ClassName(st.pkg, st.simpleName))
         }
 
         val ctor = FunSpec.constructorBuilder()
         val sortedProps = sortedPropsPreview
-        // Track whether any property actually picked up an experimental-API
-        // annotation (currently only `@EncodeDefault(NEVER)` on mutation-side
-        // optional fields). If not, we skip the class-level `@OptIn` to keep
-        // the emitted source cosmetically clean — no reason to pull in
-        // `ExperimentalSerializationApi` on a class with all-required fields.
         var needsOptIn = false
 
         for ((name, ft) in sortedProps) {
@@ -141,6 +154,10 @@ public class ModelGenerator(
 
             val prop = PropertySpec.builder(name, propType)
                 .initializer(name)
+            ft.description?.let { prop.addKdoc("%L", it.sanitizeForKdoc()) }
+            if (ft.deprecated) {
+                prop.addAnnotation(deprecatedAnnotation(ft.deprecatedMessage))
+            }
             extraAnnotations.forEach { ann ->
                 prop.addAnnotation(ann)
                 if (ann.typeName == ENCODE_DEFAULT) needsOptIn = true
@@ -208,6 +225,9 @@ public class ModelGenerator(
         origin: Nsid,
         obj: ObjectType,
         shape: Shape,
+        description: String? = null,
+        deprecated: Boolean = false,
+        deprecatedMessage: String? = null,
     ): TypeSpec = buildClass(
         fqName = fqName,
         origin = origin,
@@ -215,6 +235,9 @@ public class ModelGenerator(
         properties = obj.properties,
         shape = shape,
         supertypes = emptySet(),
+        description = description,
+        deprecated = deprecated,
+        deprecatedMessage = deprecatedMessage,
     )
 
     public fun buildFromParamsType(
@@ -222,6 +245,9 @@ public class ModelGenerator(
         origin: Nsid,
         params: ParamsType,
         shape: Shape,
+        description: String? = null,
+        deprecated: Boolean = false,
+        deprecatedMessage: String? = null,
     ): TypeSpec = buildClass(
         fqName = fqName,
         origin = origin,
@@ -229,5 +255,8 @@ public class ModelGenerator(
         properties = params.properties,
         shape = shape,
         supertypes = emptySet(),
+        description = description,
+        deprecated = deprecated,
+        deprecatedMessage = deprecatedMessage,
     )
 }

@@ -6,6 +6,9 @@ import io.github.kikin81.atproto.runtime.XrpcClient
 public class ExampleService(
   private val client: XrpcClient,
 ) {
+  /**
+   * Round-trips a Shared value through a procedure.
+   */
   public suspend fun sendShared(request: SendSharedRequest): SendSharedResponse = client.procedure(
       nsid = "example.sendShared",
       params = NoXrpcParams,

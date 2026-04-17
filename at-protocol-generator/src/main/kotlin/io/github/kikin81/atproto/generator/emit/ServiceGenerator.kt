@@ -136,6 +136,10 @@ public class ServiceGenerator(
         val fn = FunSpec.builder(methodName)
             .addModifiers(KModifier.PUBLIC, KModifier.SUSPEND)
             .returns(returnType)
+        def.description?.let { fn.addKdoc("%L", it.sanitizeForKdoc()) }
+        if (def.deprecated) {
+            fn.addAnnotation(deprecatedAnnotation(def.deprecatedMessage))
+        }
 
         if (request != null) {
             val requestCn = ClassName(request.fqName.pkg, request.fqName.simpleName)
@@ -185,13 +189,15 @@ public class ServiceGenerator(
         val fn = FunSpec.builder(methodName)
             .addModifiers(KModifier.PUBLIC, KModifier.SUSPEND)
             .returns(returnType)
+        def.description?.let { fn.addKdoc("%L", it.sanitizeForKdoc()) }
+        if (def.deprecated) {
+            fn.addAnnotation(deprecatedAnnotation(def.deprecatedMessage))
+        }
 
         val inputSchema = def.input?.schema
         val hasInputBody = inputSchema is ObjectType
 
         if (hasInputBody && request != null) {
-            // Procedure with JSON input body. The `request` parameter represents
-            // the input body; no URL params are emitted.
             val requestCn = ClassName(request.fqName.pkg, request.fqName.simpleName)
             val param = ParameterSpec.builder("request", requestCn)
             val obj = inputSchema as ObjectType
