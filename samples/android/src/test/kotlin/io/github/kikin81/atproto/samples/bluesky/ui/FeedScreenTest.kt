@@ -2,7 +2,9 @@ package io.github.kikin81.atproto.samples.bluesky.ui
 
 import io.github.kikin81.atproto.app.bsky.embed.ImagesView
 import io.github.kikin81.atproto.app.bsky.feed.GetTimelineResponse
+import io.github.kikin81.atproto.app.bsky.feed.Post
 import io.github.kikin81.atproto.app.bsky.feed.PostViewEmbedUnion
+import io.github.kikin81.atproto.runtime.decodeRecord
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
@@ -37,7 +39,7 @@ class FeedScreenTest {
 
         // Helper under test
         assertEquals("https://cdn.bsky.app/img/thumb.jpg", extractFirstImageThumb(post))
-        assertEquals("hello world", extractPostText(post))
+        assertEquals("hello world", post.record.decodeRecord<Post>().text)
     }
 
     @Test
@@ -56,7 +58,7 @@ class FeedScreenTest {
         // Unknown — thumb extraction returns null, feed list still contains
         // the post.
         assertNull(extractFirstImageThumb(post))
-        assertEquals("the future", extractPostText(post))
+        assertEquals("the future", post.record.decodeRecord<Post>().text)
         assertEquals(1, response.feed.size)
     }
 
@@ -70,7 +72,7 @@ class FeedScreenTest {
 
         assertNull(post.embed)
         assertNull(extractFirstImageThumb(post))
-        assertEquals("plain text post", extractPostText(post))
+        assertEquals("plain text post", post.record.decodeRecord<Post>().text)
     }
 
     private companion object {

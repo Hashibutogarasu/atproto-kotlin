@@ -37,11 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import io.github.kikin81.atproto.app.bsky.embed.ImagesView
+import io.github.kikin81.atproto.app.bsky.feed.Post
 import io.github.kikin81.atproto.app.bsky.feed.PostView
 import io.github.kikin81.atproto.runtime.Datetime
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.contentOrNull
-import kotlinx.serialization.json.jsonPrimitive
+import io.github.kikin81.atproto.runtime.decodeRecord
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -102,8 +101,9 @@ fun FeedScreen(
 
 @Composable
 private fun PostRow(post: PostView) {
-    val text = extractPostText(post)
-    val createdAt = extractCreatedAt(post) ?: post.indexedAt
+    val record = runCatching { post.record.decodeRecord<Post>() }.getOrNull()
+    val text = record?.text.orEmpty()
+    val createdAt = record?.createdAt ?: post.indexedAt
     val thumbUrl = extractFirstImageThumb(post)
 
     Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
@@ -134,17 +134,6 @@ private fun PostRow(post: PostView) {
             )
         }
     }
-}
-
-internal fun extractPostText(post: PostView): String {
-    val rawText = post.record["text"] as? JsonPrimitive ?: return ""
-    return rawText.contentOrNull.orEmpty()
-}
-
-internal fun extractCreatedAt(post: PostView): Datetime? {
-    val rawCreatedAt = post.record["createdAt"] ?: return null
-    val raw = runCatching { rawCreatedAt.jsonPrimitive.content }.getOrNull() ?: return null
-    return Datetime(raw)
 }
 
 internal fun extractFirstImageThumb(post: PostView): String? {
