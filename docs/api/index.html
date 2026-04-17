@@ -77,6 +77,34 @@
 <div class="main-content" id="content" pageIds="kikinlex::.ext/allModules///PointingToDeclaration//0">
   <div class="breadcrumbs"></div>
   <div class="cover ">
+    <div class="cover ">
+      <h1 class="">Module atproto-kotlin</h1>
+      <p class="paragraph">Code-generated <a href="https://atproto.com">AT Protocol</a> Kotlin Multiplatform SDK for Bluesky and atproto-powered apps. Parses the upstream <code class="lang-kotlin">@atproto/lex</code> lexicon corpus at build time and emits idiomatic Kotlin: immutable <code class="lang-kotlin">data class</code> records, sealed-equivalent open unions with <code class="lang-kotlin">$type</code> dispatch, typed value classes for every string format, and <code class="lang-kotlin">suspend fun</code> XRPC service interfaces ready to drop into a Ktor client.</p>
+      <h2 class="">Quick start</h2>
+      <div class="sample-container">
+        <pre><code class="block lang-kotlin" theme="idea">// build.gradle.kts<br>dependencies {<br>    implementation(&quot;io.github.kikin81.atproto:at-protocol-runtime:&lt;version&gt;&quot;)<br>    implementation(&quot;io.github.kikin81.atproto:at-protocol-models:&lt;version&gt;&quot;)<br>    implementation(&quot;io.github.kikin81.atproto:at-protocol-oauth:&lt;version&gt;&quot;) // optional<br>    implementation(&quot;io.ktor:ktor-client-cio:3.x&quot;) // or your preferred engine<br>}</code></pre>
+<span class="top-right-position"><span class="copy-icon"></span>
+          <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
+        </span></div>
+      <div class="sample-container">
+        <pre><code class="block lang-kotlin" theme="idea">val client = XrpcClient(<br>    baseUrl = &quot;https://bsky.social&quot;,<br>    httpClient = HttpClient(CIO),<br>    authProvider = myAuthProvider,<br>)<br>val timeline = FeedService(client).getTimeline(GetTimelineRequest(limit = 25L))</code></pre>
+<span class="top-right-position"><span class="copy-icon"></span>
+          <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
+        </span></div>
+      <p class="paragraph">See each module's documentation for details:</p>
+      <ul>
+        <li>
+          <p class="paragraph"><strong>at-protocol-runtime</strong> — Hand-written base: value classes, <code class="lang-kotlin">AtField</code>,   <code class="lang-kotlin">XrpcClient</code>, <code class="lang-kotlin">AuthProvider</code>, pagination helpers.</p>
+        </li>
+        <li>
+          <p class="paragraph"><strong>at-protocol-models</strong> — Generated records, requests/responses, open   unions, and <code class="lang-kotlin">*Service</code> classes.</p>
+        </li>
+        <li>
+          <p class="paragraph"><strong>at-protocol-oauth</strong> — OAuth 2.0 with PAR + PKCE + DPoP for public   clients (Android / JVM).</p>
+        </li>
+      </ul>
+      <p class="paragraph">For LLM agents consuming this library, fetch task-oriented skills from <a href="https://github.com/kikin81/atproto-kotlin/tree/main/skills"><code class="lang-kotlin">skills/</code></a> instead of browsing this API reference.</p>
+    </div>
     <h2 class="">All modules:</h2>
     <div class="table"><a data-name="1912513360%2FMain%2F0" anchor-label="at-protocol-models" id="1912513360%2FMain%2F0" data-filterable-set=""></a>
       <div class="table-row">
@@ -86,7 +114,9 @@
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1912513360%2FMain%2F0"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div><span class="brief-comment"></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><strong>Code-generated</strong> AT Protocol models and service bindings. Kotlin Multiplatform (JVM + iOS). This is what downstream consumers depend on to call Bluesky and atproto endpoints.</p>
+            </span></div>
         </div>
       </div>
 <a data-name="1461507601%2FMain%2F0" anchor-label="at-protocol-oauth" id="1461507601%2FMain%2F0" data-filterable-set=""></a>
@@ -97,7 +127,9 @@
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1461507601%2FMain%2F0"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div><span class="brief-comment"></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph">AT Protocol OAuth 2.0 module for public clients (Android and JVM desktop apps). JVM-only — <code class="lang-kotlin">java.security</code> is used for EC P-256 key generation and signing so no external JWT library is pulled in.</p>
+            </span></div>
         </div>
       </div>
 <a data-name="496436784%2FMain%2F0" anchor-label="at-protocol-runtime" id="496436784%2FMain%2F0" data-filterable-set=""></a>
@@ -108,7 +140,9 @@
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="496436784%2FMain%2F0"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div><span class="brief-comment"></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph">Hand-written base module for the AT Protocol Kotlin SDK. Kotlin Multiplatform (JVM + iOS) library that every generated model and service depends on.</p>
+            </span></div>
         </div>
       </div>
     </div>
