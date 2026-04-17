@@ -27,7 +27,7 @@ tasks.test {
 
 mavenPublishing {
     configure(com.vanniktech.maven.publish.JavaLibrary(javadocJar = com.vanniktech.maven.publish.JavadocJar.Dokka("dokkaGenerateModuleHtml"), sourcesJar = true))
-    publishToMavenCentral(automaticRelease = false)
+    publishToMavenCentral(automaticRelease = true)
     signAllPublications()
 
     pom {

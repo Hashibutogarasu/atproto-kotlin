@@ -53,10 +53,8 @@ kotlin {
 // via the additional `publishing.repositories.maven { ... }` block
 // below. One source of truth for POM metadata across both registries.
 //
-// `automaticRelease = false` puts each upload in Central Portal's
-// "pending release" state (USER_MANAGED mode) — we review + click
-// Release in the Central Portal UI before the version propagates to
-// `repo1.maven.org`. Switch to `true` once we trust the pipeline.
+// `automaticRelease = true` auto-promotes uploads to repo1.maven.org
+// without manual intervention in the Central Portal UI.
 //
 // Credentials are read from Gradle properties (or `ORG_GRADLE_PROJECT_*`
 // env vars in CI):
@@ -69,7 +67,7 @@ kotlin {
 // `./gradlew build` stays unsigned and works without GPG setup.
 mavenPublishing {
     configure(com.vanniktech.maven.publish.KotlinMultiplatform(javadocJar = com.vanniktech.maven.publish.JavadocJar.Dokka("dokkaGenerateModuleHtml")))
-    publishToMavenCentral(automaticRelease = false)
+    publishToMavenCentral(automaticRelease = true)
     signAllPublications()
 
     pom {

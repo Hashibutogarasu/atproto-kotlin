@@ -54,7 +54,7 @@ tasks.matching {
 // hitting the GH Packages endpoint via semantic-release's gradle plugin.
 mavenPublishing {
     configure(com.vanniktech.maven.publish.KotlinMultiplatform(javadocJar = com.vanniktech.maven.publish.JavadocJar.Dokka("dokkaGenerateModuleHtml")))
-    publishToMavenCentral(automaticRelease = false)
+    publishToMavenCentral(automaticRelease = true)
     signAllPublications()
 
     pom {

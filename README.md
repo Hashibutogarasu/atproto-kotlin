@@ -126,12 +126,9 @@ release, then runs `./gradlew publish` via the
 Packages and Maven Central (via the
 [vanniktech maven-publish plugin](https://vanniktech.github.io/gradle-maven-publish-plugin/)).
 
-Currently Central uploads go into **USER_MANAGED** state (pending
-release) — review in the [Central Portal deployments dashboard](https://central.sonatype.com/publishing/deployments)
-and click **Publish** to promote to `repo1.maven.org`. Once the
-pipeline has proven itself over a few more cycles, we'll flip
-`automaticRelease = true` in `:at-protocol-runtime/build.gradle.kts`
-and `:at-protocol-models/build.gradle.kts` so every version auto-releases.
+Central uploads auto-promote to `repo1.maven.org` — no manual step
+needed. Artifacts are typically available within 15–30 minutes of a
+release.
 
 ## OpenSpec
 
