@@ -70,15 +70,16 @@ dependencyResolutionManagement {
 ```kotlin
 // build.gradle.kts (or the KMP module's common source set)
 dependencies {
-    implementation("io.github.kikin81.atproto:at-protocol-runtime:1.1.2")
-    implementation("io.github.kikin81.atproto:at-protocol-models:1.1.2")
-    implementation("io.github.kikin81.atproto:at-protocol-oauth:1.1.2") // OAuth 2.0 + DPoP
+    implementation("io.github.kikin81.atproto:at-protocol-runtime:<version>")
+    implementation("io.github.kikin81.atproto:at-protocol-models:<version>")
+    implementation("io.github.kikin81.atproto:at-protocol-oauth:<version>") // OAuth 2.0 + DPoP
 }
 ```
 
-Check the [latest release](https://github.com/kikin81/atproto-kotlin/releases/latest)
-for the current version. Artifacts are GPG-signed and include POM
-metadata, Gradle Module Metadata, and sources JARs.
+Replace `<version>` with the
+[latest release](https://github.com/kikin81/atproto-kotlin/releases/latest)
+version. Artifacts are GPG-signed and include POM metadata, Gradle
+Module Metadata, sources JARs, and Dokka-generated javadoc JARs.
 
 **iOS** consumers: only JVM + metadata publications are cut from Linux
 CI runners today. The Kotlin Multiplatform Gradle Module Metadata
