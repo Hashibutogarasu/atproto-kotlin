@@ -8,6 +8,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.JsonObject
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertFailsWith
@@ -224,7 +225,196 @@ class AtOAuthTest {
     }
 
     @Test
-    fun logoutClearsSession() = runTest {
+    fun fullFlowEndToEndWithXrpcQuery() = runTest {
+        var xrpcRequestAuth: String? = null
+        var xrpcRequestDpop: String? = null
+        val store = InMemorySessionStore()
+        val client = HttpClient(
+            MockEngine { request ->
+                val url = request.url.toString()
+                when {
+                    url.contains("/.well-known/atproto-did") ->
+                        respond(ByteReadChannel("did:plc:testuser"), HttpStatusCode.OK)
+
+                    url.contains("plc.directory/did:plc:testuser") ->
+                        respond(
+                            ByteReadChannel(
+                                """{"id":"did:plc:testuser","alsoKnownAs":["at://alice.test"],"service":[{"id":"#atproto_pds","type":"AtprotoPersonalDataServer","serviceEndpoint":"https://pds.test"}]}""",
+                            ),
+                            HttpStatusCode.OK,
+                            jsonHeaders,
+                        )
+
+                    url.contains("/.well-known/oauth-protected-resource") ->
+                        respond(ByteReadChannel("""{"authorization_servers":["https://auth.test"]}"""), HttpStatusCode.OK, jsonHeaders)
+
+                    url.contains("/.well-known/oauth-authorization-server") ->
+                        respond(
+                            ByteReadChannel(
+                                """{"issuer":"https://auth.test","authorization_endpoint":"https://auth.test/authorize","token_endpoint":"https://auth.test/token","pushed_authorization_request_endpoint":"https://auth.test/par","revocation_endpoint":"https://auth.test/revoke"}""",
+                            ),
+                            HttpStatusCode.OK,
+                            jsonHeaders,
+                        )
+
+                    url.contains("/par") ->
+                        respond(ByteReadChannel("""{"request_uri":"urn:test:par","expires_in":60}"""), HttpStatusCode.OK, jsonHeaders)
+
+                    url.contains("/token") ->
+                        respond(
+                            ByteReadChannel("""{"access_token":"at_e2e","refresh_token":"rt_e2e","token_type":"DPoP","sub":"did:plc:testuser"}"""),
+                            HttpStatusCode.OK,
+                            jsonHeaders,
+                        )
+
+                    url.contains("/xrpc/app.bsky.feed.getTimeline") -> {
+                        xrpcRequestAuth = request.headers["Authorization"]
+                        xrpcRequestDpop = request.headers["DPoP"]
+                        respond(
+                            ByteReadChannel("""{"feed":[]}"""),
+                            HttpStatusCode.OK,
+                            jsonHeaders,
+                        )
+                    }
+
+                    else -> respond(ByteReadChannel(""), HttpStatusCode.NotFound)
+                }
+            },
+        )
+
+        val oauth = AtOAuth("https://app.test/oauth/client-metadata.json", store, client)
+
+        // Step 1: beginLogin
+        val authUrl = oauth.beginLogin("alice.test")
+        assertContains(authUrl, "https://auth.test/authorize")
+
+        // Step 2: simulate browser redirect
+        oauth.completeLogin(
+            "io.github.kikin81:/oauth-redirect?code=code123&state=${extractState(oauth)}&iss=https://auth.test",
+        )
+
+        // Step 3: verify session persisted with all fields
+        val session = store.session
+        assertNotNull(session)
+        assertTrue(session.accessToken == "at_e2e")
+        assertTrue(session.clientId == "https://app.test/oauth/client-metadata.json")
+        assertTrue(session.revocationEndpoint == "https://auth.test/revoke")
+
+        // Step 4: createClient and make an XRPC query
+        val xrpcClient = oauth.createClient()
+        val result = xrpcClient.query(
+            nsid = "app.bsky.feed.getTimeline",
+            params = Unit,
+            paramsSerializer = kotlinx.serialization.serializer<Unit>(),
+            responseSerializer = kotlinx.serialization.json.JsonObject.serializer(),
+        )
+
+        // Verify DPoP headers were attached
+        assertNotNull(xrpcRequestAuth)
+        assertTrue(xrpcRequestAuth!!.startsWith("DPoP "))
+        assertNotNull(xrpcRequestDpop)
+        // Verify response was parsed
+        assertTrue(result.containsKey("feed"))
+    }
+
+    @Test
+    fun createClientRefreshesExpiredToken() = runTest {
+        val signer = DpopSigner.generate()
+        val exported = signer.exportKeyPair()
+        var refreshCalled = false
+        val store = InMemorySessionStore()
+        store.session = OAuthSession(
+            accessToken = "expired_token",
+            refreshToken = "rt_valid",
+            did = "did:plc:testuser",
+            handle = "alice.test",
+            pdsUrl = "https://pds.test",
+            tokenEndpoint = "https://auth.test/token",
+            clientId = "https://app.test/meta.json",
+            dpopPrivateKey = exported.privateKeyEncoded,
+            dpopPublicKey = exported.publicKeyEncoded,
+        )
+
+        val client = HttpClient(
+            MockEngine { request ->
+                val url = request.url.toString()
+                when {
+                    // First XRPC call returns 401 (expired token)
+                    url.contains("/xrpc/") && !refreshCalled ->
+                        respond(ByteReadChannel(""), HttpStatusCode.Unauthorized)
+
+                    // Token refresh
+                    url.contains("/token") -> {
+                        refreshCalled = true
+                        respond(
+                            ByteReadChannel("""{"access_token":"at_refreshed","refresh_token":"rt_new","token_type":"DPoP","sub":"did:plc:testuser"}"""),
+                            HttpStatusCode.OK,
+                            jsonHeaders,
+                        )
+                    }
+
+                    // Retry after refresh succeeds
+                    url.contains("/xrpc/") && refreshCalled ->
+                        respond(ByteReadChannel("""{"feed":[]}"""), HttpStatusCode.OK, jsonHeaders)
+
+                    else -> respond(ByteReadChannel(""), HttpStatusCode.NotFound)
+                }
+            },
+        )
+
+        val oauth = AtOAuth("https://app.test/meta.json", store, client)
+        val xrpcClient = oauth.createClient()
+
+        val result = xrpcClient.query(
+            nsid = "app.bsky.feed.getTimeline",
+            params = Unit,
+            paramsSerializer = kotlinx.serialization.serializer<Unit>(),
+            responseSerializer = kotlinx.serialization.json.JsonObject.serializer(),
+        )
+
+        assertTrue(refreshCalled, "Token refresh should have been triggered")
+        assertTrue(result.containsKey("feed"))
+        assertTrue(store.session!!.accessToken == "at_refreshed")
+    }
+
+    @Test
+    fun logoutRevokesTokenAndClearsSession() = runTest {
+        val signer = DpopSigner.generate()
+        val exported = signer.exportKeyPair()
+        var revokeCalled = false
+        val store = InMemorySessionStore()
+        store.session = OAuthSession(
+            accessToken = "at",
+            refreshToken = "rt",
+            did = "did:plc:x",
+            handle = "x.test",
+            pdsUrl = "https://pds.test",
+            tokenEndpoint = "https://auth.test/token",
+            revocationEndpoint = "https://auth.test/revoke",
+            clientId = "https://app.test/meta.json",
+            dpopPrivateKey = exported.privateKeyEncoded,
+            dpopPublicKey = exported.publicKeyEncoded,
+        )
+
+        val client = HttpClient(
+            MockEngine { request ->
+                if (request.url.toString().contains("/revoke")) {
+                    revokeCalled = true
+                    assertNotNull(request.headers["DPoP"])
+                }
+                respond(ByteReadChannel(""), HttpStatusCode.OK)
+            },
+        )
+
+        val oauth = AtOAuth("https://app.test/meta.json", store, client)
+        oauth.logout()
+
+        assertTrue(revokeCalled, "Token revocation should have been called")
+        assertTrue(store.session == null, "Session should be cleared")
+    }
+
+    @Test
+    fun logoutClearsSessionEvenWithoutRevocationEndpoint() = runTest {
         val store = InMemorySessionStore()
         store.session = OAuthSession(
             accessToken = "at",

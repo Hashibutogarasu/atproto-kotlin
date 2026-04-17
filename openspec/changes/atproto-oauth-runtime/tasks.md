@@ -93,7 +93,7 @@
 
 ## 10. Testing + verification
 
-- [ ] 10.1 Full MockEngine integration test: `beginLogin → (mock browser redirect) → completeLogin → createClient → FeedService.getTimeline` — end-to-end with canned responses
+- [x] 10.1 Full MockEngine integration test: `beginLogin → (mock browser redirect) → completeLogin → createClient → FeedService.getTimeline` — end-to-end with canned responses
 - [x] 10.2 `./gradlew :at-protocol-oauth:test` passes all unit tests
 - [x] 10.3 `./gradlew :samples:android:testDebugUnitTest` passes with OAuth-migrated tests
 - [x] 10.4 `./gradlew :samples:android:assembleDebug` produces an APK
