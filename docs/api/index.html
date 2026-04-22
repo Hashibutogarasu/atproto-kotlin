@@ -45,7 +45,7 @@
         </button>
         <div class="navigation-controls--break ui-kit_mobile-only"></div>
         <div class="library-version" id="library-version">
-4.8.0        </div>
+4.9.0        </div>
         <div class="navigation-controls">
             <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
                     type="button">Switch theme
@@ -82,7 +82,7 @@
       <p class="paragraph">Code-generated <a href="https://atproto.com">AT Protocol</a> Kotlin Multiplatform SDK for Bluesky and atproto-powered apps. Parses the upstream <code class="lang-kotlin">@atproto/lex</code> lexicon corpus at build time and emits idiomatic Kotlin: immutable <code class="lang-kotlin">data class</code> records, sealed-equivalent open unions with <code class="lang-kotlin">$type</code> dispatch, typed value classes for every string format, and <code class="lang-kotlin">suspend fun</code> XRPC service interfaces ready to drop into a Ktor client.</p>
       <h2 class="">Quick start</h2>
       <div class="sample-container">
-        <pre><code class="block lang-kotlin" theme="idea">// build.gradle.kts<br>dependencies {<br>    implementation(&quot;io.github.kikin81.atproto:at-protocol-runtime:&lt;version&gt;&quot;)<br>    implementation(&quot;io.github.kikin81.atproto:at-protocol-models:&lt;version&gt;&quot;)<br>    implementation(&quot;io.github.kikin81.atproto:at-protocol-oauth:&lt;version&gt;&quot;) // optional<br>    implementation(&quot;io.ktor:ktor-client-cio:3.x&quot;) // or your preferred engine<br>}</code></pre>
+        <pre><code class="block lang-kotlin" theme="idea">// build.gradle.kts<br>dependencies {<br>    implementation(&quot;io.github.kikin81.atproto:runtime:&lt;version&gt;&quot;)<br>    implementation(&quot;io.github.kikin81.atproto:models:&lt;version&gt;&quot;)<br>    implementation(&quot;io.github.kikin81.atproto:oauth:&lt;version&gt;&quot;) // optional<br>    implementation(&quot;io.ktor:ktor-client-cio:3.x&quot;) // or your preferred engine<br>}</code></pre>
 <span class="top-right-position"><span class="copy-icon"></span>
           <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
         </span></div>
@@ -94,24 +94,24 @@
       <p class="paragraph">See each module's documentation for details:</p>
       <ul>
         <li>
-          <p class="paragraph"><strong>at-protocol-runtime</strong> — Hand-written base: value classes, <code class="lang-kotlin">AtField</code>,   <code class="lang-kotlin">XrpcClient</code>, <code class="lang-kotlin">AuthProvider</code>, pagination helpers.</p>
+          <p class="paragraph"><strong>runtime</strong> — Hand-written base: value classes, <code class="lang-kotlin">AtField</code>,   <code class="lang-kotlin">XrpcClient</code>, <code class="lang-kotlin">AuthProvider</code>, pagination helpers.</p>
         </li>
         <li>
-          <p class="paragraph"><strong>at-protocol-models</strong> — Generated records, requests/responses, open   unions, and <code class="lang-kotlin">*Service</code> classes.</p>
+          <p class="paragraph"><strong>models</strong> — Generated records, requests/responses, open   unions, and <code class="lang-kotlin">*Service</code> classes.</p>
         </li>
         <li>
-          <p class="paragraph"><strong>at-protocol-oauth</strong> — OAuth 2.0 with PAR + PKCE + DPoP for public   clients (Android / JVM).</p>
+          <p class="paragraph"><strong>oauth</strong> — OAuth 2.0 with PAR + PKCE + DPoP for public   clients (Android / JVM).</p>
         </li>
       </ul>
       <p class="paragraph">For LLM agents consuming this library, fetch task-oriented skills from <a href="https://github.com/kikin81/atproto-kotlin/tree/main/skills"><code class="lang-kotlin">skills/</code></a> instead of browsing this API reference.</p>
     </div>
     <h2 class="">All modules:</h2>
-    <div class="table"><a data-name="1912513360%2FMain%2F0" anchor-label="at-protocol-models" id="1912513360%2FMain%2F0" data-filterable-set=""></a>
+    <div class="table"><a data-name="-1329121237%2FMain%2F0" anchor-label="models" id="-1329121237%2FMain%2F0" data-filterable-set=""></a>
       <div class="table-row">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
-              <div><a href="at-protocol-models/index.html">at-protocol-models</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1912513360%2FMain%2F0"></span>
+              <div><a href="models/index.html">models</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1329121237%2FMain%2F0"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div><span class="brief-comment">
@@ -119,12 +119,12 @@
             </span></div>
         </div>
       </div>
-<a data-name="1461507601%2FMain%2F0" anchor-label="at-protocol-oauth" id="1461507601%2FMain%2F0" data-filterable-set=""></a>
+<a data-name="248560086%2FMain%2F0" anchor-label="oauth" id="248560086%2FMain%2F0" data-filterable-set=""></a>
       <div class="table-row">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
-              <div><a href="at-protocol-oauth/index.html">at-protocol-oauth</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1461507601%2FMain%2F0"></span>
+              <div><a href="oauth/index.html">oauth</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="248560086%2FMain%2F0"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div><span class="brief-comment">
@@ -132,12 +132,12 @@
             </span></div>
         </div>
       </div>
-<a data-name="496436784%2FMain%2F0" anchor-label="at-protocol-runtime" id="496436784%2FMain%2F0" data-filterable-set=""></a>
+<a data-name="-1209987915%2FMain%2F0" anchor-label="runtime" id="-1209987915%2FMain%2F0" data-filterable-set=""></a>
       <div class="table-row">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
-              <div><a href="at-protocol-runtime/index.html">at-protocol-runtime</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="496436784%2FMain%2F0"></span>
+              <div><a href="runtime/index.html">runtime</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1209987915%2FMain%2F0"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div><span class="brief-comment">

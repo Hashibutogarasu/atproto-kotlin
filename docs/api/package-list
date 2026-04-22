@@ -1,7 +1,7 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 
-module:at-protocol-models
+module:models
 io.github.kikin81.atproto.app.bsky.actor
 io.github.kikin81.atproto.app.bsky.embed
 io.github.kikin81.atproto.app.bsky.feed
@@ -20,7 +20,7 @@ io.github.kikin81.atproto.com.atproto.repo
 io.github.kikin81.atproto.com.atproto.server
 io.github.kikin81.atproto.com.atproto.sync
 io.github.kikin81.atproto.tools.ozone.report
-module:at-protocol-oauth
+module:oauth
 io.github.kikin81.atproto.oauth
-module:at-protocol-runtime
+module:runtime
 io.github.kikin81.atproto.runtime
