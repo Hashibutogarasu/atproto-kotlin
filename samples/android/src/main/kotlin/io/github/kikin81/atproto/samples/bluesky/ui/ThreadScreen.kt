@@ -44,8 +44,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import io.github.kikin81.atproto.app.bsky.feed.Post
 import io.github.kikin81.atproto.app.bsky.feed.PostView
+import io.github.kikin81.atproto.compose.material3.rememberBlueskyAnnotatedString
 import io.github.kikin81.atproto.runtime.AtUri
 import io.github.kikin81.atproto.runtime.decodeRecord
+import io.github.kikin81.atproto.samples.bluesky.util.toListOrNull
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -171,6 +173,7 @@ private fun LoadedThread(
 private fun AncestorRow(post: PostView) {
     val record = runCatching { post.record.decodeRecord<Post>() }.getOrNull()
     val text = record?.text.orEmpty()
+    val facets = record?.facets?.toListOrNull()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -185,7 +188,7 @@ private fun AncestorRow(post: PostView) {
         if (text.isNotBlank()) {
             Spacer(Modifier.height(2.dp))
             Text(
-                text,
+                rememberBlueskyAnnotatedString(text, facets),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 3,
@@ -202,6 +205,7 @@ private fun FocusedPostCard(
 ) {
     val record = runCatching { post.record.decodeRecord<Post>() }.getOrNull()
     val text = record?.text.orEmpty()
+    val facets = record?.facets?.toListOrNull()
     val createdAt = record?.createdAt ?: post.indexedAt
     val thumbUrl = extractFirstImageThumb(post)
 
@@ -226,7 +230,7 @@ private fun FocusedPostCard(
         }
         if (text.isNotBlank()) {
             Spacer(Modifier.height(6.dp))
-            Text(text, style = MaterialTheme.typography.bodyLarge)
+            Text(rememberBlueskyAnnotatedString(text, facets), style = MaterialTheme.typography.bodyLarge)
         }
         if (thumbUrl != null) {
             Spacer(Modifier.height(8.dp))
@@ -268,6 +272,7 @@ private fun ReplyRow(
 ) {
     val record = runCatching { post.record.decodeRecord<Post>() }.getOrNull()
     val text = record?.text.orEmpty()
+    val facets = record?.facets?.toListOrNull()
     val createdAt = record?.createdAt ?: post.indexedAt
 
     Column(
@@ -290,7 +295,7 @@ private fun ReplyRow(
         }
         if (text.isNotBlank()) {
             Spacer(Modifier.height(4.dp))
-            Text(text, style = MaterialTheme.typography.bodyMedium)
+            Text(rememberBlueskyAnnotatedString(text, facets), style = MaterialTheme.typography.bodyMedium)
         }
         Spacer(Modifier.height(4.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
