@@ -1,1 +1,1 @@
-sourceset_dependencies = '{":models/commonMain":[],":models/jvmMain":[":models/commonMain"],":runtime/commonMain":[],":runtime/jvmMain":[":runtime/commonMain"],":oauth/main":[]}'
+sourceset_dependencies = '{":compose/release":[],":runtime/commonMain":[],":runtime/jvmMain":[":runtime/commonMain"],":oauth/main":[],":compose-material3/release":[]}'
